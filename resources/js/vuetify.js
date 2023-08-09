@@ -4,20 +4,20 @@ import "vuetify/dist/vuetify.min.css";
 Vue.use(Vuetify);
 
 export default new Vuetify({
-  theme: {
-    themes: {
-      light: {
-        primary: "#7620df",
-        secondary: "#696969",
-        accent: "#8c9eff",
-        error: "#b71c1c",
-      },
-      dark: {
-        primary: "#7620df",
-      },
+    theme: {
+        themes: {
+            light: {
+                primary: "#2196F3",
+                secondary: "#696969",
+                accent: "#8c9eff",
+                error: "#b71c1c",
+            },
+            dark: {
+                primary: "#2196F3",
+            },
+        },
     },
-  },
-  icons: {
-    iconfont: "mdi", // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
-  },
+    icons: {
+        iconfont: "mdi", // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+    },
 });

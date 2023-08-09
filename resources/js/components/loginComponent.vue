@@ -12,7 +12,7 @@
                 <v-card-text>
                   <v-form ref="form">
                     <v-text-field
-                      label="Логин"
+                      label="Login"
                       name="name"
                       type="text"
                       v-model="fields.name"
@@ -45,7 +45,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="primary" @click="onSubmit">Войти</v-btn>
+                  <v-btn width="100%" @click="onSubmit">Login</v-btn>
                 </v-card-actions>
               </form>
             </v-card>
