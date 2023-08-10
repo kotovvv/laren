@@ -12,7 +12,11 @@
                 <v-card-text>
                   <v-form ref="form">
                     <v-text-field
+<<<<<<< HEAD
                       label="Логин"
+=======
+                      label="Login"
+>>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
                       name="name"
                       type="text"
                       v-model="fields.name"
@@ -45,7 +49,11 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
+<<<<<<< HEAD
                   <v-btn color="primary" @click="onSubmit">Войти</v-btn>
+=======
+                  <v-btn width="100%" @click="onSubmit">Login</v-btn>
+>>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
                 </v-card-actions>
               </form>
             </v-card>

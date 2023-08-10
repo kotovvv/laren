@@ -17,7 +17,11 @@ class ImportsController extends Controller
    */
   public function index()
   {
+<<<<<<< HEAD
     return Import::select(['imports.*', '(SELECT `name` FROM `providers` WHERE `id` = `provider_id`) AS provider', '(SELECT `name` FROM `users` WHERE `id` = `user_id`) AS user'])->orderByDesc('end')->get();
+=======
+    return Import::select(['imports.*', DB::raw('(SELECT `name` FROM `providers` WHERE `id` = `provider_id`) AS provider'), DB::raw('(SELECT `name` FROM `users` WHERE `id` = `user_id`) AS user')])->orderByDesc('end')->get();
+>>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
   }
 
   public function putBTC(Request $request)
