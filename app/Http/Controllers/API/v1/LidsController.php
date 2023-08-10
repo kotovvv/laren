@@ -48,27 +48,29 @@ class LidsController extends Controller
     return $this->newlids($request->merge($data));
   }
 
+
+  //anew  importlid => importLead?api_key=key&phone=123&namelastname=Axc&email=a@a.a&otherinfo=otherinfo
   public function importlid(Request $request)
   {
-    $insertItem = $request->all();
-
-    $f_key =   DB::table('apikeys')->where('api_key', $insertItem['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
+    // $f_key =   DB::table('apikeys')->where('api_key', $data['api_key'])->first();
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
 
     $n_lid = new Lid;
-    $n_lid->tel = $insertItem['umcfields']['phone'];
+    $n_lid->tel = $data['phone'];
     $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
     if (!$f_lid->isEmpty() &&  $n_lid->provider_id != '76') {
       $n_lid->status_id = 22;
     } else {
       $n_lid->status_id = 8;
     }
-    $n_lid->name = $insertItem['umcfields']['name'];
-    $n_lid->email = $insertItem['umcfields']['email'];
-    $n_lid->afilyator = $insertItem['umcfields']['affiliate_user'];
+    $n_lid->name = $data['namelastname'];
+    $n_lid->email = $data['email'];
+    $n_lid->afilyator = $data['affiliate_user'];
     $n_lid->provider_id = $f_key->id;
-    $n_lid->user_id = $insertItem['user_id'];
-    $n_lid->office_id = User::where('id', (int) $insertItem['user_id'])->value('office_id');
+    $n_lid->user_id = $f_key->user_id;
+    $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
     $n_lid->created_at = Now();
     $n_lid->updated_at = Now();
     $n_lid->active = 1;
@@ -332,7 +334,7 @@ class LidsController extends Controller
       $results['leads'] =  DB::select($sql);
     }
 
-    DB::select(DB::raw("SET SQL_MODE = '';"));
+    DB::select("SET SQL_MODE = '';");
     $sql = "SELECT l.`tel`,l.`name`,8 AS status_id, l.`email`, 252 AS user_id, 75 AS provider_id, p.`name` AS afilyator,NOW() as created_at,3 AS office_id FROM `lids` l LEFT JOIN `providers` p ON (p.`id` = l.`provider_id`) " . $where_email_tel . $group_email_tel;
     $leads =  DB::select($sql);
     $leads = array_map(function ($item) {
@@ -367,7 +369,7 @@ class LidsController extends Controller
       }
     }
     $response = [];
-    $q_leads = Lid::select('lids.*', DB::Raw('(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit'))
+    $q_leads = Lid::select('lids.*', '(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit')
       ->where('lids.user_id', $id)
       ->when($office_id > 0, function ($query) use ($office_id) {
         return $query->where('office_id', $office_id);
@@ -450,7 +452,7 @@ class LidsController extends Controller
 
 
     $response = [];
-    $q_leads = Lid::select('lids.*', DB::Raw('(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`' . $where_date . ') depozit'))
+    $q_leads = Lid::select('lids.*', '(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`' . $where_date . ') depozit')
       ->when(!is_array($id) && $id > 0 && count($users_ids) === 0, function ($query) use ($id) {
         return $query->where('lids.user_id', $id);
       })
@@ -504,7 +506,7 @@ class LidsController extends Controller
       ->get();
 
     if ($page == 0) {
-      $response['statuses'] = $q_leads->select(DB::Raw('count(statuses.id) hm'), 'statuses.id', 'statuses.name', 'statuses.color')
+      $response['statuses'] = $q_leads->select('count(statuses.id) hm', 'statuses.id', 'statuses.name', 'statuses.color')
         ->leftJoin('statuses', 'statuses.id', '=', 'status_id')
         ->groupBy('id')
         ->orderBy('statuses.order', 'ASC')
@@ -534,13 +536,6 @@ class LidsController extends Controller
       $a_providers[] = $provider['id'];
     }
 
-    // return Lid::select('lids.*', DB::raw('sum(depozits.depozit) as depozit'))
-    //                 ->join('depozits', 'lids.id', '=', 'depozits.lid_id')
-    // // select('lids.*', DB::raw('SELECT SUM(`depozit`) as depozit FROM `depozits` WHERE ))')
-    // ->where('lids.user_id', $id)
-    //   ->when($office_id > 0, function ($query) use ($office_id, $providers) {
-    //     return $query->where('office_id', $office_id)->whereIn('provider_id', $providers);
-    //   })->orderBy('lids.created_at', 'desc')->get();
     if ($office_id > 0) {
       $adnwhere = " AND office_id = $office_id AND provider_id in (" . implode(',', $a_providers) . ") ";
     }
@@ -553,23 +548,25 @@ class LidsController extends Controller
     $data = $request->all();
     if (isset($data['role_id']) && isset($data['group_id']) && $data['role_id'] == 2) {
       $a_user_ids = User::select('id')->where('group_id', $data['group_id']);
-      return Lid::select('lids.*',  DB::Raw('(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit'))->whereIn('lids.user_id', $a_user_ids)->where('lids.status_id', $data['id'])->orderBy('lids.created_at', 'desc')->get();
+      return Lid::select('lids.*',  '(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit')->whereIn('lids.user_id', $a_user_ids)->where('lids.status_id', $data['id'])->orderBy('lids.created_at', 'desc')->get();
     } else {
       $office_id = session()->get('office_id');
-      return Lid::select('lids.*',  DB::Raw('(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit'))->where('lids.status_id', $data['id'])->when($office_id > 0, function ($query) use ($office_id) {
+      return Lid::select('lids.*',  '(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit')->where('lids.status_id', $data['id'])->when($office_id > 0, function ($query) use ($office_id) {
         return $query->where('office_id', $office_id);
       })->orderBy('lids.created_at', 'desc')->get();
     }
   }
 
+  //anew InfoDeposit => getInfoLeadDeposit?api_key=key&id=leadId
   public function InfoDeposit(Request $request)
   {
-    $getparams = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $getparams['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
+    // $f_key =   DB::table('apikeys')->where('api_key', $data['api_key'])->first();
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
-    // $sql = 'SELECT  "Success" AS status,"1" AS status_code, `lid_id` AS order_lead_id, `created_at` AS ftd_date, "FTD=1" AS description  FROM `depozits` WHERE `lid_id` = ' . (int) $getparams['id'];
-    $leads = Depozit::select(DB::raw('"Success" as status, 1 as status_code, `lid_id` as  order_lead_id, `created_at` as ftd_date, "FTD=1" as description'))->where('lid_id', (int) $getparams['id'])->first();
-    $leads['dateAdd'] = date('Y-m-d H:i:s', strtotime(Lid::where('id', (int) $getparams['id'])->value('created_at')));
+    // $sql = 'SELECT  "Success" AS status,"1" AS status_code, `lid_id` AS order_lead_id, `created_at` AS ftd_date, "FTD=1" AS description  FROM `depozits` WHERE `lid_id` = ' . (int) $data['id'];
+    $leads = Depozit::select('"Success" as status, 1 as status_code, `lid_id` as  order_lead_id, `created_at` as ftd_date, "FTD=1" as description')->where('lid_id', (int) $data['id'])->first();
+    $leads['dateAdd'] = date('Y-m-d H:i:s', strtotime(Lid::where('id', (int) $data['id'])->value('created_at')));
     $response = [];
     $response["status"] = "Success";
     $response["status_code"] = "1";
@@ -581,15 +578,14 @@ class LidsController extends Controller
     return response($response);
   }
 
-
+  //anew AllDeposits GetAllProviderLeadsBetweenDates?api_key=key&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
   public function AllDeposits(Request $request)
   {
-    $getparams = $request->all();
+    $data = $request->all();
 
-
-    $date = [$getparams['from_date'], $getparams['to_date']];
+    $date = [$data['from_date'], $data['to_date']];
     // if ($getlid['api_key'] != env('API_KEY')) return response(['status'=>'Key incorect'], 403);
-    $f_key =  DB::table('apikeys')->where('api_key', $getparams['api_key'])->first();
+    $f_key =  DB::table('apikeys')->where('api_key', $data['api_key'])->first();
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
     $sql = "SELECT
@@ -602,7 +598,7 @@ FROM
     INNER JOIN `lids` l
         ON (d.`lid_id` = l.`id`)
 WHERE (l.`provider_id` = '" . $f_key->id . "'
-    AND d.`created_at` BETWEEN '" . $date[0] . "' AND  '" . $date[1] . "')";
+    AND d.`created_at` BETWEEN '" . $date[0] . " 00:00:00' AND  '" . $date[1] . " 23:59:59')";
 
     $leads =  DB::select($sql);
     $response = [];
@@ -616,39 +612,40 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     return response($response);
   }
 
+
+  //anew getuserLids GetAllLeadsOnUserId?api_key=key
   public function getuserLids(Request $request, $id)
   {
-    $getlid = $request->all();
-    $office_id = session()->get('office_id');
-    // if ($getlid['api_key'] != env('API_KEY')) return response(['status'=>'Key incorect'], 403);
-    $f_key =   DB::table('apikeys')->where('api_key', $getlid['api_key'])->first();
+    $data = $request->all();
+
+    $f_key = Provider::where('tel', $data['api_key'])->first();
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
-    return Lid::all()->where('user_id', $id)->when($office_id > 0, function ($query) use ($office_id) {
-      return $query->where('office_id', $office_id);
-    });
+    return Lid::all()->where('user_id',  $f_key->user_id);
   }
 
+
+  //anew getlidid getLeadIdOnTelInfo?api_key=key&phone=123&otherinfo=otherinfo
   public function getlidid(Request $request)
   {
 
-    $getlidid = $request->all();
-    // if ($getlidid['api_key'] != env('API_KEY')) return response(['status'=>'Key incorect'], 403);
-    $f_key =   DB::table('apikeys')->where('api_key', $getlidid['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
     $a_lid = [
-      'tel' => $getlidid['umcfields']['phone'],
-      'afilyator' => $getlidid['umcfields']['affiliate_user'],
-      'provider_id' => $f_key,
+      'tel' => $data['phone'],
+      'afilyator' => $data['otherinfo'],
+      'provider_id' => $f_key->id,
     ];
     return Lid::select('id')->where($a_lid)->get();
   }
 
+  //anew getlidsontime getLeadsIdBetweenDates?api_key=key&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
   public function getlidsontime(Request $request)
   {
-    $req = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
-    return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$req['start'], $req['end']])->get();
+    return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$data['from_date'] . ' 00:00:00', $data['to_date'] . ' 23:59:59'])->get();
   }
 
   public function getlidsImportedProvider(Request $request)
@@ -691,13 +688,14 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     return DB::select($sql);
   }
 
-  public function getlidonid(Request $request, $id)
+  //anew getlidonid getLeadOnId?api_key=key&lead_id=123
+  public function getlidonid(Request $request)
   {
-    $req = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
 
-    return Lid::where('id', $id)->where('provider_id', $f_key->id)->get();
+    return Lid::where('id', (int) $data['lead_id'])->where('provider_id', $f_key->id)->get();
   }
 
   /**
@@ -753,46 +751,45 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     Log::whereIn('lid_id', $lids)->delete();
   }
 
-
+  //anew set_zaliv importLead?api_key=key&namelastname=Asd&phone=123&email=a@a.a&otherinfo=otherinfo
   public function set_zaliv(Request $request)
   {
-    $req = $request->all();
+    $data = $request->all();
 
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
 
     $n_lid = new Lid;
 
-    if (isset($req['umcfields']['name']) && strlen($req['umcfields']['name']) > 1) {
-      $n_lid->name =  $req['umcfields']['name'];
+    if (isset($data['namelastname']) && strlen($data['namelastname']) > 1) {
+      $n_lid->name =  $data['namelastname'];
     } else {
       $n_lid->name = time();
     }
 
-    if (isset($req['umcfields']['phone']) && strlen($req['umcfields']['phone']) > 1) {
-      $n_lid->tel =  $req['umcfields']['phone'];
+    if (isset($data['phone']) && strlen($data['phone']) > 1) {
+      $n_lid->tel =  $data['phone'];
     } else {
       $n_lid->tel = time();
     }
 
-    if (isset($req['umcfields']['email']) && strlen($req['umcfields']['email']) > 1) {
-      $n_lid->email = $req['umcfields']['email'];
+    if (isset($data['email']) && strlen($data['email']) > 1) {
+      $n_lid->email = $data['email'];
     } else {
       $n_lid->email = time() . '@none.com';
     }
 
-    $n_lid->afilyator = $req['umcfields']['affiliate_user'];
+    $n_lid->afilyator = $data['otherinfo'];
     $n_lid->provider_id = $f_key->id;
-    $n_lid->user_id = (int) $req['user_id'];
-    $n_lid->office_id = User::where('id', (int) $req['user_id'])->value('office_id');
+    $n_lid->user_id = $f_key->user_id;
+    $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
 
     $n_lid->created_at = Now();
 
     $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
 
     if (!$f_lid->isEmpty() &&  $n_lid->provider_id != '76') {
-      //$name = Provider::find($f_key->id)->value('name');
 
       $n_lid->afilyator = $f_key->name;
       $n_lid->provider_id = 75;
@@ -812,44 +809,41 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     return response($res);
   }
 
+  //anew set_zaliv_post importLeadPost ['api_key' => 'key', 'phone' => '123', 'namelastname' => 'Axc', 'email' => 'a@a.a', 'otherinfo' => 'otherinfo']
   public function set_zaliv_post(Request $request)
   {
-    $req = $request->all();
+    $data = $request->all();
 
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
 
     $n_lid = new Lid;
 
-    $fio = $req['namedata'];
-    $lastn = $req['lnamedata'];
-    $email = $req['emaildata'];
-    $phonestr = $req['phoneData'];
-    $affiliate = $req['affiliatedata'];
-    $fio = htmlspecialchars($fio);
-    $lastn = htmlspecialchars($lastn);
+    $name = $data['namelastname'];
+    $email = $data['email'];
+    $phone = $data['phone'];
+    $affiliate = $data['otherinfo'];
+    $name = htmlspecialchars($name);
     $email = htmlspecialchars($email);
     $affiliate = htmlspecialchars($affiliate);
-    $fio = urldecode($fio);
-    $lastn = urldecode($lastn);
+    $name = urldecode($name);
     $email = urldecode($email);
     $affiliate = urldecode($affiliate);
-    $phonestr = urldecode($phonestr);
-    $fio = trim($fio);
-    $lastn = trim($lastn);
+    $phone = urldecode($phone);
+    $name = trim($name);
     $email = trim($email);
-    $phonestr = trim($phonestr);
+    $phone = trim($phone);
     $affiliate = trim($affiliate);
 
-    if ($fio) {
-      $n_lid->name =  $fio;
+    if ($name) {
+      $n_lid->name =  $name;
     } else {
       $n_lid->name = time();
     }
 
-    if ($phonestr) {
-      $n_lid->tel =  $phonestr;
+    if ($phone) {
+      $n_lid->tel =  $phone;
     } else {
       $n_lid->tel = time();
     }
@@ -862,8 +856,8 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
     $n_lid->afilyator = $affiliate;
     $n_lid->provider_id = $f_key->id;
-    $n_lid->user_id = (int) $req['user_id'];
-    $n_lid->office_id = User::where('id', (int) $req['user_id'])->value('office_id');
+    $n_lid->user_id = (int) $data['user_id'];
+    $n_lid->office_id = User::where('id', (int) $data['user_id'])->value('office_id');
 
     $n_lid->created_at = Now();
 
@@ -887,38 +881,38 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     return response($res);
   }
 
-
+  //anew set_zalivjs importLeadJs {'api_key' : 'key', 'phone' : '123', 'namelastname' : 'Axc', 'email' : 'a@a.a', 'otherinfo' : 'otherinfo'}
   public function set_zalivjs(Request $request)
   {
-    $req = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
 
     $n_lid = new Lid;
 
-    if (isset($req['umcfields']['name']) && strlen($req['umcfields']['name']) > 1) {
-      $n_lid->name =  $req['umcfields']['name'];
+    if (isset($data['namelastname']) && strlen($data['namelastname']) > 1) {
+      $n_lid->name =  $data['namelastname'];
     } else {
       $n_lid->name = time();
     }
 
-    if (isset($req['umcfields']['phone']) && strlen($req['umcfields']['phone']) > 1) {
-      $n_lid->tel =  $req['umcfields']['phone'];
+    if (isset($data['phone']) && strlen($data['phone']) > 1) {
+      $n_lid->tel =  $data['phone'];
     } else {
       $n_lid->tel = time();
     }
 
-    if (isset($req['umcfields']['email']) && strlen($req['umcfields']['email']) > 1) {
-      $n_lid->email = $req['umcfields']['email'];
+    if (isset($data['email']) && strlen($data['email']) > 1) {
+      $n_lid->email = $data['email'];
     } else {
       $n_lid->email = time() . '@none.com';
     }
 
-    $n_lid->afilyator = $req['umcfields']['affiliate_user'];
+    $n_lid->afilyator = $data['otherinfo'];
     $n_lid->provider_id = $f_key->id;
-    $n_lid->user_id = $req['user_id'];
-    $n_lid->office_id = User::where('id', (int) $req['user_id'])->value('office_id');
+    $n_lid->user_id = $f_key->user_id;
+    $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
     $n_lid->created_at = Now();
 
     $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
@@ -942,32 +936,32 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     return response($res);
   }
 
-
+  //anew set_zalivDub importLeadDuplicate?api_key=key&namelastname=Asd&phone=123&email=a@a.a&otherinfo=otherinfo
   public function  set_zalivDub(Request $request)
   {
-    $req = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
     // http://91.192.102.34/api/set_zaliv?user_id=152&afilat_id=62&api_key=11e9c0056d4aa76c3c7b946737f089d4&umcfields[email]=$email&umcfields[name]=$fio%20$lastn&umcfields[phone]=$phonestr&umcfields[affiliate_user]=$affiliate
     $n_lid = new Lid;
 
-    if (isset($req['umcfields']['name']) && strlen($req['umcfields']['name']) > 1) {
-      $n_lid->name =  $req['umcfields']['name'];
+    if (isset($data['namelastname']) && strlen($data['namelastname']) > 1) {
+      $n_lid->name =  $data['namelastname'];
     } else {
       $n_lid->name = time();
     }
 
-    if (isset($req['umcfields']['phone']) && strlen($req['umcfields']['phone']) > 1) {
-      $n_lid->tel =  $req['umcfields']['phone'];
+    if (isset($data['phone']) && strlen($data['phone']) > 1) {
+      $n_lid->tel =  $data['phone'];
     } else {
       $n_lid->tel = time();
     }
-    $n_lid->email = $req['umcfields']['email'];
-    $n_lid->afilyator = $req['umcfields']['affiliate_user'];
+    $n_lid->email = $data['email'];
+    $n_lid->afilyator = $data['otherinfo'];
     $n_lid->provider_id = $f_key->id;
-    $n_lid->user_id = $req['user_id'];
-    $n_lid->office_id = User::where('id', (int) $req['user_id'])->value('office_id');
+    $n_lid->user_id = $f_key->user_id;
+    $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
     $n_lid->created_at = Now();
 
     $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
@@ -989,18 +983,20 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     return response($res);
   }
 
+
+  //anew get_zaliv getInfoLeadFtd?api_key=key&lead_id=123
   public function get_zaliv(Request $request)
   {
-    $req = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
-    $sql = "SELECT `lead_id` FROM `imported_leads` WHERE `api_key_id` = '" . $f_key->id . "' AND `lead_id` = '" . $req['lead_id'] . "'";
+    $sql = "SELECT `lead_id` FROM `imported_leads` WHERE `api_key_id` = '" . $f_key->id . "' AND `lead_id` = '" . $data['lead_id'] . "'";
     $res['result'] = 'Error';
     if (DB::select($sql)) {
-      $sql = "SELECT `name` FROM `statuses` WHERE `id` IN ( SELECT `status_id` FROM `lids` WHERE `id` = " . $req['lead_id'] . ")";
+      $sql = "SELECT `name` FROM `statuses` WHERE `id` IN ( SELECT `status_id` FROM `lids` WHERE `id` = " . $data['lead_id'] . ")";
       $lid_status = DB::select($sql);
-      $sql = "SELECT * FROM `lids` WHERE `id` = " . $req['lead_id'] . " LIMIT 1";
+      $sql = "SELECT * FROM `lids` WHERE `id` = " . $data['lead_id'] . " LIMIT 1";
       $lid = DB::select($sql);
       $res['result'] = "success";
       $res['afilateName'] = $lid[0]->afilyator;
@@ -1008,23 +1004,24 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
       $res['email'] = $lid[0]->email;
       $res['phone'] = $lid[0]->tel;
       $res['status'] = $lid_status[0]->name;
-      $res['lead_id'] = $req['lead_id'];
+      $res['lead_id'] = $data['lead_id'];
       $res['ftd'] = 0;
-      if ($req['lead_id'] == 10) $res['ftd'] = 1;
+      if ($data['lead_id'] == 10) $res['ftd'] = 1;
     }
     return response($res);
   }
 
+  //anew get_zaliv_all getLoadedLeads?api_key=key&showDate=y
   public function get_zaliv_all(Request $request)
   {
-    $req = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
     $res['result'] = 'Error';
     $date = '';
-    if (isset($req['date'])) {
-      $date = $req['date'] == 'y' ? ', l.created_at , l.updated_at' : '';
+    if (isset($date['showDate'])) {
+      $date = $date['showDate'] == 'y' ? ', l.created_at , l.updated_at' : '';
     }
 
     $sql = "SELECT l.name,l.tel,l.afilyator,l.status_id,l.email,l.id,s.name statusName " . $date . " FROM `lids` l LEFT JOIN statuses s on (s.id = l.status_id ) where l.`provider_id` = '" . $f_key->id . "'";
@@ -1044,7 +1041,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
           'lead_id' => $lid->id,
           'ftd' => $ftd
         ];
-        if (isset($req['date'])) {
+        if (isset($data['date'])) {
           $a1['datestart'] = $lid->created_at;
           $a1['dateupdate'] = $lid->updated_at;
         }
@@ -1055,6 +1052,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
     return response($res);
   }
 
+  //anew get_zaliv_p getLeadsByPages?api_key=key&increment=1000&page=1&ftd=0|1&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
   public function get_zaliv_p(Request $request)
   {
     /*
@@ -1065,26 +1063,26 @@ increment=1000
 page=7
 ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депозити)
     */
-    $req = $request->all();
-    $f_key =   DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $data = $request->all();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
     $limit = $onlydep = '';
 
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
     $res['result'] = 'Error';
-    if (!isset($req['increment'])) {
-      $req['increment'] = 1000;
+    if (!isset($data['increment'])) {
+      $data['increment'] = 1000;
     }
-    $req['page'] = (int) $req['page'] - 1;
-    if (!isset($req['page']) || ((int) $req['page'] * (int) $req['increment']) == 0) {
-      $limit = ' LIMIT ' .  (int) $req['increment'];
+    $data['page'] = (int) $data['page'] - 1;
+    if (!isset($data['page']) || ((int) $data['page'] * (int) $data['increment']) == 0) {
+      $limit = ' LIMIT ' .  (int) $data['increment'];
     } else {
-      $limit = ' LIMIT ' . (int) $req['increment'] . ' OFFSET ' . (int) $req['page'] * (int) $req['increment'];
+      $limit = ' LIMIT ' . (int) $data['increment'] . ' OFFSET ' . (int) $data['page'] * (int) $data['increment'];
     }
 
-    if (isset($req['ftd']) && $req['ftd'] == 1) {
+    if (isset($data['ftd']) && $data['ftd'] == 1) {
       $onlydep = 'l.status_id = 10 AND ';
     }
-    $sql = "SELECT l.name,l.tel,l.afilyator,l.status_id,l.email,l.id,s.name statusName, l.created_at , l.updated_at FROM `lids` l LEFT JOIN statuses s on (s.id = l.status_id ) where " . $onlydep . " DATE(l.`created_at`) >= '" . $req['startDate'] . "' AND DATE(l.`created_at`) <= '" . $req['stopDate'] . "' AND l.`provider_id` = '" . $f_key->id . "' " . $limit;
+    $sql = "SELECT l.name,l.tel,l.afilyator,l.status_id,l.email,l.id,s.name statusName, l.created_at , l.updated_at FROM `lids` l LEFT JOIN statuses s on (s.id = l.status_id ) where " . $onlydep . " DATE(l.`created_at`) >= '" . $data['from_date'] . "' AND DATE(l.`created_at`) <= '" . $data['to_date'] . "' AND l.`provider_id` = '" . $f_key->id . "' " . $limit;
     $lids = DB::select($sql);
     if ($lids) {
       $res['data'] = [];
@@ -1101,7 +1099,7 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
           'lead_id' => $lid->id,
           'ftd' => $ftd
         ];
-        if (isset($req['startDate'])) {
+        if (isset($data['startDate'])) {
           $a1['datestart'] = $lid->created_at;
           $a1['dateupdate'] = $lid->updated_at;
         }
@@ -1116,16 +1114,17 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
     return response($res);
   }
 
+  //anew get_zaliv_allTime getLiadsOnDates?api_key=key&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
   public function get_zaliv_allTime(Request $request)
   {
     // get_zaliv_allTime?api_key=857193747ca93f651b1f32dcf426ab42&startDate=10.07.2021&endDate=14.01.2022
 
-    $req = $request->all();
+    $data = $request->all();
 
-    $f_key = DB::table('apikeys')->where('api_key', $req['api_key'])->first();
+    $f_key = Provider::where('tel', $data['api_key'])->first();
     if (!$f_key) return response(['status' => 'Key incorect'], 403);
     $res['result'] = 'Error';
-    $sql = "SELECT l.name,l.tel,l.afilyator,l.status_id,l.email,l.id,s.name statusName FROM `lids` l LEFT JOIN statuses s on (s.id = l.status_id ) WHERE DATE(l.`created_at`) >= " . $req['startDate'] . " AND DATE(l.`created_at`) <= " . $req['endDate'] . " AND l.`provider_id` = '" . $f_key->id . "'";
+    $sql = "SELECT l.name,l.tel,l.afilyator,l.status_id,l.email,l.id,s.name statusName FROM `lids` l LEFT JOIN statuses s on (s.id = l.status_id ) WHERE DATE(l.`created_at`) >= " . $data['from_date'] . " AND DATE(l.`created_at`) <= " . $data['to_date'] . " AND l.`provider_id` = '" . $f_key->id . "'";
 
     $lids = DB::select($sql);
     if ($lids) {

@@ -224,10 +224,10 @@ class UsersController extends Controller
     $current_date = $datefrom;
     // write dates
 
-    $repoprt[] =  ['color' => '', 'col' => ['Пользователь', $fio[0]->fio]];
-    $repoprt[] = ['color' => '', 'col' => ['Всего лидов', $all[0]->n]];
-    $row_dates = ['color' => '', 'col' => ['Даты']];
-    $row_added = ['color' => '', 'col' => ['Добавлено']];
+    $repoprt[] =  ['color' => '', 'col' => ['User', $fio[0]->fio]];
+    $repoprt[] = ['color' => '', 'col' => ['Total leads', $all[0]->n]];
+    $row_dates = ['color' => '', 'col' => ['Dates']];
+    $row_added = ['color' => '', 'col' => ['Added']];
     $row_status = [];
     $count_status = 0;
     while (strtotime($current_date) <= strtotime($dateto)) {
@@ -243,7 +243,7 @@ class UsersController extends Controller
     $repoprt[] = $row_dates;
     $repoprt[] = $row_added;
     // Debugbar::info($new);
-    $statuses = DB::select(DB::raw("SELECT id, `name`, color FROM `statuses` WHERE `active` = 1 ORDER BY `order` ASC"));
+    $statuses = DB::select("SELECT id, `name`, color FROM `statuses` WHERE `active` = 1 ORDER BY `order` ASC");
 
     foreach ($statuses as $status) {
       $current_date = $datefrom;
@@ -271,7 +271,7 @@ class UsersController extends Controller
 
     // $role_id = $user->role_id;
     $group_id = $user['group_id'];
-    return User::select(['users.*', DB::raw('(SELECT COUNT(*) FROM lids l WHERE l.user_id = users.id) as hmlids '), DB::raw('(SELECT COUNT(*) FROM lids l WHERE l.user_id = users.id AND `status_id` = 8) as statnew ')])
+    return User::select(['users.*', '(SELECT COUNT(*) FROM lids l WHERE l.user_id = users.id) as hmlids ', '(SELECT COUNT(*) FROM lids l WHERE l.user_id = users.id AND `status_id` = 8) as statnew '])
       //->where('users.role_id', '>', 1)
       ->where('users.active', 1)
       ->when($office_id > 0, function ($query) use ($office_id) {
@@ -289,7 +289,7 @@ class UsersController extends Controller
     $related_users = $request->All();
     if (count($related_users) == 0) return false;
 
-    return User::select(['users.*', DB::raw('(SELECT COUNT(user_id) FROM lids WHERE lids.user_id = users.id) as hmlids ')])
+    return User::select(['users.*', '(SELECT COUNT(user_id) FROM lids WHERE lids.user_id = users.id) as hmlids '])
       ->where('users.role_id', '>', 1)
       ->where('users.active', 1)
       ->whereIn('id', $related_users)
@@ -348,7 +348,7 @@ class UsersController extends Controller
       $getStatuses = Log::select('logs.status_id', 'statuses.name', 'statuses.color')->leftJoin('statuses', 'statuses.id', '=', 'logs.status_id')->where('logs.user_id', $user_id)->where('logs.status_id', '>', 0)->whereDate('logs.created_at', '>=', $date)->orderBy('statuses.order', 'ASC')->get();
       return response($getStatuses);
     }
-    $getDataDay =  DB::select(DB::Raw("SELECT
+    $getDataDay =  DB::select("SELECT
     `id`,
     `fio`,
     (SELECT COUNT(*) FROM `lids`  WHERE `user_id` = u.id) hmlids,
@@ -359,7 +359,7 @@ class UsersController extends Controller
     `group_id`,
     `role_id`
     FROM `users` u
-    WHERE `active` = 1 AND `role_id` > 1 AND `group_id` > 0 ORDER BY `group_id`,`role_id`"));
+    WHERE `active` = 1 AND `role_id` > 1 AND `group_id` > 0 ORDER BY `group_id`,`role_id`");
     return response($getDataDay);
   }
 
@@ -375,7 +375,7 @@ class UsersController extends Controller
   {
     $dateto = date('Y-m-d h:i:s');
     $datefrom = date('Y-m-d h:i:s', strtotime("-30 days"));
-    $getStatuses = Log::select('logs.status_id', 'statuses.name', 'statuses.color', DB::Raw('CAST(logs.created_at as date) as date'))->leftJoin('statuses', 'statuses.id', '=', 'logs.status_id')->where('logs.user_id', $id)->where('logs.status_id', '>', 0)->whereDate('logs.created_at', '>=', $datefrom)->whereDate('logs.created_at', '<=', $dateto)->orderBy('statuses.order', 'ASC')->get();
+    $getStatuses = Log::select('logs.status_id', 'statuses.name', 'statuses.color', 'CAST(logs.created_at as date) as date')->leftJoin('statuses', 'statuses.id', '=', 'logs.status_id')->where('logs.user_id', $id)->where('logs.status_id', '>', 0)->whereDate('logs.created_at', '>=', $datefrom)->whereDate('logs.created_at', '<=', $dateto)->orderBy('statuses.order', 'ASC')->get();
     return $getStatuses;
   }
 
@@ -391,8 +391,8 @@ class UsersController extends Controller
     $respons = [];
     $dateto = date('Y-m-d h:i:s');
     $datefrom = date('Y-m-d h:i:s', strtotime("-30 days"));
-    $respons['callmonth'] = DB::select(DB::Raw("SELECT SUM(COUNT) as count,SUM(duration) as duration FROM `calls` WHERE user_id = $id AND timecall >= '$datefrom' AND timecall <= '$dateto'"));
-    $respons['callday'] = DB::select(DB::Raw("SELECT SUM(COUNT)as count ,SUM(duration) as duration FROM `calls` WHERE user_id = $id AND CAST(timecall as date) = CURDATE()"));
+    $respons['callmonth'] = DB::select("SELECT SUM(COUNT) as count,SUM(duration) as duration FROM `calls` WHERE user_id = $id AND timecall >= '$datefrom' AND timecall <= '$dateto'");
+    $respons['callday'] = DB::select("SELECT SUM(COUNT)as count ,SUM(duration) as duration FROM `calls` WHERE user_id = $id AND CAST(timecall as date) = CURDATE()");
     return $respons;
   }
 

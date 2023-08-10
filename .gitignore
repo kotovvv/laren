@@ -2,3 +2,9 @@
 /storage
 /tests
 /vite.config.js
+/node_modules
+/vendor
+/public/css
+/public/js
+public/mix-manifest.json
+
