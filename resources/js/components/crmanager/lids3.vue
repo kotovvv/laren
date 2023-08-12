@@ -1217,7 +1217,7 @@ export default {
 .wrp_group .img {
   height: 60px;
   width: 60px;
-  background: #7620df;
+  background: #2196f3;
   border-radius: 22px;
   display: flex;
   justify-content: center;
@@ -1233,9 +1233,9 @@ export default {
   width: 34px;
 }
 .v-input--is-label-active .img {
-  border: 1px solid #7620df;
+  border: 1px solid #2196f3;
   background: #fff;
-  color: #7620df;
+  color: #2196f3;
 }
 .wrp__providers {
   display: flex;

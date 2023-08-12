@@ -168,10 +168,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-<<<<<<< HEAD
-        Barryvdh\Debugbar\ServiceProvider::class,
-=======
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
     ])->toArray(),
 
     /*
@@ -187,10 +183,6 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-<<<<<<< HEAD
-        'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
-=======
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
     ])->toArray(),
 
 ];
