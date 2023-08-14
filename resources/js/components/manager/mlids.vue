@@ -79,7 +79,7 @@
               <template v-slot:item="{ item, attrs }">
                 <v-badge
                   :value="attrs['aria-selected'] == 'true'"
-                  color="#7620df"
+                  color="#2196F3"
                   dot
                   left
                 >
@@ -1048,7 +1048,7 @@ export default {
   color: #000;
 }
 .tel.active {
-  color: #7620df;
+  color: #2196f3;
   font-weight: bold;
 }
 #maintable.v-data-table >>> tr {
@@ -1080,7 +1080,7 @@ td .status_wrp {
   font-size: 14px;
 }
 .wrp__statuses input:checked + label {
-  border: 3px solid #7620df;
+  border: 3px solid #2196f3;
   border-radius: 30px;
 }
 .status_wrp span {

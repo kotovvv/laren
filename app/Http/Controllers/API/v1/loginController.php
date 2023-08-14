@@ -10,10 +10,7 @@ use App\Models\Provider;
 use App\Models\User;
 use Session;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
 class loginController extends Controller
 {
   /**
@@ -27,13 +24,9 @@ class loginController extends Controller
   }
   public function login(Request $request)
   {
-<<<<<<< HEAD
 
 
     $provider = Provider::where("name",$request->name)->first();
-=======
-    $provider = Provider::where('name', $request->name)->first();
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
 
     if ($provider && Hash::check($request->password, $provider['password'])) {
       $provider->role_id = 4;
@@ -44,7 +37,6 @@ class loginController extends Controller
     }
     if (Auth::attempt(['name' => $request->name, 'password' => $request->password])) {
       $user                  = Auth::user();
-<<<<<<< HEAD
       if (session()->has('user_id') && session('office_id') === $user['office_id'] && session('user_id') === $user['id'] ) {
         $ses =  'Has session';
       } else {
@@ -52,13 +44,6 @@ class loginController extends Controller
         session(['user_id'=> $user['id']]);
         session(['role_id'=> $user['role_id']]);
 
-=======
-      if (session()->get('office_id') === $user['office_id']) {
-        $ses =  'Has session';
-      } else {
-        session()->put('office_id', $user['office_id']);
-        session()->put('user_id', $user['id']);
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
         $ses =  'Created session';
       }
       return response()->json([

@@ -12,10 +12,6 @@
         "laravel/tinker": "^2.8"
     },
     "require-dev": {
-<<<<<<< HEAD
-        "barryvdh/laravel-debugbar": "^3.8",
-=======
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

@@ -1,49 +1,29 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
-      v-model="drawer"
-      fixed
-      parmament
-      dark
-      :mini-variant="true"
-      width="64px"
-      :app="true"
-    >
-      <!-- menu -->
-      <v-list>
-        <v-subheader></v-subheader>
-        <v-list-item-group v-model="selectedItem" color="primary">
-          <v-list-item
-            v-for="(item, i) in items"
-            :key="i"
-            @click="adminMenu = item.name"
-            :title="item.text"
-          >
-            <div>
-              <v-list-item-icon>
-                <v-icon v-text="item.icon"></v-icon>
-              </v-list-item-icon>
-            </div>
-            <v-list-item-content>
-              <v-list-item-title></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
+    <v-app-bar app>
+      <v-bottom-navigation
+        color="primary"
+        background-color="transparent"
+        :value="adminMenu"
+        style="box-shadow: none"
+      >
+        <v-btn
+          :value="item.name"
+          v-for="(item, i) in items"
+          :key="i"
+          @click="adminMenu = item.name"
+        >
+          <span>{{ item.text }}</span>
 
-        <v-list-item-group class="mt-10">
-          <v-list-item @click="$emit('login', {})" title="Exit">
-            <v-list-item-icon>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-          <v-list-item :title="user.fio">
-            <v-list-item-content>
-              <v-list-item-title>{{ user.fio }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
+          <v-icon>{{ item.icon }}</v-icon>
+        </v-btn>
+      </v-bottom-navigation>
+
+      <v-spacer></v-spacer>
+      <div class="align-center mr-2">{{ userfio }}</div>
+
+      <v-btn @click="$emit('login', {})">Logout</v-btn>
+    </v-app-bar>
 
     <v-main class="">
       <!-- grey lighten-2 -->
