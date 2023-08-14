@@ -46,11 +46,7 @@ Route::get('userlids/{id}', [LidsController::class, 'userLids'])->name('userlids
 Route::post('getLidsPost', [LidsController::class, 'getLidsPost'])->name('getLidsPost');
 Route::post('getLids3', [LidsController::class, 'getLids3'])->name('getLids3');
 Route::post('statuslids', [LidsController::class, 'statusLids'])->name('statuslids');
-<<<<<<< HEAD
 Route::get('GetAllLeadsOnUserId', [LidsController::class, 'GetAllLeadsOnUserId'])->name('GetAllLeadsOnUserId');
-=======
-Route::get('getuserlids/{id}', [LidsController::class, 'getuserLids'])->name('getuserlids');
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
 Route::get('todaylids/{id}', [LidsController::class, 'todaylids'])->name('todaylids');
 Route::delete('provider/{id}', [ProvidersController::class, 'destroy']);
 Route::delete('user/{id}', [UsersController::class, 'deleteuser']);
@@ -66,19 +62,11 @@ Route::post('Lid/newlids', [LidsController::class, 'newlids'])->name('Lid.newlid
 Route::post('Lid/updatelids', [LidsController::class, 'updatelids'])->name('Lid.updatelids');
 Route::post('Lid/searchlids', [LidsController::class, 'searchlids'])->name('Lid.searchlids');
 Route::post('Lid/searchlids3', [LidsController::class, 'searchlids3'])->name('searchlids3');
-<<<<<<< HEAD
 Route::get('getLeadIdOnTelInfo', [LidsController::class, 'getLeadIdOnTelInfo'])->name('getLeadIdOnTelInfo');
 Route::get('getLeadsIdBetweenDates', [LidsController::class, 'getLeadsIdBetweenDates'])->name('getLeadsIdBetweenDates');
 Route::post('getLidsOnDate', [LidsController::class, 'getLidsOnDate'])->name('getLidsOnDate');
 Route::get('getLeadOnId/{id}', [LidsController::class, 'getLeadOnId'])->name('getLeadOnId');
-Route::get('importLead', [LidsController::class, 'importLead'])->name('importLead');
-=======
-Route::get('getlidid', [LidsController::class, 'getlidid'])->name('getlidid');
-Route::get('getlidsontime', [LidsController::class, 'getlidsontime'])->name('getlidsontime');
-Route::post('getLidsOnDate', [LidsController::class, 'getLidsOnDate'])->name('getLidsOnDate');
-Route::get('getlidonid/{id}', [LidsController::class, 'getlidonid'])->name('getlidonid');
-Route::get('set_data', [LidsController::class, 'importlid'])->name('Lid.importlid');
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
+Route::get('importLeadInDb', [LidsController::class, 'importLeadInDb'])->name('importLeadInDb');
 Route::post('Lid/changelidsuser', [LidsController::class, 'changelidsuser'])->name('Lid.changelidsuser');
 Route::post('Lid/ontime', [LidsController::class, 'ontime'])->name('Lid.ontime');
 Route::post('Lid/deletelids', [LidsController::class, 'deletelids'])->name('Lid.deletelids');
@@ -86,7 +74,6 @@ Route::post('log/add', [LogsController::class, 'add'])->name('log.add');
 Route::post('log/tellog', [LogsController::class, 'tellog'])->name('log.tellog');
 Route::get('getlogonid/{id}', [LogsController::class, 'getlogonid'])->name('getlogonid');
 Route::get('StasusesOfId/{id}', [LogsController::class, 'StasusesOfId'])->name('StasusesOfId');
-<<<<<<< HEAD
 Route::get('importLead', [LidsController::class, 'importLead'])->name('importLead');
 Route::post('importLeadPost', [LidsController::class, 'importLeadPost'])->name('importLeadPost');
 Route::get('importLeadJs', [LidsController::class, 'importLeadJs'])->name('importLeadJs');
@@ -99,20 +86,6 @@ Route::post('setDepozit', [LidsController::class, 'setDepozit'])->name('setDepoz
 Route::get('getHmLidsUser/{id}', [LidsController::class, 'getHmLidsUser'])->name('getHmLidsUser');
 Route::get('getInfoLeadDeposit', [LidsController::class, 'getInfoLeadDeposit'])->name('getInfoLeadDeposit');
 Route::get('GetAllProviderLeadsBetweenDates', [LidsController::class, 'GetAllProviderLeadsBetweenDates'])->name('GetAllProviderLeadsBetweenDates');
-=======
-Route::get('set_zaliv', [LidsController::class, 'set_zaliv'])->name('set_zaliv');
-Route::post('set_zaliv_post', [LidsController::class, 'set_zaliv_post'])->name('set_zaliv_post');
-Route::get('set_zalivjs', [LidsController::class, 'set_zalivjs'])->name('set_zalivjs');
-Route::get('set_zalivDub', [LidsController::class, 'set_zalivDub'])->name('set_zalivDub');
-Route::get('get_zaliv', [LidsController::class, 'get_zaliv'])->name('get_zaliv');
-Route::get('get_zaliv_all', [LidsController::class, 'get_zaliv_all'])->name('get_zaliv_all');
-Route::get('get_zaliv_p', [LidsController::class, 'get_zaliv_p'])->name('get_zaliv_p');
-Route::get('get_zaliv_allTime', [LidsController::class, 'get_zaliv_allTime'])->name('get_zaliv_allTime');
-Route::post('setDepozit', [LidsController::class, 'setDepozit'])->name('setDepozit');
-Route::get('getHmLidsUser/{id}', [LidsController::class, 'getHmLidsUser'])->name('getHmLidsUser');
-Route::get('InfoDeposit', [LidsController::class, 'InfoDeposit'])->name('InfoDeposit');
-Route::get('AllDeposits', [LidsController::class, 'AllDeposits'])->name('AllDeposits');
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
 Route::post('getBTC', [LidsController::class, 'getBTC'])->name('getBTC');
 Route::post('qtytel', [LidsController::class, 'qtytel'])->name('qtytel');
 
@@ -134,8 +107,4 @@ Route::post('provider_importlid', [LidsController::class, 'provider_importlid'])
 Route::post('checkEmails', [LidsController::class, 'checkEmails']);
 Route::post('getlidsImportedProvider', [LidsController::class, 'getlidsImportedProvider']);
 Route::get('onCdr', [LogsController::class, 'onCdr']);
-<<<<<<< HEAD
 Route::post('getCalls', [LogsController::class, 'getCalls']);
-=======
-Route::post('getCalls', [LogsController::class, 'getCalls']);
->>>>>>> b71e0b8ed3a67110e14c90f9c973ed805ea1835b
