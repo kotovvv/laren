@@ -105,7 +105,7 @@
             <template v-slot:item="{ item, attrs }">
               <v-badge
                 :value="attrs['aria-selected'] == 'true'"
-                color="#7620df"
+                color="#2196f3"
                 dot
                 left
               >
@@ -143,7 +143,7 @@
             <template v-slot:item="{ item, attrs }">
               <v-badge
                 :value="attrs['aria-selected'] == 'true'"
-                color="#7620df"
+                color="#2196f3"
                 dot
                 left
               >
@@ -1244,7 +1244,7 @@ export default {
 .provider_wrp {
   display: flex;
   align-items: center;
-  box-shadow: 0px 0px 9.5px 0.5px rgba(118, 32, 223, 0.2);
+  box-shadow: 0px 0px 9.5px 0.5px rgba(61, 95, 110, 0.2);
   border-radius: 30px;
   padding: 3px 5px;
 }

@@ -805,7 +805,7 @@ export default {
   border: 3px solid transparent;
 }
 .wrp__statuses input:checked + label {
-  border: 3px solid #7620df;
+  border: 3px solid #2196f3;
   border-radius: 30px;
 }
 .status_wrp span {
