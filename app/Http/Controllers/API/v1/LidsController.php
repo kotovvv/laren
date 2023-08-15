@@ -49,8 +49,8 @@ class LidsController extends Controller
   }
 
 
-  //anew  importlid => importLead?api_key=key&phone=123&namelastname=Axc&email=a@a.a&otherinfo=otherinfo
-  public function importlid(Request $request)
+  //anew  importlid => importLeadInDb?api_key=key&phone=123&namelastname=Axc&email=a@a.a&otherinfo=otherinfo
+  public function importLeadInDb(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -558,7 +558,7 @@ class LidsController extends Controller
   }
 
   //anew InfoDeposit => getInfoLeadDeposit?api_key=key&id=leadId
-  public function InfoDeposit(Request $request)
+  public function getInfoLeadDeposit(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -579,7 +579,7 @@ class LidsController extends Controller
   }
 
   //anew AllDeposits GetAllProviderLeadsBetweenDates?api_key=key&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
-  public function AllDeposits(Request $request)
+  public function GetAllProviderLeadsBetweenDates(Request $request)
   {
     $data = $request->all();
 
@@ -614,7 +614,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
 
   //anew getuserLids GetAllLeadsOnUserId?api_key=key
-  public function getuserLids(Request $request, $id)
+  public function GetAllLeadsOnUserId(Request $request, $id)
   {
     $data = $request->all();
 
@@ -625,7 +625,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
 
   //anew getlidid getLeadIdOnTelInfo?api_key=key&phone=123&otherinfo=otherinfo
-  public function getlidid(Request $request)
+  public function getLeadIdOnTelInfo(Request $request)
   {
 
     $data = $request->all();
@@ -640,7 +640,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew getlidsontime getLeadsIdBetweenDates?api_key=key&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
-  public function getlidsontime(Request $request)
+  public function getLeadsIdBetweenDates(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -689,7 +689,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew getlidonid getLeadOnId?api_key=key&lead_id=123
-  public function getlidonid(Request $request)
+  public function getLeadOnId(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -752,7 +752,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew set_zaliv importLead?api_key=key&namelastname=Asd&phone=123&email=a@a.a&otherinfo=otherinfo
-  public function set_zaliv(Request $request)
+  public function importLead(Request $request)
   {
     $data = $request->all();
 
@@ -810,7 +810,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew set_zaliv_post importLeadPost ['api_key' => 'key', 'phone' => '123', 'namelastname' => 'Axc', 'email' => 'a@a.a', 'otherinfo' => 'otherinfo']
-  public function set_zaliv_post(Request $request)
+  public function importLeadPost(Request $request)
   {
     $data = $request->all();
 
@@ -882,7 +882,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew set_zalivjs importLeadJs {'api_key' : 'key', 'phone' : '123', 'namelastname' : 'Axc', 'email' : 'a@a.a', 'otherinfo' : 'otherinfo'}
-  public function set_zalivjs(Request $request)
+  public function importLeadJs(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -937,7 +937,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew set_zalivDub importLeadDuplicate?api_key=key&namelastname=Asd&phone=123&email=a@a.a&otherinfo=otherinfo
-  public function  set_zalivDub(Request $request)
+  public function  importLeadDuplicate(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -985,7 +985,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
 
   //anew get_zaliv getInfoLeadFtd?api_key=key&lead_id=123
-  public function get_zaliv(Request $request)
+  public function getInfoLeadFtd(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -1012,7 +1012,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew get_zaliv_all getLoadedLeads?api_key=key&showDate=y
-  public function get_zaliv_all(Request $request)
+  public function getLoadedLeads(Request $request)
   {
     $data = $request->all();
     $f_key = Provider::where('tel', $data['api_key'])->first();
@@ -1053,7 +1053,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
   }
 
   //anew get_zaliv_p getLeadsByPages?api_key=key&increment=1000&page=1&ftd=0|1&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
-  public function get_zaliv_p(Request $request)
+  public function getLeadsByPages(Request $request)
   {
     /*
 api_key=11e9c0056d4aa76c3c7b946737f089d4
@@ -1115,7 +1115,7 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
   }
 
   //anew get_zaliv_allTime getLiadsOnDates?api_key=key&from_date=YYYY-MM-DD&to_date=YYYY-MM-DD
-  public function get_zaliv_allTime(Request $request)
+  public function getLiadsOnDates(Request $request)
   {
     // get_zaliv_allTime?api_key=857193747ca93f651b1f32dcf426ab42&startDate=10.07.2021&endDate=14.01.2022
 

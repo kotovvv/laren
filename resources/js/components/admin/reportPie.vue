@@ -106,7 +106,7 @@
             <template v-slot:item="{ item, attrs }">
               <v-badge
                 :value="attrs['aria-selected'] == 'true'"
-                color="#7620df"
+                color="#2196f3"
                 dot
                 left
               >
@@ -144,7 +144,7 @@
             <template v-slot:item="{ item, attrs }">
               <v-badge
                 :value="attrs['aria-selected'] == 'true'"
-                color="#7620df"
+                color="#2196f3"
                 dot
                 left
               >

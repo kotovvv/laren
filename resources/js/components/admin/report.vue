@@ -5,7 +5,7 @@
         <v-progress-linear
           :active="loading"
           :indeterminate="loading"
-          color="deep-purple accent-4"
+          color="blue accent-4"
         ></v-progress-linear>
         <!-- <v-card class="pa-5 w-100"> -->
         <v-expansion-panels>
