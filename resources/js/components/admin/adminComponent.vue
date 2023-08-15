@@ -20,7 +20,7 @@
       </v-bottom-navigation>
 
       <v-spacer></v-spacer>
-      <div class="align-center mr-2">{{ userfio }}</div>
+      <div class="align-center mr-2">{{ $props.user.fio }}</div>
 
       <v-btn @click="$emit('login', {})">Logout</v-btn>
     </v-app-bar>
@@ -45,8 +45,7 @@ const statusLid = () => import("./statusLid");
 // const workPlaces = () => import("./workPlaces");
 const providers = () => import("./providers");
 const mlids = () => import("../manager/mlids");
-const lids = () => import("../crmanager/lids");
-const lidsplus = () => import("../crmanager/lidsplus");
+
 const calls = () => import("../crmanager/calls");
 const lids3 = () => import("../crmanager/lids3");
 const report = () => import("./report");
@@ -76,9 +75,8 @@ export default {
         name: "providers",
         icon: "mdi-library",
       },
-      { text: "Distribution", name: "lids", icon: "mdi-account-arrow-left" },
-      { text: "Distribution2", name: "lidsplus", icon: "mdi-filter-outline" },
-      { text: "Distribution3", name: "lids3", icon: "mdi-sitemap" },
+
+      { text: "Distribution", name: "lids3", icon: "mdi-sitemap" },
       { text: "Calls", name: "calls", icon: "mdi-headset-dock" },
       { text: "Management", name: "mlids", icon: "mdi-phone-log-outline" },
       { text: "Report", name: "report", icon: "mdi-receipt" },
@@ -95,8 +93,6 @@ export default {
       // if (this.adminMenu == "workPlaces") return workPlaces;
       if (this.adminMenu == "providers") return providers;
       if (this.adminMenu == "mlids") return mlids;
-      if (this.adminMenu == "lids") return lids;
-      if (this.adminMenu == "lidsplus") return lidsplus;
       if (this.adminMenu == "lids3") return lids3;
       if (this.adminMenu == "calls") return calls;
       if (this.adminMenu == "report") return report;
