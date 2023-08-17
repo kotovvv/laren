@@ -859,8 +859,8 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $n_lid->afilyator = $affiliate;
         $n_lid->provider_id = $f_key->id;
-        $n_lid->user_id = (int) $data['user_id'];
-        $n_lid->office_id = User::where('id', (int) $data['user_id'])->value('office_id');
+        $n_lid->user_id = $f_key->user_id;
+        $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
 
         $n_lid->created_at = Now();
 
