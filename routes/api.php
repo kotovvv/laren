@@ -65,7 +65,7 @@ Route::post('Lid/searchlids3', [LidsController::class, 'searchlids3'])->name('se
 Route::get('getLeadIdOnTelInfo', [LidsController::class, 'getLeadIdOnTelInfo'])->name('getLeadIdOnTelInfo');
 Route::get('getLeadsIdBetweenDates', [LidsController::class, 'getLeadsIdBetweenDates'])->name('getLeadsIdBetweenDates');
 Route::post('getLidsOnDate', [LidsController::class, 'getLidsOnDate'])->name('getLidsOnDate');
-Route::get('getLeadOnId/{id}', [LidsController::class, 'getLeadOnId'])->name('getLeadOnId');
+Route::get('getLeadOnId', [LidsController::class, 'getLeadOnId'])->name('getLeadOnId');
 Route::get('importLeadInDb', [LidsController::class, 'importLeadInDb'])->name('importLeadInDb');
 Route::post('Lid/changelidsuser', [LidsController::class, 'changelidsuser'])->name('Lid.changelidsuser');
 Route::post('Lid/ontime', [LidsController::class, 'ontime'])->name('Lid.ontime');
