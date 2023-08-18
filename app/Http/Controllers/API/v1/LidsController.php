@@ -151,7 +151,7 @@ class LidsController extends Controller
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
                 ->when($limit != 'all' && $page*$limit > $limit, function ($query) use ($limit, $page) {
                     return $query->offset($limit * $page);})
-                ->when($limit != 'all' && $page*$limit <=0, function ($query) use ($limit, $page) {
+                ->when($limit != 'all' && $page*$limit <=0, function ($query) use ($limit) {
                     return $query
                         ->limit($limit);
                 })
@@ -175,7 +175,7 @@ class LidsController extends Controller
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
                 ->when($limit != 'all' && $page*$limit > $limit, function ($query) use ($limit, $page) {
                     return $query->offset($limit * $page);})
-                ->when($limit != 'all' && $page*$limit <=0, function ($query) use ($limit, $page) {
+                ->when($limit != 'all' && $page*$limit <=0, function ($query) use ($limit) {
                     return $query->limit($limit);
                 })
                 ->get();
@@ -395,7 +395,7 @@ class LidsController extends Controller
                 $limit != 'all' && $page * $limit > $limit,
                 function ($query) use ($limit, $page) {
                     return $query->offset($limit * $page);})
-                        ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit, $page) {
+                        ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
                             return $query
                                 ->limit($limit);
                         })
@@ -501,7 +501,7 @@ class LidsController extends Controller
                 $limit != 'all' && $page * $limit > $limit,
                 function ($query) use ($limit, $page) {
                     return $query->offset($limit * $page);})
-                        ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit, $page) {
+                        ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
                             return $query
                                 ->limit($limit);
                         })
