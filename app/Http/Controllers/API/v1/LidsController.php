@@ -149,8 +149,10 @@ class LidsController extends Controller
             $response['hm'] = $q_leads->count();
 
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
-                ->when($limit != 'all', function ($query) use ($limit, $page) {
-                    return $query->offset($limit * ($page - 1))
+                ->when($limit != 'all' && $page*$limit > $limit, function ($query) use ($limit, $page) {
+                    return $query->offset($limit * $page);})
+                ->when($limit != 'all' && $page*$limit <=0, function ($query) use ($limit, $page) {
+                    return $query
                         ->limit($limit);
                 })
                 ->get();
@@ -171,13 +173,11 @@ class LidsController extends Controller
             $response['hm'] = $q_leads->count();
 
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
-                ->when(
-                    $limit != 'all',
-                    function ($query) use ($limit, $page) {
-                        return $query->offset($limit * ($page - 1))
-                            ->limit($limit);
-                    }
-                )
+                ->when($limit != 'all' && $page*$limit > $limit, function ($query) use ($limit, $page) {
+                    return $query->offset($limit * $page);})
+                ->when($limit != 'all' && $page*$limit <=0, function ($query) use ($limit, $page) {
+                    return $query->limit($limit);
+                })
                 ->get();
             return response($response);
         }
@@ -392,12 +392,13 @@ class LidsController extends Controller
 
         $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
             ->when(
-                $limit != 'all',
+                $limit != 'all' && $page * $limit > $limit,
                 function ($query) use ($limit, $page) {
-                    return $query->offset($limit * ($page - 1))
-                        ->limit($limit);
-                }
-            )
+                    return $query->offset($limit * $page);})
+                        ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit, $page) {
+                            return $query
+                                ->limit($limit);
+                        })
             ->get();
 
         return response($response);
@@ -497,12 +498,13 @@ class LidsController extends Controller
 
         $response['lids'] = $q_leads
             ->when(
-                $limit != 'all',
+                $limit != 'all' && $page * $limit > $limit,
                 function ($query) use ($limit, $page) {
-                    return $query->offset($limit * ($page - 1))
-                        ->limit($limit);
-                }
-            )
+                    return $query->offset($limit * $page);})
+                        ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit, $page) {
+                            return $query
+                                ->limit($limit);
+                        })
             ->get();
 
         if ($page == 0) {
@@ -1075,11 +1077,11 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
         if (!isset($data['increment'])) {
             $data['increment'] = 1000;
         }
-        $data['page'] = (int) $data['page'] - 1;
-        if (!isset($data['page']) || ((int) $data['page'] * (int) $data['increment']) == 0) {
+        if (!isset($data['page']) || ((int) $data['page'] * (int) $data['increment']) <= 0) {
             $limit = ' LIMIT ' .  (int) $data['increment'];
         } else {
-            $limit = ' LIMIT ' . (int) $data['increment'] . ' OFFSET ' . abs((int) $data['page'] * (int) $data['increment']);
+            $data['page'] = (int) $data['page'] - 1;
+            $limit = ' LIMIT ' . (int) $data['increment'] . ' OFFSET ' . (int) $data['page'] * (int) $data['increment'];
         }
 
         if (isset($data['ftd']) && $data['ftd'] == 1) {
