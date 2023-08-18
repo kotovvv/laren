@@ -859,8 +859,8 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $n_lid->afilyator = $affiliate;
         $n_lid->provider_id = $f_key->id;
-        $n_lid->user_id = (int) $data['user_id'];
-        $n_lid->office_id = User::where('id', (int) $data['user_id'])->value('office_id');
+        $n_lid->user_id = $f_key->user_id;
+        $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
 
         $n_lid->created_at = Now();
 
@@ -1079,7 +1079,7 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
         if (!isset($data['page']) || ((int) $data['page'] * (int) $data['increment']) == 0) {
             $limit = ' LIMIT ' .  (int) $data['increment'];
         } else {
-            $limit = ' LIMIT ' . (int) $data['increment'] . ' OFFSET ' . (int) $data['page'] * (int) $data['increment'];
+            $limit = ' LIMIT ' . (int) $data['increment'] . ' OFFSET ' . abs((int) $data['page'] * (int) $data['increment']);
         }
 
         if (isset($data['ftd']) && $data['ftd'] == 1) {
