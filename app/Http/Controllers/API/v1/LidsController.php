@@ -152,9 +152,8 @@ class LidsController extends Controller
                 ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
                     return $query->offset($limit * $page);
                 })
-                ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
-                    return $query
-                        ->limit($limit);
+                ->when($limit != 'all', function ($query) use ($limit) {
+                    return $query->limit($limit);
                 })
                 ->get();
 
@@ -177,7 +176,7 @@ class LidsController extends Controller
                 ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
                     return $query->offset($limit * $page);
                 })
-                ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
+                ->when($limit != 'all', function ($query) use ($limit) {
                     return $query->limit($limit);
                 })
                 ->get();
@@ -393,15 +392,11 @@ class LidsController extends Controller
         $response['hm'] = $q_leads->count();
 
         $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
-            ->when(
-                $limit != 'all' && $page * $limit > $limit,
-                function ($query) use ($limit, $page) {
-                    return $query->offset($limit * $page);
-                }
-            )
-            ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
-                return $query
-                    ->limit($limit);
+            ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
+                return $query->offset($limit * $page);
+            })
+            ->when($limit != 'all', function ($query) use ($limit) {
+                return $query->limit($limit);
             })
             ->get();
 
@@ -501,15 +496,11 @@ class LidsController extends Controller
         $response['hm'] = $q_leads->count();
 
         $response['lids'] = $q_leads
-            ->when(
-                $limit != 'all' && $page * $limit > $limit,
-                function ($query) use ($limit, $page) {
-                    return $query->offset($limit * $page);
-                }
-            )
-            ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
-                return $query
-                    ->limit($limit);
+            ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
+                return $query->offset($limit * $page);
+            })
+            ->when($limit != 'all', function ($query) use ($limit) {
+                return $query->limit($limit);
             })
             ->get();
 
