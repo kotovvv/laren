@@ -184,7 +184,10 @@
             item-value="id"
             outlined
             rounded
-            @change="getPage(0)"
+                    @change="
+              getUsers();
+              getPage(0);
+            "
           >
           </v-select>
         </v-col>
@@ -306,8 +309,8 @@
                   <v-row>
                     <v-checkbox
                       v-model="filterGroups"
-                      v-for="(groupa, index) in group"
-                      :key="index"
+                      v-for="groupa in group"
+                      :key="groupa.id"
                       :value="groupa.id"
                       :hide-details="true"
                       @change="getLids3"
@@ -677,7 +680,13 @@ export default {
       }
     },
     getProviderName(i) {
-      return this.providers.find((el) => el.id == i).name;
+     let name = "NA";
+      try {
+        name = this.providers.find((el) => el.id == i).name;
+      } catch (error) {
+        console.error(error);
+      }
+      return name;
     },
     changeFilterProviders(el) {
       this.filterProviders = this.filterProviders.filter((i) => i != el);
@@ -1029,6 +1038,7 @@ export default {
               order,
               statnew,
               pic,
+   office_id,
             }) => ({
               name,
               id,
@@ -1039,8 +1049,14 @@ export default {
               group_id,
               order,
               statnew,
+ office_id,
             })
           );
+          if (self.$props.user.role_id == 1 && self.filterOffices > 0) {
+            self.users = self.users.filter(
+              (f) => f.office_id == self.filterOffices
+            );
+          }
           if (self.$props.user.role_id != 1) {
             self.users = self.users.filter(
               (f) => f.group_id == self.$props.user.group_id
