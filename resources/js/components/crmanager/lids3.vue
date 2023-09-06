@@ -1043,8 +1043,11 @@ export default {
               order,
               statnew,
               pic,
+<<<<<<< HEAD
               inp,
               cb,
+=======
+>>>>>>> 4956156ecc48c96e4a1eeb34d7ecfc0ece1f4420
    office_id,
             }) => ({
               name,
@@ -1056,8 +1059,11 @@ export default {
               group_id,
               order,
               statnew,
+<<<<<<< HEAD
               inp,
               cb,
+=======
+>>>>>>> 4956156ecc48c96e4a1eeb34d7ecfc0ece1f4420
  office_id,
             })
           );
