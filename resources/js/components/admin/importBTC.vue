@@ -9,8 +9,8 @@
       </template>
     </v-snackbar>
     <v-container>
-      <v-row class="mb-5">
-        <v-col cols="3">
+      <v-row class="mb-5 align-center">
+        <v-col cols="2">
           <v-select
             v-model="selectOffice"
             :items="offices"
@@ -19,17 +19,9 @@
             outlined
             rounded
           >
-            <template v-slot:selection="{ item, index }">
-              <v-chip v-if="index === 0">
-                <span>{{ item.name }}</span>
-              </v-chip>
-              <span v-if="index === 1" class="grey--text text-caption">
-                (+{{ filterOffices.length - 1 }} )
-              </span>
-            </template>
           </v-select>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="2">
           <v-file-input
             v-model="files"
             ref="fileupload"
@@ -39,13 +31,10 @@
             @change="onFileChange"
           ></v-file-input>
         </v-col>
-      </v-row>
-      <v-progress-linear
-        :active="loading"
-        :indeterminate="loading"
-        color="deep-purple accent-4"
-      ></v-progress-linear>
-      <v-row>
+
+        <v-col cols="2"
+          ><h2>Free: {{ count_free }}</h2>
+        </v-col>
         <v-col cols="6">
           <v-row>
             <v-col>
@@ -123,6 +112,7 @@
                 outlined
                 rounded
                 multiple
+                @change="set_count_free"
               >
                 <template v-slot:selection="{ item, index }">
                   <v-chip v-if="index === 0">
@@ -137,23 +127,44 @@
           </v-row>
         </v-col>
       </v-row>
+      <v-progress-linear
+        :active="loading"
+        :indeterminate="loading"
+        color="deep-purple accent-4"
+      ></v-progress-linear>
     </v-container>
     <v-row>
       <v-col cols="12">
         <v-data-table
-          id="tablids"
+          id="tabtc"
           :headers="headers"
           item-key="id"
           :items="filteredItems"
-          ref="datatable"
-          :footer-props="{
-            'items-per-page-options': [],
-            'items-per-page-text': '',
-          }"
-          :disable-items-per-page="true"
+          :items-per-page="50"
+          :disable-pagination="true"
           :loading="loading"
           loading-text="Uploading... Stand by."
         >
+          <template
+            v-slot:top="{ pagination, options, updateOptions }"
+          :footer-props="{
+              'items-per-page-options': [50, 10, 100, 250, 500, -1],
+            'items-per-page-text': '',
+          }"
+        >
+            <v-row>
+              <!-- <v-spacer></v-spacer> -->
+              <v-col cols="3" class="mt-3">
+                <v-data-footer
+                  :pagination="pagination"
+                  :options="options"
+                  @update:options="updateOptions"
+                  :items-per-page-options="[50, 10, 100, 250, 500, -1]"
+                  :items-per-page-text="''"
+                />
+              </v-col>
+            </v-row>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -188,13 +199,16 @@ export default {
         .substring(0, 10),
       datetimeTo: new Date().toISOString().substring(0, 10),
       btc: [],
+      free: [],
       offices: [],
       filterOffices: [],
       selectOffice: "",
+      count_free: 0,
     };
   },
   mounted() {
     this.getOffices();
+    this.getBTCsOnDate();
   },
   computed: {
     filteredItems() {
@@ -206,6 +220,19 @@ export default {
     },
   },
   methods: {
+    set_count_free() {
+      if (this.filterOffices.length == 0) {
+        this.count_free = this.free.reduce((ak, el) => ak + el.count, 0);
+      } else {
+        this.count_free = this.free.reduce((ak, el) => {
+          if (this.filterOffices.includes(el.office_id)) {
+            return ak + el.count;
+          } else {
+            return ak + 0;
+          }
+        }, 0);
+      }
+    },
     getOffices() {
       let self = this;
 
@@ -251,16 +278,18 @@ export default {
     },
     getBTCsOnDate() {
       let self = this;
-      this.loading = true;
       let data = {};
-      data.datefrom = this.getLocalDateTime(this.datetimeFrom);
-      data.dateto = this.getLocalDateTime(this.datetimeTo);
+      self.loading = true;
+      data.datefrom = this.getLocalDateTime(self.datetimeFrom);
+      data.dateto = this.getLocalDateTime(self.datetimeTo);
 
       axios
         .post("/api/getBTCsOnDate", data)
         .then(function (response) {
-          self.btc = response.data;
+          self.btc = response.data.list;
+          self.free = response.data.free;
           self.loading = false;
+          self.set_count_free();
         })
         .catch(function (error) {
           console.log(error);

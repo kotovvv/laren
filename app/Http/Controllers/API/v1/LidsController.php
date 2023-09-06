@@ -150,11 +150,10 @@ class LidsController extends Controller
 
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
                 ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
-                    return $query->offset($limit * $page);
+                    return $query->offset($limit * ($page-1));
                 })
-                ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
-                    return $query
-                        ->limit($limit);
+                ->when($limit != 'all', function ($query) use ($limit) {
+                    return $query->limit($limit);
                 })
                 ->get();
 
@@ -175,9 +174,9 @@ class LidsController extends Controller
 
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
                 ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
-                    return $query->offset($limit * $page);
+                    return $query->offset($limit * ($page-1));
                 })
-                ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
+                ->when($limit != 'all', function ($query) use ($limit) {
                     return $query->limit($limit);
                 })
                 ->get();
@@ -393,15 +392,11 @@ class LidsController extends Controller
         $response['hm'] = $q_leads->count();
 
         $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
-            ->when(
-                $limit != 'all' && $page * $limit > $limit,
-                function ($query) use ($limit, $page) {
-                    return $query->offset($limit * $page);
-                }
-            )
-            ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
-                return $query
-                    ->limit($limit);
+            ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
+        return $query->offset($limit * ($page - 1));
+            })
+            ->when($limit != 'all', function ($query) use ($limit) {
+                return $query->limit($limit);
             })
             ->get();
 
@@ -450,10 +445,6 @@ class LidsController extends Controller
                 }
             }
         }
-        // if (isset($data['sortBy'])) {
-        //   // "afilyator", "provider", "date_created", "date_updated"
-        //   $data['sortBy'][1] = $data['sortBy'][1] === true ? 'DESC' : 'ASC';
-        // }
 
 
         $response = [];
@@ -501,15 +492,12 @@ class LidsController extends Controller
         $response['hm'] = $q_leads->count();
 
         $response['lids'] = $q_leads
-            ->when(
-                $limit != 'all' && $page * $limit > $limit,
-                function ($query) use ($limit, $page) {
-                    return $query->offset($limit * $page);
-                }
-            )
-            ->when($limit != 'all' && $page * $limit <= 0, function ($query) use ($limit) {
-                return $query
-                    ->limit($limit);
+            ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
+
+                return $query->offset($limit * ($page - 1));
+            })
+            ->when($limit != 'all', function ($query) use ($limit) {
+                return $query->limit($limit);
             })
             ->get();
 
@@ -547,8 +535,8 @@ class LidsController extends Controller
         if ($office_id > 0) {
             $adnwhere = " AND office_id = $office_id AND provider_id in (" . implode(',', $a_providers) . ") ";
         }
-        $sql = "SELECT DISTINCT `lids`.*, '(SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id` depozit)' FROM `lids`  WHERE `lids`.`user_id` = " . (int) $id . $adnwhere . " ORDER BY `lids`.`created_at` DESC";
-        return DB::select($sql);
+    $sql = "SELECT DISTINCT `lids`.*, (SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit FROM `lids`  WHERE `lids`.`user_id` = " . (int) $id . $adnwhere . " ORDER BY `lids`.`updated_at` DESC";
+    return DB::select(DB::raw($sql));
     }
 
     public function statusLids(Request $request)
@@ -653,7 +641,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         $data = $request->all();
         $f_key = Provider::where('tel', $data['api_key'])->first();
         if (!$f_key) return response(['status' => 'Key incorect'], 403);
-        return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$data['from_date'] . ' 00:00:00', $data['to_date'] . ' 23:59:59'])->get();
+    return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$req['start'], $req['end']])->get();
     }
 
     public function getlidsImportedProvider(Request $request)
@@ -798,18 +786,6 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $n_lid->created_at = Now();
 
-        $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
-
-        if (!$f_lid->isEmpty() &&  $n_lid->provider_id != '76') {
-
-            $n_lid->afilyator = $f_key->name;
-            $n_lid->provider_id = 75;
-            $n_lid->user_id = 252;
-            $n_lid->office_id = User::where('id', 252)->value('office_id');
-            $n_lid->save();
-            return response('duplicate');
-        }
-
         $n_lid->save();
         $id = $n_lid->id;
         $insert = DB::table('imported_leads')->insert(['lead_id' => $id, 'api_key_id' => $f_key->id, 'upload_time' => Now()]);
@@ -872,15 +848,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $n_lid->created_at = Now();
 
-        $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
-        if (!$f_lid->isEmpty() &&  $n_lid->provider_id != '76') {
-            //  $name = Provider::find($f_key->id)->value('name');
-            $n_lid->afilyator = $f_key->name;
-            $n_lid->provider_id = 75;
-            $n_lid->user_id = 252;
-            $n_lid->save();
-            return response('duplicate');
-        }
+
         $n_lid->save();
         $id = $n_lid->id;
         $insert = DB::table('imported_leads')->insert(['lead_id' => $id, 'api_key_id' => $f_key->id, 'upload_time' => Now()]);
@@ -926,16 +894,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
         $n_lid->created_at = Now();
 
-        $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
-        if (!$f_lid->isEmpty() &&  $n_lid->provider_id != '76') {
-            //  $name = Provider::find($f_key->id)->value('name');
-            $n_lid->afilyator = $f_key->name;
-            $n_lid->provider_id = 75;
-            $n_lid->user_id = 252;
-            $n_lid->save();
-            $res['status'] = 'duplicate';
-            return response($res);
-        }
+
         $n_lid->save();
         $id = $n_lid->id;
         $insert = DB::table('imported_leads')->insert(['lead_id' => $id, 'api_key_id' => $f_key->id, 'upload_time' => Now()]);
@@ -1139,7 +1098,6 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
 
         $lids = DB::select($sql);
         if ($lids) {
-
             $res['data'] = [];
             $res['result'] = "success";
             $res['rows'] = 0;
@@ -1156,8 +1114,6 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
                 ];
                 $res['rows']++;
             }
-        } else {
-            $res['result'] = 'No leads';
         }
         return response($res);
     }

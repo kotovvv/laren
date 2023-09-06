@@ -37,13 +37,11 @@ class loginController extends Controller
     }
     if (Auth::attempt(['name' => $request->name, 'password' => $request->password])) {
       $user                  = Auth::user();
-      if (session()->has('user_id') && session('office_id') === $user['office_id'] && session('user_id') === $user['id'] ) {
+      if (session()->get('office_id') === $user['office_id']) {
         $ses =  'Has session';
       } else {
-        session(['office_id' => $user['office_id']]);
-        session(['user_id'=> $user['id']]);
-        session(['role_id'=> $user['role_id']]);
-
+        session()->put('office_id', $user['office_id']);
+        session()->put('user_id', $user['id']);
         $ses =  'Created session';
       }
       return response()->json([

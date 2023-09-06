@@ -394,8 +394,8 @@ export default {
       let data = {};
       data.emails = vm.list_email
         .replace(/[\r]/gm, "")
-        .split("\n")
-        .filter((n) => n);
+        .replaceAll(" ", "")
+        .split("\n");
       data.check = 1;
       data.email_tel = vm.email_tel;
       axios

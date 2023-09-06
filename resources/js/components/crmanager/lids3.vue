@@ -184,7 +184,10 @@
             item-value="id"
             outlined
             rounded
-            @change="getPage(0)"
+                    @change="
+              getUsers();
+              getPage(0);
+            "
           >
           </v-select>
         </v-col>
@@ -306,8 +309,8 @@
                   <v-row>
                     <v-checkbox
                       v-model="filterGroups"
-                      v-for="(groupa, index) in group"
-                      :key="index"
+                      v-for="groupa in group"
+                      :key="groupa.id"
                       :value="groupa.id"
                       :hide-details="true"
                       @change="getLids3"
@@ -317,8 +320,6 @@
                       </template>
                     </v-checkbox>
                   </v-row>
-                </v-col>
-                <v-col cols="3" class="mt--3">
                   <v-row class="align-center">
                     <h5 class="mb-0">All:{{ hm }}</h5>
                     <v-pagination
@@ -326,9 +327,11 @@
                       class="my--4"
                       :length="parseInt(hm / limit) + 1"
                       @input="getPage()"
-                      total-visible="5"
+                      total-visible="10"
                     ></v-pagination>
                   </v-row>
+                </v-col>
+                <v-col cols="3" class="mt--3">
                   <v-row>
                     <v-select
                       v-model="limit"
@@ -469,9 +472,15 @@
                           :disabled="disableuser == user.id"
                           >{{ user.hmlids }}</v-btn
                         >
-                        <v-chip v-if="user.statnew" label small>
+                        <v-btn data="new" v-if="user.statnew" label small>
                           {{ user.statnew }}
-                        </v-chip>
+                        </v-btn>
+                        <v-btn data="inp" v-if="user.inp" label small>
+                          {{ user.inp }}
+                        </v-btn>
+                        <v-btn data="cb" v-if="user.cb" label small>
+                          {{ user.cb }}
+                        </v-btn>
                       </v-row>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
@@ -553,7 +562,7 @@ export default {
     Statuses: [],
     hmrow: "",
     offices: [],
-    filterOffices: 0,
+    filterOffices: 1,
     hm: 0,
     snackbar: false,
     message: "",
@@ -600,6 +609,7 @@ export default {
         .split()
         .map((el) => parseInt(el));
     }
+    this.getLids3();
   },
 
   watch: {
@@ -677,7 +687,13 @@ export default {
       }
     },
     getProviderName(i) {
-      return this.providers.find((el) => el.id == i).name;
+     let name = "NA";
+      try {
+        name = this.providers.find((el) => el.id == i).name;
+      } catch (error) {
+        console.error(error);
+      }
+      return name;
     },
     changeFilterProviders(el) {
       this.filterProviders = this.filterProviders.filter((i) => i != el);
@@ -738,9 +754,7 @@ export default {
       data.limit = self.limit;
       data.page = self.page;
       data.office_id = self.filterOffices;
-      // if (this.sortBy != "") {
-      //   data.sortBy = [this.sortBy, this.sortDesc];
-      // }
+
       if (this.callback === true) {
         data.callback = 1;
       }
@@ -768,7 +782,7 @@ export default {
                 self.statuses.find((s) => s.id == e.status_id).name || "";
             }
             if (e.user_id) {
-              e.user = self.users.find((u) => u.id == e.user_id).fio;
+              e.user = self.users.find((u) => u.id == e.user_id)?.fio || "";
             }
             if (e.provider_id) {
               e.provider = self.providers.find(
@@ -936,7 +950,7 @@ export default {
         axios
           .post("api/Lid/newlids", send)
           .then(function (response) {
-            self.getUsers();
+            // self.getUsers();
             self.search = "";
             self.filtertel = "";
           })
@@ -1029,6 +1043,9 @@ export default {
               order,
               statnew,
               pic,
+              inp,
+              cb,
+   office_id,
             }) => ({
               name,
               id,
@@ -1039,8 +1056,16 @@ export default {
               group_id,
               order,
               statnew,
+              inp,
+              cb,
+ office_id,
             })
           );
+          if (self.$props.user.role_id == 1 && self.filterOffices > 0) {
+            self.users = self.users.filter(
+              (f) => f.office_id == self.filterOffices
+            );
+          }
           if (self.$props.user.role_id != 1) {
             self.users = self.users.filter(
               (f) => f.group_id == self.$props.user.group_id
@@ -1247,5 +1272,48 @@ export default {
   box-shadow: 0px 0px 9.5px 0.5px rgba(61, 95, 110, 0.2);
   border-radius: 30px;
   padding: 3px 5px;
+}
+#usersradiogroup .v-btn:not(.ml-3) {
+  margin-left: 3px;
+}
+#usersradiogroup .v-btn {
+  font-size: 1rem;
+}
+.v-btn::after {
+  content: attr(data);
+  position: absolute;
+  left: 0px;
+  font-weight: bold;
+  z-index: 1;
+  bottom: -4px;
+  font-size: 0.7rem;
+  box-shadow: none;
+}
+#usersradiogroup .v-btn[data="new"] {
+  background: #e0e0e0;
+}
+.v-btn[data="new"]::after {
+  color: #aaa;
+}
+#usersradiogroup .v-btn[data="inp"] {
+  background: #b5d7898c;
+}
+.v-btn[data="inp"]::after {
+  color: #4aaf5b;
+}
+#usersradiogroup .v-btn[data="cb"] {
+  background: #9fc6f3;
+}
+.v-btn[data="cb"]::after {
+  color: #7b80cc;
+}
+
+.v-btn__content {
+  position: relative;
+  z-index: 2;
+  font-weight: bold;
+}
+.v-radio .v-label {
+  font-weight: bold;
 }
 </style>
