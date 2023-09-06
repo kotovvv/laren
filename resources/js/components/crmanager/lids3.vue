@@ -184,7 +184,7 @@
             item-value="id"
             outlined
             rounded
-                    @change="
+            @change="
               getUsers();
               getPage(0);
             "
@@ -687,7 +687,7 @@ export default {
       }
     },
     getProviderName(i) {
-     let name = "NA";
+      let name = "NA";
       try {
         name = this.providers.find((el) => el.id == i).name;
       } catch (error) {
@@ -1043,12 +1043,9 @@ export default {
               order,
               statnew,
               pic,
-<<<<<<< HEAD
               inp,
               cb,
-=======
->>>>>>> 4956156ecc48c96e4a1eeb34d7ecfc0ece1f4420
-   office_id,
+              office_id,
             }) => ({
               name,
               id,
@@ -1059,12 +1056,9 @@ export default {
               group_id,
               order,
               statnew,
-<<<<<<< HEAD
               inp,
               cb,
-=======
->>>>>>> 4956156ecc48c96e4a1eeb34d7ecfc0ece1f4420
- office_id,
+              office_id,
             })
           );
           if (self.$props.user.role_id == 1 && self.filterOffices > 0) {
