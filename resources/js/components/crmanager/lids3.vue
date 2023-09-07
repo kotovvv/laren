@@ -675,6 +675,7 @@ export default {
     },
     getOffices() {
       let self = this;
+      self.filterOffices = this.$props.user.office_id;
       if (self.$props.user.role_id == 1 && self.$props.user.office_id == 0) {
         axios
           .get("/api/getOffices")
@@ -784,11 +785,7 @@ export default {
             if (e.user_id) {
               e.user = self.users.find((u) => u.id == e.user_id)?.fio || "";
             }
-            if (e.provider_id) {
-              e.provider = self.providers.find(
-                (p) => p.id == e.provider_id
-              ).name;
-            }
+            e.provider = self.getProviderName(e.provider_id);
           });
           self.loading = false;
         })
@@ -899,7 +896,7 @@ export default {
             if (e.updated_at) {
               e.date_updated = e.updated_at.substring(0, 10);
             }
-            e.provider = self.providers.find((p) => p.id == e.provider_id).name;
+            e.provider = self.e.provider_id;
             if (e.status_id)
               e.status = self.statuses.find((s) => s.id == e.status_id).name;
           });
@@ -1120,9 +1117,7 @@ export default {
           if (self.users.length) {
             e.user = self.users.find((u) => u.id == e.user_id).fio || "";
           }
-          if (self.providers.length) {
-            e.provider = self.providers.find((p) => p.id == e.provider_id).name;
-          }
+          e.provider = self.getProviderName(e.provider_id);
           self.orderStatus();
           self.searchAll = "";
           if (localStorage.filterStatus) {
