@@ -433,7 +433,11 @@ class LidsController extends Controller
         }
         if (isset($data['datefrom'])) {
             $date = [date('Y-m-d', strtotime($data['datefrom'])) . ' ' . date('H:i:s', mktime(0, 0, 0)), date('Y-m-d', strtotime($data['dateto'])) . ' ' . date('H:i:s', mktime(23, 59, 59))];
-            $where_date = " AND created_at >= '" . $date[0] . "' AND created_at <= '" . $date[1] . "'";
+            if (isset($data['changedate'])) {
+                $where_date = " AND updated_at >= '" . $date[0] . "' AND updated_at <= '" . $date[1] . "'";
+            } else {
+                $where_date = " AND created_at >= '" . $date[0] . "' AND created_at <= '" . $date[1] . "'";
+            }
         }
 
         if (count($data['provider_id']) > 0) {

@@ -68,7 +68,12 @@
                   ></v-date-picker>
                 </v-menu>
               </v-col>
-              <v-checkbox v-model="savedates"></v-checkbox>
+              <v-checkbox
+                v-model="changedate"
+                label="Changed date"
+                class="changedate"
+                @change="getLids3"
+              ></v-checkbox>
               <v-btn @click="clearuser" small text
                 ><v-icon>refresh</v-icon></v-btn
               >
@@ -511,6 +516,7 @@ export default {
   data: () => ({
     searchradio: "phone",
     savedates: true,
+    changedate: false,
     akkvalue: null,
     loading: false,
     selectedUser: {},
@@ -730,7 +736,8 @@ export default {
       let self = this;
       let data = {};
       self.loading = true;
-      if (this.savedates == true) {
+      data.changedate = this.changedate;
+      if (this.changedate == false) {
         if (this.datetimeFrom == "") {
           this.datetimeFrom = new Date(
             new Date().setDate(new Date().getDate() - 14)
@@ -1323,8 +1330,11 @@ export default {
   padding: 0;
   margin-bottom: -6px;
 }
-.searchradio .v-radio .v-label {
+.searchradio .v-radio .v-label,
+.changedate .v-label {
   font-size: 13px;
   font-weight: inherit;
+  width: 39px;
+  line-height: 12px;
 }
 </style>
