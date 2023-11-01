@@ -416,7 +416,7 @@ class LidsController extends Controller
         $status_id = $data['status_id'];
         $tel = $data['tel'];
         $searchradio =
-            $data['searchradio'];
+            isset($data['searchradio']) ? $data['searchradio'] : '';
         $limit = $data['limit'];
         $page = (int) $data['page'];
         $providers = $date = $users_ids = [];
@@ -469,7 +469,7 @@ class LidsController extends Controller
                 return $query->where('tel', 'like', $tel . '%');
             })
             ->when($tel != '' && $searchradio == 'name', function ($query) use ($tel) {
-                return $query->where('name', 'like', '%' . $tel . '%');
+                return $query->where('lids.name', 'like', '%' . $tel . '%');
             })
             ->when($tel != '' && $searchradio == 'email', function ($query) use ($tel) {
                 return $query->where('email',  $tel);
