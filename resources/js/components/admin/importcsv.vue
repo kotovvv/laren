@@ -97,36 +97,96 @@
             <v-col cols="4">
               <v-card height="100%" class="pa-5">
                 Specify the user for leads
-                <v-list>
-                  <v-radio-group
-                    @change="putSelectedLidsDB"
-                    ref="radiogroup"
-                    v-model="userid"
-                    v-bind="users"
-                    id="usersradiogroup"
-                  >
-                    <v-radio
-                      :value="user.id"
-                      v-for="user in users"
-                      :key="user.id"
-                    >
-                      <template v-slot:label>
-                        {{ user.fio }}
-                        <v-badge
-                          :content="user.hmlids"
-                          :value="user.hmlids"
-                          :color="usercolor(user)"
-                          overlap
-                        >
-                          <v-icon large v-if="user.role_id === 2">
-                            mdi-account-group-outline
-                          </v-icon>
-                          <v-icon large v-else> mdi-account-outline </v-icon>
-                        </v-badge>
-                      </template>
-                    </v-radio>
-                  </v-radio-group>
-                </v-list>
+                <div class="pa-5 w-100 border wrp_users">
+                  <div class="my-3">User Search</div>
+                  <v-autocomplete
+                    v-model="selectedUser"
+                    :items="users"
+                    label="Select"
+                    item-text="fio"
+                    item-value="id"
+                    :return-object="true"
+                    append-icon="mdi-close"
+                    outlined
+                    rounded
+                    @click:append="clearuser()"
+                  ></v-autocomplete>
+
+                  <div class="scroll-y">
+                    <v-list>
+                      <v-radio-group
+                        id="usersradiogroup"
+                        ref="radiogroup"
+                        v-model="userid"
+                        v-bind="users"
+                        @change="putSelectedLidsDB"
+                      >
+                        <v-expansion-panels ref="akk" v-model="akkvalue">
+                          <v-expansion-panel
+                            v-for="(item, i) in group"
+                            :key="i"
+                          >
+                            <v-expansion-panel-header>
+                              <div
+                                height="60"
+                                width="60"
+                                class="img v-expansion-panel-header__icon mr-1"
+                              >
+                                {{ item.fio.slice(0, 3) }}
+                              </div>
+
+                              {{ item.fio }}
+                              <div></div>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                              <v-row
+                                v-for="user in users.filter(function (i) {
+                                  return i.group_id == item.group_id;
+                                })"
+                                :key="user.id"
+                              >
+                                <v-radio
+                                  :label="user.fio"
+                                  :value="user.id"
+                                  :disabled="disableuser == user.id"
+                                >
+                                </v-radio>
+
+                                <v-btn
+                                  class="ml-3"
+                                  small
+                                  :color="usercolor(user)"
+                                  @click="
+                                    disableuser = user.id;
+                                    filterGroups = [];
+                                    getPage();
+                                  "
+                                  :value="user.hmlids"
+                                  :disabled="disableuser == user.id"
+                                  >{{ user.hmlids }}</v-btn
+                                >
+                                <v-btn
+                                  data="new"
+                                  v-if="user.statnew"
+                                  label
+                                  small
+                                >
+                                  {{ user.statnew }}
+                                </v-btn>
+                                <v-btn data="inp" v-if="user.inp" label small>
+                                  {{ user.inp }}
+                                </v-btn>
+                                <v-btn data="cb" v-if="user.cb" label small>
+                                  {{ user.cb }}
+                                </v-btn>
+                              </v-row>
+                            </v-expansion-panel-content>
+                          </v-expansion-panel>
+                        </v-expansion-panels>
+                      </v-radio-group>
+                    </v-list>
+                  </div>
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -283,6 +343,8 @@ export default {
     loading: false,
     userid: null,
     users: [],
+    selectedUser: {},
+    group: null,
     providers: [],
     statuses: [],
     imports: [],
@@ -335,6 +397,14 @@ export default {
     email_tel: "email",
   }),
   watch: {
+    selectedUser(user) {
+      if (user == {}) {
+        this.userid = null;
+        return;
+      }
+      //this.disableuser = user.id;
+      this.akkvalue = _.findIndex(this.group, { group_id: user.group_id });
+    },
     selectedProvider: function (newval) {
       this.users = [];
       this.related_user = [];
@@ -362,6 +432,11 @@ export default {
     },
   },
   methods: {
+    getGroup() {
+      return _.filter(this.users, function (o) {
+        return o.group_id == o.id;
+      });
+    },
     exportXlsx() {
       const self = this;
       const obj = _.groupBy(self.filteredItems, "status");
@@ -606,13 +681,46 @@ export default {
       axios
         .post("/api/getusers", self.related_user)
         .then((res) => {
-          self.users = res.data.map(({ name, id, role_id, fio, hmlids }) => ({
-            name,
-            id,
-            role_id,
-            fio,
-            hmlids,
-          }));
+          self.users = res.data.map(
+            ({
+              name,
+              id,
+              role_id,
+              fio,
+              hmlids,
+              group_id,
+              order,
+              statnew,
+              pic,
+              inp,
+              cb,
+              office_id,
+            }) => ({
+              name,
+              id,
+              role_id,
+              fio,
+              hmlids,
+              pic,
+              group_id,
+              order,
+              statnew,
+              inp,
+              cb,
+              office_id,
+            })
+          );
+          if (self.$attrs.user.role_id == 1 && self.filterOffices > 0) {
+            self.users = self.users.filter(
+              (f) => f.office_id == self.filterOffices
+            );
+          }
+          if (self.$attrs.user.role_id != 1) {
+            self.users = self.users.filter(
+              (f) => f.group_id == self.$attrs.user.group_id
+            );
+          }
+          self.group = self.getGroup();
         })
         .catch((error) => console.log(error));
     },
@@ -721,3 +829,61 @@ export default {
   },
 };
 </script>
+
+<style>
+#usersradiogroup .img,
+.wrp_group .img {
+  height: 60px;
+  width: 60px;
+  background: #2196f3;
+  border-radius: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: bold;
+}
+#usersradiogroup .v-btn:not(.ml-3) {
+  margin-left: 3px;
+}
+#usersradiogroup .v-btn {
+  font-size: 1rem;
+}
+.v-btn::after {
+  content: attr(data);
+  position: absolute;
+  left: 0px;
+  font-weight: bold;
+  z-index: 1;
+  bottom: -4px;
+  font-size: 0.7rem;
+  box-shadow: none;
+}
+#usersradiogroup .v-btn[data="new"] {
+  background: #e0e0e0;
+}
+.v-btn[data="new"]::after {
+  color: #aaa;
+}
+#usersradiogroup .v-btn[data="inp"] {
+  background: #b5d7898c;
+}
+.v-btn[data="inp"]::after {
+  color: #4aaf5b;
+}
+#usersradiogroup .v-btn[data="cb"] {
+  background: #9fc6f3;
+}
+.v-btn[data="cb"]::after {
+  color: #7b80cc;
+}
+
+.v-btn__content {
+  position: relative;
+  z-index: 2;
+  font-weight: bold;
+}
+.v-radio .v-label {
+  font-weight: bold;
+}
+</style>

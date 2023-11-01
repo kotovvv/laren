@@ -68,7 +68,12 @@
                   ></v-date-picker>
                 </v-menu>
               </v-col>
+
+              <v-btn @click="cleardate" small text
+                ><v-icon>close</v-icon></v-btn
+              >
               <v-checkbox v-model="savedates"></v-checkbox>
+              <v-checkbox v-model="callback"></v-checkbox>
               <v-btn @click="clearuser" small text
                 ><v-icon>refresh</v-icon></v-btn
               >
@@ -149,23 +154,11 @@
         </v-col>
 
         <v-col>
-          <p>
-            <v-radio-group
-              row
-              v-model="searchradio"
-              class="searchradio"
-              hide-details
-              change="getPage"
-            >
-              <v-radio label="name" value="name"></v-radio>
-              <v-radio label="email" value="email"></v-radio>
-              <v-radio label="phone" value="phone"></v-radio>
-              <v-radio label="comment" value="comment"></v-radio>
-            </v-radio-group>
-          </p>
+          <p>Phone</p>
+          <!-- @click:append="getPage(0)" -->
           <v-text-field
             v-model.lazy.trim="filtertel"
-            append-icon="mdi-magnify"
+            append-icon="mdi-phone"
             @input="getPage"
             outlined
             rounded
@@ -191,7 +184,7 @@
             item-value="id"
             outlined
             rounded
-            @change="
+                    @change="
               getUsers();
               getPage(0);
             "
@@ -327,6 +320,8 @@
                       </template>
                     </v-checkbox>
                   </v-row>
+                </v-col>
+                <v-col cols="3" class="mt--3">
                   <v-row class="align-center">
                     <h5 class="mb-0">All:{{ hm }}</h5>
                     <v-pagination
@@ -334,11 +329,9 @@
                       class="my--4"
                       :length="parseInt(hm / limit) + 1"
                       @input="getPage()"
-                      total-visible="10"
+                      total-visible="5"
                     ></v-pagination>
                   </v-row>
-                </v-col>
-                <v-col cols="3" class="mt--3">
                   <v-row>
                     <v-select
                       v-model="limit"
@@ -479,15 +472,9 @@
                           :disabled="disableuser == user.id"
                           >{{ user.hmlids }}</v-btn
                         >
-                        <v-btn data="new" v-if="user.statnew" label small>
+                        <v-chip v-if="user.statnew" label small>
                           {{ user.statnew }}
-                        </v-btn>
-                        <v-btn data="inp" v-if="user.inp" label small>
-                          {{ user.inp }}
-                        </v-btn>
-                        <v-btn data="cb" v-if="user.cb" label small>
-                          {{ user.cb }}
-                        </v-btn>
+                        </v-chip>
                       </v-row>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
@@ -509,7 +496,6 @@ import logtel from "../manager/logtel";
 export default {
   props: ["user"],
   data: () => ({
-    searchradio: "phone",
     savedates: true,
     akkvalue: null,
     loading: false,
@@ -570,7 +556,7 @@ export default {
     Statuses: [],
     hmrow: "",
     offices: [],
-    filterOffices: 1,
+    filterOffices: 0,
     hm: 0,
     snackbar: false,
     message: "",
@@ -617,7 +603,6 @@ export default {
         .split()
         .map((el) => parseInt(el));
     }
-    this.getLids3();
   },
 
   watch: {
@@ -683,7 +668,6 @@ export default {
     },
     getOffices() {
       let self = this;
-      self.filterOffices = this.$props.user.office_id;
       if (self.$props.user.role_id == 1 && self.$props.user.office_id == 0) {
         axios
           .get("/api/getOffices")
@@ -696,7 +680,7 @@ export default {
       }
     },
     getProviderName(i) {
-      let name = "NA";
+     let name = "NA";
       try {
         name = this.providers.find((el) => el.id == i).name;
       } catch (error) {
@@ -759,12 +743,13 @@ export default {
       data.provider_id = self.filterProviders;
       data.status_id = self.filterStatus;
       data.tel = self.filtertel;
-      data.searchradio = self.searchradio;
       data.search = self.search;
       data.limit = self.limit;
       data.page = self.page;
       data.office_id = self.filterOffices;
-
+      // if (this.sortBy != "") {
+      //   data.sortBy = [this.sortBy, this.sortDesc];
+      // }
       if (this.callback === true) {
         data.callback = 1;
       }
@@ -787,14 +772,18 @@ export default {
             if (e.created_at) {
               e.date_created = e.created_at.substring(0, 10);
             }
-            if (e.status_id && self.statuses.length) {
+            if (e.status_id) {
               e.status =
                 self.statuses.find((s) => s.id == e.status_id).name || "";
             }
             if (e.user_id) {
-              e.user = self.users.find((u) => u.id == e.user_id)?.fio || "";
+              e.user = self.users.find((u) => u.id == e.user_id).fio;
             }
-            e.provider = self.getProviderName(e.provider_id);
+            if (e.provider_id) {
+              e.provider = self.providers.find(
+                (p) => p.id == e.provider_id
+              ).name;
+            }
           });
           self.loading = false;
         })
@@ -896,14 +885,16 @@ export default {
         .post("api/Lid/searchlids3", data)
         .then((res) => {
           self.hm = res.data.hm;
+
           self.lids = Object.entries(res.data.lids).map((e) => e[1]);
+
           self.lids.map(function (e) {
             e.user = self.users.find((u) => u.id == e.user_id).fio || "";
             e.date_created = e.created_at.substring(0, 10);
             if (e.updated_at) {
               e.date_updated = e.updated_at.substring(0, 10);
             }
-            e.provider = self.e.provider_id;
+            e.provider = self.providers.find((p) => p.id == e.provider_id).name;
             if (e.status_id)
               e.status = self.statuses.find((s) => s.id == e.status_id).name;
           });
@@ -954,7 +945,7 @@ export default {
         axios
           .post("api/Lid/newlids", send)
           .then(function (response) {
-            // self.getUsers();
+            self.getUsers();
             self.search = "";
             self.filtertel = "";
           })
@@ -1047,9 +1038,7 @@ export default {
               order,
               statnew,
               pic,
-              inp,
-              cb,
-              office_id,
+   office_id,
             }) => ({
               name,
               id,
@@ -1060,9 +1049,7 @@ export default {
               group_id,
               order,
               statnew,
-              inp,
-              cb,
-              office_id,
+ office_id,
             })
           );
           if (self.$props.user.role_id == 1 && self.filterOffices > 0) {
@@ -1124,7 +1111,9 @@ export default {
           if (self.users.length) {
             e.user = self.users.find((u) => u.id == e.user_id).fio || "";
           }
-          e.provider = self.getProviderName(e.provider_id);
+          if (self.providers.length) {
+            e.provider = self.providers.find((p) => p.id == e.provider_id).name;
+          }
           self.orderStatus();
           self.searchAll = "";
           if (localStorage.filterStatus) {
@@ -1219,7 +1208,7 @@ export default {
 
 #tablids .v-data-table__wrapper {
   overflow: auto;
-  max-height: 53vh;
+  max-height: 54vh;
 }
 
 #tablids .v-data-footer .v-data-footer__select,
@@ -1274,57 +1263,5 @@ export default {
   box-shadow: 0px 0px 9.5px 0.5px rgba(61, 95, 110, 0.2);
   border-radius: 30px;
   padding: 3px 5px;
-}
-#usersradiogroup .v-btn:not(.ml-3) {
-  margin-left: 3px;
-}
-#usersradiogroup .v-btn {
-  font-size: 1rem;
-}
-.v-btn::after {
-  content: attr(data);
-  position: absolute;
-  left: 0px;
-  font-weight: bold;
-  z-index: 1;
-  bottom: -4px;
-  font-size: 0.7rem;
-  box-shadow: none;
-}
-#usersradiogroup .v-btn[data="new"] {
-  background: #e0e0e0;
-}
-.v-btn[data="new"]::after {
-  color: #aaa;
-}
-#usersradiogroup .v-btn[data="inp"] {
-  background: #b5d7898c;
-}
-.v-btn[data="inp"]::after {
-  color: #4aaf5b;
-}
-#usersradiogroup .v-btn[data="cb"] {
-  background: #9fc6f3;
-}
-.v-btn[data="cb"]::after {
-  color: #7b80cc;
-}
-
-.v-btn__content {
-  position: relative;
-  z-index: 2;
-  font-weight: bold;
-}
-.v-radio .v-label {
-  font-weight: bold;
-}
-.searchradio {
-  margin: 0;
-  padding: 0;
-  margin-bottom: -6px;
-}
-.searchradio .v-radio .v-label {
-  font-size: 13px;
-  font-weight: inherit;
 }
 </style>
