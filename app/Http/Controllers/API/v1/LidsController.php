@@ -4,14 +4,13 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as Logg;
 use App\Models\Lid;
 use App\Models\Log;
 use App\Models\Depozit;
 use App\Models\User;
 use App\Models\Provider;
 use DB;
-use Debugbar;
 
 class LidsController extends Controller
 {
@@ -150,7 +149,7 @@ class LidsController extends Controller
 
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
                 ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
-                    return $query->offset($limit * ($page-1));
+                    return $query->offset($limit * ($page - 1));
                 })
                 ->when($limit != 'all', function ($query) use ($limit) {
                     return $query->limit($limit);
@@ -174,7 +173,7 @@ class LidsController extends Controller
 
             $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
                 ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
-                    return $query->offset($limit * ($page-1));
+                    return $query->offset($limit * ($page - 1));
                 })
                 ->when($limit != 'all', function ($query) use ($limit) {
                     return $query->limit($limit);
@@ -393,7 +392,7 @@ class LidsController extends Controller
 
         $response['lids'] = $q_leads->orderBy('lids.created_at', 'desc')
             ->when($limit != 'all' && $page * $limit > $limit, function ($query) use ($limit, $page) {
-        return $query->offset($limit * ($page - 1));
+                return $query->offset($limit * ($page - 1));
             })
             ->when($limit != 'all', function ($query) use ($limit) {
                 return $query->limit($limit);
@@ -416,6 +415,8 @@ class LidsController extends Controller
         $id = $data['id'];
         $status_id = $data['status_id'];
         $tel = $data['tel'];
+        $searchradio =
+            $data['searchradio'];
         $limit = $data['limit'];
         $page = (int) $data['page'];
         $providers = $date = $users_ids = [];
@@ -464,8 +465,17 @@ class LidsController extends Controller
             ->when(count($status_id) > 0, function ($query) use ($status_id) {
                 return $query->whereIn('status_id', $status_id);
             })
-            ->when($tel != '', function ($query) use ($tel) {
+            ->when($tel != '' && $searchradio == 'phone', function ($query) use ($tel) {
                 return $query->where('tel', 'like', $tel . '%');
+            })
+            ->when($tel != '' && $searchradio == 'name', function ($query) use ($tel) {
+                return $query->where('name', 'like', '%' . $tel . '%');
+            })
+            ->when($tel != '' && $searchradio == 'email', function ($query) use ($tel) {
+                return $query->where('email',  $tel);
+            })
+            ->when($tel != '' && $searchradio == 'comment', function ($query) use ($tel) {
+                return $query->where('text', 'like', '%' . $tel . '%');
             })
             ->when(isset($data['duplicate_tel']), function ($query) use ($duplicate_tel) {
                 return $query->whereIn('tel', $duplicate_tel);
@@ -476,19 +486,7 @@ class LidsController extends Controller
             ->when(isset($data['callback']) && $data['callback'] == 1, function ($query) {
                 return $query->where(DB::Raw('(SELECT count(*) cnt FROM `logs` WHERE `lids`.`id` = `logs`.`lid_id` AND `logs`.`status_id` = 9)'), '>', 0);
             });
-        // ->when(isset($data['sortBy']) && $data['sortBy'][0] == 'afilyator', function ($query) use ($data) {
-        //   return $query->orderBy('lids.afilyator', $data['sortBy'][1]);
-        // })
-        // ->when(isset($data['sortBy']) && $data['sortBy'][0] == 'provider', function ($query) use ($data) {
-        //   return $query->leftJoin('providers', 'lids.provider_id', '=', 'providers.id')->orderBy('providers.name', $data['sortBy'][1]);
-        // })
-        // ->when(isset($data['sortBy']) && $data['sortBy'][0] == 'date_created', function ($query) use ($data) {
-        //   return $query->orderBy('lids.created_at', $data['sortBy'][1]);
-        // })
-        // ->when(isset($data['sortBy']) && $data['sortBy'][0] == 'date_updated', function ($query) use ($data) {
-        //   return $query->orderBy('lids.updated_at', $data['sortBy'][1]);
-        // })
-
+        //Logg::debug($q_leads->toRawSql());
         $response['hm'] = $q_leads->count();
 
         $response['lids'] = $q_leads
@@ -535,8 +533,8 @@ class LidsController extends Controller
         if ($office_id > 0) {
             $adnwhere = " AND office_id = $office_id AND provider_id in (" . implode(',', $a_providers) . ") ";
         }
-    $sql = "SELECT DISTINCT `lids`.*, (SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit FROM `lids`  WHERE `lids`.`user_id` = " . (int) $id . $adnwhere . " ORDER BY `lids`.`updated_at` DESC";
-    return DB::select(DB::raw($sql));
+        $sql = "SELECT DISTINCT `lids`.*, (SELECT SUM(`depozit`) FROM `depozits` WHERE `lids`.`id` = `depozits`.`lid_id`) depozit FROM `lids`  WHERE `lids`.`user_id` = " . (int) $id . $adnwhere . " ORDER BY `lids`.`updated_at` DESC";
+        return DB::select(DB::raw($sql));
     }
 
     public function statusLids(Request $request)
@@ -641,7 +639,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         $data = $request->all();
         $f_key = Provider::where('tel', $data['api_key'])->first();
         if (!$f_key) return response(['status' => 'Key incorect'], 403);
-    return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$req['start'], $req['end']])->get();
+        return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$req['start'], $req['end']])->get();
     }
 
     public function getlidsImportedProvider(Request $request)

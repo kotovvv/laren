@@ -68,12 +68,7 @@
                   ></v-date-picker>
                 </v-menu>
               </v-col>
-
-              <v-btn @click="cleardate" small text
-                ><v-icon>close</v-icon></v-btn
-              >
               <v-checkbox v-model="savedates"></v-checkbox>
-              <v-checkbox v-model="callback"></v-checkbox>
               <v-btn @click="clearuser" small text
                 ><v-icon>refresh</v-icon></v-btn
               >
@@ -154,11 +149,23 @@
         </v-col>
 
         <v-col>
-          <p>Phone</p>
-          <!-- @click:append="getPage(0)" -->
+          <p>
+            <v-radio-group
+              row
+              v-model="searchradio"
+              class="searchradio"
+              hide-details
+              change="getPage"
+            >
+              <v-radio label="name" value="name"></v-radio>
+              <v-radio label="email" value="email"></v-radio>
+              <v-radio label="phone" value="phone"></v-radio>
+              <v-radio label="comment" value="comment"></v-radio>
+            </v-radio-group>
+          </p>
           <v-text-field
             v-model.lazy.trim="filtertel"
-            append-icon="mdi-phone"
+            append-icon="mdi-magnify"
             @input="getPage"
             outlined
             rounded
@@ -502,6 +509,7 @@ import logtel from "../manager/logtel";
 export default {
   props: ["user"],
   data: () => ({
+    searchradio: "phone",
     savedates: true,
     akkvalue: null,
     loading: false,
@@ -751,6 +759,7 @@ export default {
       data.provider_id = self.filterProviders;
       data.status_id = self.filterStatus;
       data.tel = self.filtertel;
+      data.searchradio = self.searchradio;
       data.search = self.search;
       data.limit = self.limit;
       data.page = self.page;
@@ -778,7 +787,7 @@ export default {
             if (e.created_at) {
               e.date_created = e.created_at.substring(0, 10);
             }
-            if (e.status_id) {
+            if (e.status_id && self.statuses.length) {
               e.status =
                 self.statuses.find((s) => s.id == e.status_id).name || "";
             }
@@ -887,9 +896,7 @@ export default {
         .post("api/Lid/searchlids3", data)
         .then((res) => {
           self.hm = res.data.hm;
-
           self.lids = Object.entries(res.data.lids).map((e) => e[1]);
-
           self.lids.map(function (e) {
             e.user = self.users.find((u) => u.id == e.user_id).fio || "";
             e.date_created = e.created_at.substring(0, 10);
@@ -1212,7 +1219,7 @@ export default {
 
 #tablids .v-data-table__wrapper {
   overflow: auto;
-  max-height: 54vh;
+  max-height: 53vh;
 }
 
 #tablids .v-data-footer .v-data-footer__select,
@@ -1310,5 +1317,14 @@ export default {
 }
 .v-radio .v-label {
   font-weight: bold;
+}
+.searchradio {
+  margin: 0;
+  padding: 0;
+  margin-bottom: -6px;
+}
+.searchradio .v-radio .v-label {
+  font-size: 13px;
+  font-weight: inherit;
 }
 </style>
