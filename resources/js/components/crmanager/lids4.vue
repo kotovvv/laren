@@ -516,7 +516,7 @@ export default {
   data: () => ({
     searchradio: "phone",
     savedates: true,
-    changedate: false,
+    changedate: true,
     akkvalue: null,
     loading: false,
     selectedUser: {},
@@ -737,7 +737,7 @@ export default {
       let data = {};
       self.loading = true;
       data.changedate = this.changedate;
-      if (this.changedate == false) {
+      if (this.changedate == true) {
         if (this.datetimeFrom == "") {
           this.datetimeFrom = new Date(
             new Date().setDate(new Date().getDate() - 14)
