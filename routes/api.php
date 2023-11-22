@@ -21,10 +21,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::post('/login', [loginController::class, 'login']);
 
 Route::resource('provider', ProvidersController::class);
@@ -108,3 +104,4 @@ Route::post('checkEmails', [LidsController::class, 'checkEmails']);
 Route::post('getlidsImportedProvider', [LidsController::class, 'getlidsImportedProvider']);
 Route::get('onCdr', [LogsController::class, 'onCdr']);
 Route::post('getCalls', [LogsController::class, 'getCalls']);
+Route::get('reportCalDep', [ProvidersController::class, 'reportCalDep']);
