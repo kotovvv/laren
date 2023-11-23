@@ -51,6 +51,7 @@ const lids3 = () => import("../crmanager/lids3");
 const report = () => import("./report");
 const reportPie = () => import("./reportPie");
 const reportBTC = () => import("./reportBTC");
+const reportCalDep = () => import("./reportCalDep");
 
 export default {
   props: ["user"],
@@ -82,6 +83,11 @@ export default {
       { text: "Report", name: "report", icon: "mdi-receipt" },
       { text: "Reports", name: "reportPie", icon: "mdi-timetable" },
       { text: "Report BTC", name: "reportBTC", icon: "mdi-cash" },
+      {
+        text: "Report CalDep",
+        name: "reportCalDep",
+        icon: "mdi-format-align-left",
+      },
     ],
     adminMenu: "",
   }),
@@ -98,6 +104,7 @@ export default {
       if (this.adminMenu == "report") return report;
       if (this.adminMenu == "reportPie") return reportPie;
       if (this.adminMenu == "reportBTC") return reportBTC;
+      if (this.adminMenu == "reportCalDep") return reportCalDep;
     },
   },
   mounted: function () {
