@@ -67,16 +67,27 @@
           </div>
         </v-col>
       </v-row>
+      <v-progress-linear
+        :active="loading"
+        :indeterminate="loading"
+        color="deep-purple accent-4"
+      ></v-progress-linear>
       <v-row>
         <v-col>
           <table width="100%" id="tableCalDep">
             <tr>
               <th>Date</th>
               <th>Provider</th>
-              <th>Leads</th>
+              <th>
+                <v-btn text x-small @click="orderDates('date')">Leads</v-btn
+                ><br />
+                <v-btn text x-small @click="orderDates('cal')">CallBack</v-btn
+                ><br />
+                <v-btn text x-small @click="orderDates('dp')">Deposit</v-btn>
+              </th>
               <th style="width: 70vw">Data</th>
             </tr>
-            <tr v-for="item in dates" :key="item.id">
+            <tr v-for="(item, ix) in dates" :key="ix">
               <td>{{ item.date }}</td>
               <td>
                 <div>
@@ -136,6 +147,9 @@ export default {
     this.reportCalDep();
   },
   methods: {
+    orderDates(on) {
+      this.dates = _.orderBy(this.dates, on, on == "date" ? "asc" : "desc");
+    },
     reportCalDep() {
       let self = this;
       this.loading = true;
