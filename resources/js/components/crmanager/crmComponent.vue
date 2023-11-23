@@ -39,7 +39,8 @@
 
 <script>
 const lids = () => import("../crmanager/lids.vue");
-const lids3 = () => import("../crmanager/lids3.vue");
+const lids3 = () => import("./lids3.vue");
+const lids4 = () => import("./lids4.vue");
 const mlids = () => import("../manager/mlids.vue");
 const report = () => import("../manager/report.vue");
 
@@ -52,6 +53,7 @@ export default {
     items: [
       { text: "Distribution", name: "lids", icon: "mdi-account-arrow-left" },
       { text: "Distribution3", name: "lids3", icon: "mdi-sitemap" },
+      { text: "Distribution4", name: "lids4", icon: "mdi-source-branch" },
       { text: "Management", name: "mlids", icon: "mdi-phone-log-outline" },
       { text: "Reports", name: "report", icon: "mdi-timetable" },
     ],
@@ -60,6 +62,7 @@ export default {
     managerComponent() {
       if (this.managerMenu == "lids") return lids;
       if (this.managerMenu == "lids3") return lids3;
+      if (this.managerMenu == "lids4") return lids3;
       if (this.managerMenu == "mlids") return mlids;
       if (this.managerMenu == "report") return report;
     },

@@ -416,7 +416,7 @@ class LidsController extends Controller
         $status_id = $data['status_id'];
         $tel = $data['tel'];
         $searchradio =
-            $data['searchradio'];
+            isset($data['searchradio']) ? $data['searchradio'] : '';
         $limit = $data['limit'];
         $page = (int) $data['page'];
         $providers = $date = $users_ids = [];
@@ -433,7 +433,11 @@ class LidsController extends Controller
         }
         if (isset($data['datefrom'])) {
             $date = [date('Y-m-d', strtotime($data['datefrom'])) . ' ' . date('H:i:s', mktime(0, 0, 0)), date('Y-m-d', strtotime($data['dateto'])) . ' ' . date('H:i:s', mktime(23, 59, 59))];
-            $where_date = " AND created_at >= '" . $date[0] . "' AND created_at <= '" . $date[1] . "'";
+            if (isset($data['changedate'])) {
+                $where_date = " AND updated_at >= '" . $date[0] . "' AND updated_at <= '" . $date[1] . "'";
+            } else {
+                $where_date = " AND created_at >= '" . $date[0] . "' AND created_at <= '" . $date[1] . "'";
+            }
         }
 
         if (count($data['provider_id']) > 0) {
@@ -469,7 +473,7 @@ class LidsController extends Controller
                 return $query->where('tel', 'like', $tel . '%');
             })
             ->when($tel != '' && $searchradio == 'name', function ($query) use ($tel) {
-                return $query->where('name', 'like', '%' . $tel . '%');
+                return $query->where('lids.name', 'like', '%' . $tel . '%');
             })
             ->when($tel != '' && $searchradio == 'email', function ($query) use ($tel) {
                 return $query->where('email',  $tel);

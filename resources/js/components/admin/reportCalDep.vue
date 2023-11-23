@@ -69,7 +69,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <table width="100%">
+          <table width="100%" id="tableCalDep">
             <tr>
               <th>Date</th>
               <th>Provider</th>
@@ -78,9 +78,37 @@
             </tr>
             <tr v-for="item in dates" :key="item.id">
               <td>{{ item.date }}</td>
-              <td>{{ item.provider }}</td>
-              <td>{{ item.hm }}</td>
-              <td>{{ item.percent }}%</td>
+              <td>
+                <div>
+                  <b>{{ item.provider }}</b>
+                </div>
+                <div>&nbsp;&nbsp;CallBack</div>
+                <div>&nbsp;&nbsp;Deposit</div>
+              </td>
+              <td>
+                <div>{{ item.hm }}</div>
+                <div>{{ item.cal }}</div>
+                <div>{{ item.dp }}</div>
+              </td>
+              <td>
+                <div>{{ item.percent }}%</div>
+                <div style="width: 100%; height: 2.7rem; background: #b3c6e7">
+                  <div
+                    :style="{
+                      background: '#305493',
+                      height: '1.3rem',
+                      width: (item.cal * 100) / item.hm + '%',
+                    }"
+                  ></div>
+                  <div
+                    :style="{
+                      background: '#305493',
+                      height: '1.3rem',
+                      width: (item.dp * 100) / item.hm + '%',
+                    }"
+                  ></div>
+                </div>
+              </td>
             </tr>
           </table>
         </v-col>
@@ -134,3 +162,10 @@ export default {
   },
 };
 </script>
+
+<style >
+#tableCalDep tr {
+  margin: 1rem 0;
+  border-bottom: 1px solid grey;
+}
+</style>

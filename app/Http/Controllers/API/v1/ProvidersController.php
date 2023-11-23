@@ -261,19 +261,15 @@ class ProvidersController extends Controller
         $max_dp = 0;
         $col_prov = [];
         foreach ($a_providers as $prow) {
-            $sql = "SELECT l.status_id, s.name, COUNT(*) hm FROM `lids` l LEFT JOIN `statuses` s ON (s.`id` = l.`status_id` ) WHERE s.id IN (9,10) AND l.`provider_id` = " . $prow->provider_id . " AND DATE(l.`created_at`) = '" . $prow->dates . "' GROUP BY l.`status_id`";
-            $a_caldp = DB::select($sql);
+            $sql = "SELECT  COUNT(*) hm FROM `lids` l  WHERE status_id = 10 AND l.`provider_id` = " . $prow->provider_id . " AND DATE(l.`created_at`) = '" . $prow->dates . "' GROUP BY l.`status_id`";
+            $a_caldp = collect(DB::select($sql))->value('hm');
             $a_cal_dp = ['cal' => 0, 'dp' => 0];
-            foreach ($a_caldp as $cdrow) {
-                if ($cdrow->status_id == 9) {
-                    $a_cal_dp['cal'] = $cdrow->hm;
-                    $max_cal = max($max_cal, $cdrow->hm);
-                }
-                if ($cdrow->status_id == 10) {
-                    $a_cal_dp['dp'] = $cdrow->hm;
-                    $max_dp = max($max_dp, $cdrow->hm);
-                }
-            }
+            $a_cal_dp['dp'] = $a_caldp ?? 0;
+            $max_dp = max($max_dp, $a_caldp);
+            $sql = "SELECT DISTINCT COUNT(*) hm FROM `lids` li JOIN `logs` lo ON (li.id = lo.`lid_id`  ) WHERE `provider_id` = " . $prow->provider_id . " AND DATE(li.`created_at`) = '" . $prow->dates . "' AND lo.`status_id` = 9";
+            $a_caldp = collect(DB::select($sql))->value('hm');
+            $a_cal_dp['cal'] = $a_caldp ?? 0;
+            $max_cal = max($max_cal, $a_caldp);
             if (isset($col_prov[$prow->dates])) {
                 $col_prov[$prow->dates] += 1;
             } else {
