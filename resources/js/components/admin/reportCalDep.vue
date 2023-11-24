@@ -74,16 +74,20 @@
       ></v-progress-linear>
       <v-row>
         <v-col>
-          <table width="100%" id="tableCalDep">
+          <table width="100%" id="tableCalDep" class="mt-3">
             <tr>
               <th>Date</th>
               <th>Provider</th>
               <th>
-                <v-btn text x-small @click="orderDates('date')">Leads</v-btn
+                <v-btn text x-small @click="orderDates('date')"
+                  ><b>Leads</b></v-btn
                 ><br />
-                <v-btn text x-small @click="orderDates('cal')">CallBack</v-btn
+                <v-btn text x-small @click="orderDates('cal')"
+                  ><b>CallBack</b></v-btn
                 ><br />
-                <v-btn text x-small @click="orderDates('dp')">Deposit</v-btn>
+                <v-btn text x-small @click="orderDates('dp')"
+                  ><b>Deposit</b></v-btn
+                >
               </th>
               <th style="width: 70vw">Data</th>
             </tr>
@@ -96,7 +100,7 @@
                 <div>&nbsp;&nbsp;CallBack</div>
                 <div>&nbsp;&nbsp;Deposit</div>
               </td>
-              <td>
+              <td style="padding-left: 0.5rem">
                 <div>{{ item.hm }}</div>
                 <div>{{ item.cal }}</div>
                 <div>{{ item.dp }}</div>
