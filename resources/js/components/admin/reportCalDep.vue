@@ -80,13 +80,13 @@
               <th>Provider</th>
               <th>
                 <v-btn text x-small @click="orderDates('date')"
-                  ><b>Leads</b></v-btn
+                  ><b>Leads</b> <v-icon>mdi-menu-down</v-icon></v-btn
                 ><br />
                 <v-btn text x-small @click="orderDates('cal')"
-                  ><b>CallBack</b></v-btn
+                  ><b>CallBack</b> <v-icon>mdi-menu-down</v-icon></v-btn
                 ><br />
                 <v-btn text x-small @click="orderDates('dp')"
-                  ><b>Deposit</b></v-btn
+                  ><b>Deposit</b> <v-icon>mdi-menu-down</v-icon></v-btn
                 >
               </th>
               <th style="width: 70vw">Data</th>
@@ -106,7 +106,7 @@
                 <div>{{ item.dp }}</div>
               </td>
               <td>
-                <div>{{ item.percent }}%</div>
+                <div>total calls statistics {{ item.percent }}%</div>
                 <div style="width: 100%; height: 2.7rem; background: #b3c6e7">
                   <div
                     :style="{
@@ -146,6 +146,7 @@ export default {
       .substring(0, 10),
     dateTimeTo: new Date().toISOString().substring(0, 10),
     dates: {},
+    selectedOrder: 1,
   }),
   mounted: function () {
     this.reportCalDep();
