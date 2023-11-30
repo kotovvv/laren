@@ -49,7 +49,7 @@
         color="purple"
       ></v-progress-linear>
       <v-row v-if="table.length && files">
-        <v-col>
+        <v-col cols="9">
           <v-simple-table id="loadedTable">
             <template v-slot:default>
               <thead>
