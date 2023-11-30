@@ -770,9 +770,9 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         }
 
         if (isset($data['phone']) && strlen($data['phone']) > 1) {
-            $n_lid->tel =  $data['phone'];
+            $n_lid->tel =  preg_replace('/[^0-9]/', '', $data['phone']);
         } else {
-            $n_lid->tel = time();
+            return response('No phone');
         }
 
         if (isset($data['email']) && strlen($data['email']) > 1) {
@@ -787,6 +787,17 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         $n_lid->office_id = User::where('id', $f_key->user_id)->value('office_id');
 
         $n_lid->created_at = Now();
+
+        $f_lid =  Lid::where('tel', '=', '' . $n_lid->tel)->first();
+
+        if (!$f_lid->isEmpty()) {
+            $n_lid->afilyator = $f_key->name;
+            $n_lid->provider_id = 11;
+            $n_lid->user_id = 101;
+            $n_lid->office_id = User::where('id', 101)->value('office_id');
+            $n_lid->save();
+            return response('duplicate');
+        }
 
         $n_lid->save();
         $id = $n_lid->id;
