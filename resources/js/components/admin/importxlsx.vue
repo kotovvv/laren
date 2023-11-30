@@ -61,6 +61,7 @@
                         'name',
                         'lastname',
                         'email',
+                        'TelCode',
                         'tel',
                         'afilyator',
                         'text',
