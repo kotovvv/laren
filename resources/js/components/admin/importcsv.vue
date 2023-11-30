@@ -10,6 +10,7 @@
     </v-snackbar>
     <v-tabs v-model="tab" background-color="primary" dark>
       <v-tab> Provider </v-tab>
+      <v-tab> XLSX </v-tab>
       <v-tab v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
         ВТС
       </v-tab>
@@ -270,6 +271,9 @@
           </v-col>
         </v-row>
       </v-tab-item>
+      <v-tab-item>
+        <importxlsx :user_id="$attrs.user.id"></importxlsx>
+      </v-tab-item>
       <v-tab-item v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
         <importBTC></importBTC>
       </v-tab-item>
@@ -331,6 +335,7 @@
 import XLSX from "xlsx";
 import axios from "axios";
 import importBTC from "./importBTC";
+import importxlsx from "./importxlsx";
 import _ from "lodash";
 export default {
   data: () => ({
@@ -826,6 +831,7 @@ export default {
   },
   components: {
     importBTC,
+    importxlsx,
   },
 };
 </script>
