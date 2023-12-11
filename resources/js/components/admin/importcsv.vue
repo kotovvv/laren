@@ -272,7 +272,7 @@
         </v-row>
       </v-tab-item>
       <v-tab-item>
-        <importxlsx :user_id="$attrs.user.id"></importxlsx>
+        <importxlsx :user="$attrs.user"></importxlsx>
       </v-tab-item>
       <v-tab-item v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
         <importBTC></importBTC>

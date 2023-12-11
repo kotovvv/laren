@@ -9,7 +9,7 @@
       </template>
     </v-snackbar>
 
-    <v-content>
+    <v-container>
       <v-row>
         <v-col cols="2">
           <v-select
@@ -49,7 +49,7 @@
         color="purple"
       ></v-progress-linear>
       <v-row v-if="table.length && files">
-        <v-col>
+        <v-col cols="9">
           <v-simple-table id="loadedTable">
             <template v-slot:default>
               <thead>
@@ -61,6 +61,7 @@
                         'name',
                         'lastname',
                         'email',
+                        'TelCode',
                         'tel',
                         'afilyator',
                         'text',
@@ -83,36 +84,92 @@
         <v-col cols="3" v-if="header.length > 2">
           <v-card height="100%" class="pa-5">
             Specify the user for leads
-            <v-list>
-              <v-radio-group
-                @change="putSelectedLidsDB"
-                ref="radiogroup"
-                v-model="userid"
-                v-bind="users"
-                id="usersradiogroup"
-              >
-                <v-radio :value="user.id" v-for="user in users" :key="user.id">
-                  <template v-slot:label>
-                    {{ user.fio }}
-                    <v-badge
-                      :content="user.hmlids"
-                      :value="user.hmlids"
-                      :color="usercolor(user)"
-                      overlap
-                    >
-                      <v-icon large v-if="user.role_id === 2">
-                        mdi-account-group-outline
-                      </v-icon>
-                      <v-icon large v-else> mdi-account-outline </v-icon>
-                    </v-badge>
-                  </template>
-                </v-radio>
-              </v-radio-group>
-            </v-list>
+            <div class="pa-5 w-100 border wrp_users">
+              <div class="my-3">User Search</div>
+              <v-autocomplete
+                v-model="selectedUser"
+                :items="users"
+                label="Select"
+                item-text="fio"
+                item-value="id"
+                :return-object="true"
+                append-icon="mdi-close"
+                outlined
+                rounded
+                @click:append="clearuser()"
+              ></v-autocomplete>
+
+              <div class="scroll-y">
+                <v-list>
+                  <v-radio-group
+                    id="usersradiogroup"
+                    ref="radiogroup"
+                    v-model="userid"
+                    v-bind="users"
+                    @change="putSelectedLidsDB"
+                  >
+                    <v-expansion-panels ref="akk" v-model="akkvalue">
+                      <v-expansion-panel v-for="(item, i) in group" :key="i">
+                        <v-expansion-panel-header>
+                          <div
+                            height="60"
+                            width="60"
+                            class="img v-expansion-panel-header__icon mr-1"
+                          >
+                            {{ item.fio.slice(0, 3) }}
+                          </div>
+
+                          {{ item.fio }}
+                          <div></div>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <v-row
+                            v-for="user in users.filter(function (i) {
+                              return i.group_id == item.group_id;
+                            })"
+                            :key="user.id"
+                          >
+                            <v-radio
+                              :label="user.fio"
+                              :value="user.id"
+                              :disabled="disableuser == user.id"
+                            >
+                            </v-radio>
+
+                            <v-btn
+                              class="ml-3"
+                              small
+                              :color="usercolor(user)"
+                              @click="
+                                disableuser = user.id;
+                                filterGroups = [];
+                                getPage();
+                              "
+                              :value="user.hmlids"
+                              :disabled="disableuser == user.id"
+                              >{{ user.hmlids }}</v-btn
+                            >
+                            <v-btn data="new" v-if="user.statnew" label small>
+                              {{ user.statnew }}
+                            </v-btn>
+                            <v-btn data="inp" v-if="user.inp" label small>
+                              {{ user.inp }}
+                            </v-btn>
+                            <v-btn data="cb" v-if="user.cb" label small>
+                              {{ user.cb }}
+                            </v-btn>
+                          </v-row>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                  </v-radio-group>
+                </v-list>
+              </div>
+            </div>
           </v-card>
         </v-col>
       </v-row>
-    </v-content>
+    </v-container>
   </div>
 </template>
 
@@ -121,7 +178,7 @@ import XLSX from "xlsx";
 import axios from "axios";
 
 export default {
-  props: ["user_id"],
+  props: ["user"],
   data: () => ({
     loading: false,
     message: "",
@@ -137,6 +194,10 @@ export default {
     userid: null,
     related_user: [],
     tab: 0,
+    akkvalue: [],
+    group: null,
+    selectedUser: {},
+    disableuser: null,
   }),
 
   mounted() {
@@ -144,6 +205,14 @@ export default {
     this.getStatuses();
   },
   watch: {
+    selectedUser(user) {
+      if (user == {}) {
+        this.userid = null;
+        return;
+      }
+      //this.disableuser = user.id;
+      this.akkvalue = _.findIndex(this.group, { group_id: user.group_id });
+    },
     selectedProvider: function (newval) {
       this.users = [];
       this.related_user = [];
@@ -263,7 +332,7 @@ export default {
       info.start = start;
       info.end = new Date().toJSON().slice(0, 19).replace("T", " ");
       info.provider_id = self.selectedProvider;
-      info.user_id = self.$props.user_id;
+      info.user_id = self.$props.user.id;
       info.message = self.message;
 
       axios
@@ -288,20 +357,57 @@ export default {
     },
     getUsers() {
       let self = this;
-      this.loading = true;
+
       axios
         .post("/api/getusers", self.related_user)
         .then((res) => {
-          self.users = res.data.map(({ name, id, role_id, fio, hmlids }) => ({
-            name,
-            id,
-            role_id,
-            fio,
-            hmlids,
-          }));
-          self.loading = false;
+          self.users = res.data.map(
+            ({
+              name,
+              id,
+              role_id,
+              fio,
+              hmlids,
+              group_id,
+              order,
+              statnew,
+              pic,
+              inp,
+              cb,
+              office_id,
+            }) => ({
+              name,
+              id,
+              role_id,
+              fio,
+              hmlids,
+              pic,
+              group_id,
+              order,
+              statnew,
+              inp,
+              cb,
+              office_id,
+            })
+          );
+          if (self.$props.user.role_id == 1 && self.filterOffices > 0) {
+            self.users = self.users.filter(
+              (f) => f.office_id == self.filterOffices
+            );
+          }
+          if (self.$props.user.role_id != 1) {
+            self.users = self.users.filter(
+              (f) => f.group_id == self.$props.user.group_id
+            );
+          }
+          self.group = self.getGroup();
         })
         .catch((error) => console.log(error));
+    },
+    getGroup() {
+      return _.filter(this.users, function (o) {
+        return o.group_id == o.id;
+      });
     },
     usercolor(user) {
       return user.role_id == 2 ? "green" : "blue";

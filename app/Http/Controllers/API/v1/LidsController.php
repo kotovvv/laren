@@ -288,6 +288,10 @@ class LidsController extends Controller
                 continue;
             }
 
+            if (isset($lid['TelCode'])) {
+                $n_lid->tel =  $lid['TelCode'] . $lid['tel'];
+            }
+
             if (isset($lid['email'])) {
                 $n_lid->email = $lid['email'];
             } else {
