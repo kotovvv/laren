@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="dialog">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn color="outlined" v-bind="attrs" v-on="on"> Отчёт </v-btn>
+        <v-btn color="outlined" v-bind="attrs" v-on="on"> Report </v-btn>
       </template>
       <v-card>
         <v-card-title>

@@ -73,7 +73,7 @@
                         v-bind="attrs"
                         v-on="on"
                         hide-details
-                        class="border pl-10"
+                        outline
                       ></v-text-field>
                     </template>
                     <v-date-picker
@@ -102,7 +102,7 @@
                         v-bind="attrs"
                         v-on="on"
                         hide-details
-                        class="border pl-10"
+                        outline
                       ></v-text-field>
                     </template>
                     <v-date-picker
@@ -162,8 +162,8 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    class="border pl-10"
                     hide-details
+                    outlined
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -190,13 +190,12 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    class="border pl-10"
                     hide-details
+                    outlined
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   v-model="tablDateTo"
-                  class="border"
                   @input="
                     tablDateShowTo = false;
                     getDataTime();
@@ -206,9 +205,8 @@
             <v-col cols="col-4"
               ><v-text-field
                 label="Text search"
-                class="border px-5 mt-0"
-                hide-details="auto"
-                single-line
+                outlined
+                hide-details
                 v-model="text_search"
               ></v-text-field
             ></v-col>
@@ -222,10 +220,9 @@
                 item-text="name"
                 item-value="id"
                 label="Status filter"
-                outlined
-                rounded
                 hide-details
                 :multiple="true"
+                outlined
               >
                 <template v-slot:selection="{ item, index }">
                   <span v-if="index === 0">{{ item.name }} </span>
@@ -305,7 +302,7 @@
               <v-file-input
                 v-model="files"
                 ref="fileupload"
-                label="загрузить CSV"
+                label="Load CSV"
                 show-size
                 truncate-length="24"
                 @change="onFileChange"
@@ -346,13 +343,13 @@
             <v-col cols="6">
               <v-file-input
                 v-model="file_emails"
-                label="загрузить txt"
+                label="Load txt"
                 show-size
                 truncate-length="24"
                 @change="onFileChange"
               ></v-file-input>
               <v-btn @click="checkEmails" v-if="list_email" class="primary"
-                >Проверить<v-progress-circular
+                >Check<v-progress-circular
                   v-if="loading"
                   indeterminate
                   color="amber"
@@ -522,9 +519,9 @@ export default {
             ...new Set(data.emails.filter((i) => !vm.in_db.includes(i))),
           ];
           vm.message =
-            "Уникальных: " +
+            "Unique: " +
             vm.out_db.length +
-            "<br>Дубликатов: " +
+            "<br>Duplicates: " +
             vm.in_db.length;
           vm.snackbar = true;
           vm.loading = false;
