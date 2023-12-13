@@ -21,7 +21,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
                   v-model="datefrom"
-                  label="От"
+                  label="From."
                   prepend-icon="mdi-calendar"
                   readonly
                   v-bind="attrs"
@@ -64,7 +64,7 @@
             Close
           </v-btn>
         </v-card-title>
-        <!-- <v-card-subtitle> Лидов в системе: {{ hm }} </v-card-subtitle> -->
+        <!-- <v-card-subtitle> Leads in the system: {{ hm }} </v-card-subtitle> -->
 
         <v-col>
           <v-simple-table>

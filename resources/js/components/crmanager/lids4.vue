@@ -417,7 +417,7 @@
           <v-autocomplete
             v-model="selectedUser"
             :items="users"
-            label="Выбор"
+            label="Choice"
             item-text="fio"
             item-value="id"
             :return-object="true"
@@ -1198,7 +1198,7 @@ export default {
         .get("/api/provider")
         .then((res) => {
           self.providers = res.data.map(({ name, id }) => ({ name, id }));
-          // self.providers.unshift({ name: "выбор", id: 0 });
+          // self.providers.unshift({ name: "selection", id: 0 });
           // self.getLidsOnDate();
         })
         .catch((error) => console.log(error));

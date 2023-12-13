@@ -12,7 +12,7 @@
       <v-tab> XLSX </v-tab>
       <v-tab> Provider </v-tab>
       <v-tab v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
-        ВТС
+        BTC
       </v-tab>
       <v-tab>CHECK DUBLIKATE MAIL</v-tab>
     </v-tabs>
@@ -391,8 +391,8 @@ export default {
     ],
     duplicate_leads_headers: [
       { text: "Afilator", value: "afilyator" },
-      { text: "Емаил", value: "email" },
-      { text: "Тфьу", value: "name" },
+      { text: "Email", value: "email" },
+      { text: "Name", value: "name" },
       { text: "Office", value: "office_name" },
       { text: "Provider", value: "provider_name" },
       { text: "Status", value: "status_name" },

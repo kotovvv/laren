@@ -38,7 +38,6 @@
                     getData(item.id);
                   }
                 "
-
               >
                 <template v-slot:item.mbalans="{ item }">
                   {{ item.mbalans }}
@@ -64,7 +63,7 @@
                       dialog = true;
                     "
                   >
-                    Стереть
+                    Erase
                   </v-btn>
                 </template>
                 <template v-slot:expanded-item="{ headers }">
@@ -103,11 +102,10 @@
     <v-dialog v-model="dialog" width="500">
       <v-card>
         <v-card-title class="text-h5 grey lighten-2">
-          Удалить данные пользователя?
+          Delete user data?
         </v-card-title>
         <v-card-text>
-          Балансы, телефонные звонки будут удалены без возможности
-          восстановления!
+          Balances, phone calls will be deleted with no possibility of recovery!
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -120,7 +118,7 @@
               delDataUser();
             "
           >
-            Удалить
+            Delete
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -137,14 +135,14 @@ export default {
     dialog: false,
     expanded: [],
     tableHeaders: [
-      { text: "ФИО", value: "fio" },
-      { text: "Кол-во лидов", value: "hmlids" },
-      { text: "Кол-во наборов", value: "hmcalls" },
-      { text: "Общее время", value: "alltime" },
-      { text: "Баланс месяц", value: "mbalans" },
-      { text: "Баланс день", value: "balans" },
-      { text: "Установка баланса", value: "setbalans" },
-      { text: "Очистить", value: "deleteData" },
+      { text: "NAME", value: "fio" },
+      { text: "Number of leads", value: "hmlids" },
+      { text: "Number of sets", value: "hmcalls" },
+      { text: "Total time", value: "alltime" },
+      { text: "Balance month", value: "mbalans" },
+      { text: "Balance of the day", value: "balans" },
+      { text: "Setting the balance", value: "setbalans" },
+      { text: "Clear", value: "deleteData" },
     ],
     tableData: [],
     users: [],
@@ -197,7 +195,7 @@ export default {
             self.tableData = res.data;
             self.tableData = self.tableData.map(function (i) {
               let t = (i.alltime / 60 / 60).toFixed(2).toString().split(".");
-              i.alltime = t[0] + " час. " + t[1] + " мин.";
+              i.alltime = t[0] + " hour. " + t[1] + " min.";
               return i;
             });
           }

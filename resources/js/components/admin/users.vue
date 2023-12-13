@@ -118,7 +118,7 @@
                           "
                         />
                         <v-file-input
-                          label="Картинка"
+                          label="Picture"
                           v-model="editedItem.pic"
                         ></v-file-input>
                       </v-col> -->
@@ -237,7 +237,7 @@
                         color="blue darken-1"
                         text
                         @click="deleteItemConfirm"
-                        >Да</v-btn
+                        >Yes</v-btn
                       >
                       <v-spacer></v-spacer>
                     </v-card-actions>
@@ -308,7 +308,7 @@ export default {
       { text: "Role", value: "role" },
       { text: "Group", value: "group" },
       { text: "Office", value: "office" },
-      // { text: "Показывать", value: "active" },
+      // { text: "Show", value: "active" },
       { text: "Actions", value: "actions", sortable: false },
     ],
     headers_office: [

@@ -161,7 +161,7 @@
           </v-select>
         </v-col>
         <v-col v-if="$props.user.role_id == 1 && $props.user.office_id == 0">
-          <p>Фильтр office</p>
+          <p>Office filter</p>
           <v-select
             v-model="filterOffices"
             :items="offices"
@@ -1221,7 +1221,7 @@ export default {
         .get("/api/provider")
         .then((res) => {
           self.providers = res.data.map(({ name, id }) => ({ name, id }));
-          // self.providers.unshift({ name: "выбор", id: 0 });
+          // self.providers.unshift({ name: "selection", id: 0 });
           // self.getLidsOnDate();
         })
         .catch((error) => console.log(error));

@@ -72,7 +72,7 @@ export default {
     },
     errors: {},
     showPassword: false,
-    userNameRequired: [(v) => !!v || "без логина?"],
+    userNameRequired: [(v) => !!v || "without login?"],
     passwordRequired: [(v) => !!v || "Password?"],
   }),
   methods: {

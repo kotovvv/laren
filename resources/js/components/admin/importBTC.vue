@@ -24,7 +24,7 @@
           <v-file-input
             v-model="files"
             ref="fileupload"
-            label="load file ВТС CSV"
+            label="load file BTC CSV"
             show-size
             truncate-length="24"
             @change="onFileChange"

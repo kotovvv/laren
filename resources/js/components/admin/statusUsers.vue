@@ -30,7 +30,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="datefrom"
-                      label="От"
+                      label="From."
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
