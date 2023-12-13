@@ -1,5 +1,16 @@
 <template>
-  <Pie
+  <!-- <Pie
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :css-classes="cssClasses"
+      :styles="styles"
+      :width="width"
+      :height="height"
+    /> -->
+  <Doughnut
     :chart-options="chartOptions"
     :chart-data="chartData"
     :chart-id="chartId"
@@ -13,7 +24,7 @@
 </template>
 
 <script>
-import { Pie } from 'vue-chartjs/legacy'
+import { Pie, Doughnut } from "vue-chartjs/legacy";
 
 import {
   Chart as ChartJS,
@@ -21,48 +32,49 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-  CategoryScale
-} from 'chart.js'
+  CategoryScale,
+} from "chart.js";
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default {
-  name: 'PieChart',
+  name: "PieChart",
   components: {
-    Pie
+    Pie,
+    Doughnut,
   },
   props: {
-    datap:{
+    datap: {
       type: Object,
     },
     chartId: {
       type: String,
-      default: 'pie-chart'
+      default: "pie-chart",
     },
     datasetIdKey: {
       type: String,
-      default: 'label'
+      default: "label",
     },
     width: {
       type: Number,
-      default: 400
+      default: 400,
     },
     height: {
       type: Number,
-      default: 400
+      default: 400,
     },
     cssClasses: {
-      default: '',
-      type: String
+      default: "",
+      type: String,
     },
     styles: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     plugins: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -70,11 +82,9 @@ export default {
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins:{legend:{display:false,position: "bottom"}}
-
-
-      }
-    }
-  }
-}
+        plugins: { legend: { display: false, position: "bottom" } },
+      },
+    };
+  },
+};
 </script>

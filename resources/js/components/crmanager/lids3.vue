@@ -4,75 +4,77 @@
       <v-row>
         <v-col cols="1">
           <p>Reset</p>
-          <v-btn @click="clearFilter" class="border" outlined rounded
+          <v-btn @click="clearFilter" class="border" outlined
             ><v-icon>close</v-icon></v-btn
           >
         </v-col>
-        <v-col>
+        <v-col cols="2">
           <v-row class="px-4">
             <v-col><p>From Date</p></v-col>
             <v-col><p>By Date</p></v-col>
           </v-row>
 
-          <div class="status_wrp wrp_date px-3">
-            <v-row align="center">
-              <v-col>
-                <v-menu
-                  v-model="dateFrom"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="datetimeFrom"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
+          <div class="status_wrp wrp_date">
+            <div class="d-flex align-center">
+              <v-menu
+                v-model="dateFrom"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
                     v-model="datetimeFrom"
-                    @input="
-                      dateFrom = false;
-                      savedates == true ? getLids3(0) : null;
-                    "
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col>
-                <v-menu
-                  v-model="dateTo"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="datetimeTo"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="datetimeFrom"
+                  @input="
+                    dateFrom = false;
+                    savedates == true ? getLids3(0) : null;
+                  "
+                ></v-date-picker>
+              </v-menu>
+
+              <v-menu
+                v-model="dateTo"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
                     v-model="datetimeTo"
-                    @input="
-                      dateTo = false;
-                      getLids3(0);
-                    "
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-checkbox v-model="savedates"></v-checkbox>
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="datetimeTo"
+                  @input="
+                    dateTo = false;
+                    getLids3(0);
+                  "
+                ></v-date-picker>
+              </v-menu>
+
+              <v-checkbox
+                hide-details
+                class="mt-0 pt-0"
+                v-model="savedates"
+              ></v-checkbox>
               <v-btn @click="clearuser" small text
                 ><v-icon>refresh</v-icon></v-btn
               >
-            </v-row>
+            </div>
           </div>
         </v-col>
 
@@ -88,7 +90,6 @@
             item-text="name"
             item-value="id"
             outlined
-            rounded
             :multiple="true"
           >
             <template v-slot:selection="{ item, index }">
@@ -126,7 +127,6 @@
             item-value="id"
             @change="getPage(0)"
             outlined
-            rounded
             multiple
           >
             <template v-slot:selection="{ item, index }">
@@ -148,7 +148,7 @@
           </v-select>
         </v-col>
 
-        <v-col>
+        <v-col cols="3">
           <p>
             <v-radio-group
               row
@@ -168,7 +168,6 @@
             append-icon="mdi-magnify"
             @input="getPage"
             outlined
-            rounded
           ></v-text-field>
         </v-col>
         <!-- v-if="$props.user.role_id == 1" -->
@@ -179,7 +178,6 @@
             append-icon="mdi-magnify"
             @click:append="searchlids3"
             outlined
-            rounded
           ></v-text-field>
         </v-col>
         <v-col v-if="$props.user.role_id == 1 && $props.user.office_id == 0">
@@ -190,7 +188,6 @@
             item-text="name"
             item-value="id"
             outlined
-            rounded
             @change="
               getUsers();
               getPage(0);
@@ -342,7 +339,6 @@
                   <v-row>
                     <v-select
                       v-model="limit"
-                      rounded
                       class="mt-2 border"
                       :items="[10, 50, 100, 250, 500, 'all']"
                       @change="getPage(0)"
@@ -359,7 +355,7 @@
           </v-data-table>
           <v-row class="align-center">
             <v-col cols="2" v-if="$props.user.role_id == 1">
-              <v-btn outlined rounded @click="exportXlsx" class="border">
+              <v-btn outlined @click="exportXlsx" class="border">
                 <v-icon left> mdi-file-excel </v-icon>
                 Download the table
               </v-btn>
@@ -375,7 +371,6 @@
                 item-text="name"
                 item-value="id"
                 outlined
-                rounded
               >
                 <template v-slot:selection="{ item }">
                   <i
@@ -404,7 +399,6 @@
                 :disable="!selected.length && selectedStatus == 0"
                 class="border ma-2"
                 outlined
-                rounded
                 @click="changeStatus"
               >
                 Change status
@@ -419,13 +413,12 @@
           <v-autocomplete
             v-model="selectedUser"
             :items="users"
-            label="Выбор"
+            label="Select"
             item-text="fio"
             item-value="id"
             :return-object="true"
             append-icon="mdi-close"
             outlined
-            rounded
             @click:append="clearuser()"
           ></v-autocomplete>
 
@@ -1245,7 +1238,7 @@ export default {
   height: 60px;
   width: 60px;
   background: #2196f3;
-  border-radius: 22px;
+  border-radius: 16px;
   display: flex;
   justify-content: center;
   align-items: center;

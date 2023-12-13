@@ -94,7 +94,7 @@
             item-text="name"
             item-value="id"
             outlined
-            rounded
+
             multiple
           >
             <template v-slot:selection="{ item, index }">
@@ -126,7 +126,7 @@
             item-text="name"
             item-value="id"
             outlined
-            rounded
+
             :multiple="true"
           >
             <template v-slot:selection="{ item, index }">

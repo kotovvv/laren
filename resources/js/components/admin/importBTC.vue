@@ -17,7 +17,6 @@
             item-text="name"
             item-value="id"
             outlined
-            rounded
           >
           </v-select>
         </v-col>
@@ -110,7 +109,6 @@
                 item-text="name"
                 item-value="id"
                 outlined
-                rounded
                 multiple
                 @change="set_count_free"
               >
@@ -147,11 +145,11 @@
         >
           <template
             v-slot:top="{ pagination, options, updateOptions }"
-          :footer-props="{
+            :footer-props="{
               'items-per-page-options': [50, 10, 100, 250, 500, -1],
-            'items-per-page-text': '',
-          }"
-        >
+              'items-per-page-text': '',
+            }"
+          >
             <v-row>
               <!-- <v-spacer></v-spacer> -->
               <v-col cols="3" class="mt-3">

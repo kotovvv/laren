@@ -192,7 +192,6 @@
                     item-text="name"
                     item-value="id"
                     outlined
-                    rounded
                   >
                   </v-select>
                 </v-col>
