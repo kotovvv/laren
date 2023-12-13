@@ -248,7 +248,7 @@
     </v-row>
     <v-row>
       <v-col cols="9">
-        <div class="border pa-4">
+        <div class="pa-4">
           <v-data-table
             v-model.lazy.trim="selected"
             id="tablids"
@@ -269,6 +269,7 @@
             :disable-items-per-page="true"
             :loading="loading"
             loading-text="Uploading... Stand by."
+            class="elevation-1"
           >
             <template
               v-slot:top="{ pagination, options, updateOptions }"
@@ -1249,10 +1250,7 @@ export default {
 #tablids .v-application--is-ltr .v-data-footer__pagination {
   margin: 0;
 }
-.wrp_date .v-text-field > .v-input__control > .v-input__slot {
-  margin-top: 3px;
-  margin-bottom: 0;
-}
+
 .nn input {
   width: 3rem;
   border-bottom: 1px solid gray;
@@ -1260,18 +1258,7 @@ export default {
 .v-application--is-ltr .v-data-footer__select {
   margin-top: -12px;
 }
-#usersradiogroup .img,
-.wrp_group .img {
-  height: 60px;
-  width: 60px;
-  background: #2196f3;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-weight: bold;
-}
+
 .wrp_group .row {
   gap: 0.7rem;
 }

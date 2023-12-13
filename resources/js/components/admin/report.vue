@@ -38,6 +38,7 @@
                     getData(item.id);
                   }
                 "
+
               >
                 <template v-slot:item.mbalans="{ item }">
                   {{ item.mbalans }}

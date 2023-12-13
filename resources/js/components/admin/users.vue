@@ -2,7 +2,68 @@
   <div>
     <v-container fluid>
       <v-row>
-        <v-col cols="9">
+        <v-col cols="3">
+          <v-data-table
+            :headers="headers_office"
+            :items="offices"
+            class="elevation-1"
+            :single-select="true"
+          >
+            <template v-slot:top>
+              <v-toolbar flat>
+                <v-toolbar-title>Offices</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-dialog v-model="dialogOffice" max-width="600px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      color="primary"
+                      dark
+                      class="mb-2"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      Add Office
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline">{{ formTitleOffice }}</span>
+                    </v-card-title>
+
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12">
+                            <v-text-field
+                              v-model="editedItemOffice.name"
+                              label="Name"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="closeOffice">
+                        Cancel
+                      </v-btn>
+                      <v-btn color="blue darken-1" text @click="saveOfficeBtn">
+                        Save
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-toolbar>
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon small class="mr-2" @click="editItemOffice(item)">
+                mdi-pencil
+              </v-icon>
+            </template>
+          </v-data-table>
+        </v-col>
+        <v-col cols="6">
           <!-- <v-card class="mx-auto"> -->
           <!-- max-width="900" -->
           <v-data-table
@@ -11,14 +72,14 @@
             :items="filteredUser"
             sort-by="role_id"
             show-select
-            class="border"
+            class="elevation-1"
             :single-select="true"
           >
             <template v-slot:top>
               <v-toolbar flat>
                 <v-toolbar-title>Users</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
-                <v-spacer></v-spacer>
+
                 <v-dialog v-model="dialog" max-width="600px">
                   <template v-slot:activator="{ on, attrs }">
                     <statusUsers :o_users="selected" />
@@ -100,7 +161,7 @@
                               label="Office"
                             ></v-select>
                           </v-col>
-                          <v-col cols="12">
+                          <!-- <v-col cols="12">
                             <v-textarea
                               outlined
                               label="Name;Server;Login;Password;Prefix"
@@ -115,7 +176,7 @@
                               color="deep-purple accent-3"
                               hide-details
                             ></v-switch>
-                          </v-col>
+                          </v-col> -->
                           <!-- <v-col cols="6">
                             <v-text-field
                               v-model="editedItem.sip_server"
@@ -185,13 +246,13 @@
                 <v-col
                   v-if="$attrs.user.role_id == 1 && $attrs.user.office_id == 0"
                 >
-                  <p>Filter office</p>
                   <v-select
                     v-model="filterOffices"
                     :items="offices"
                     item-text="name"
                     item-value="id"
                     outlined
+                    label="Filter office"
                   >
                   </v-select>
                 </v-col>
@@ -210,66 +271,7 @@
           <!-- </v-card> -->
         </v-col>
         <v-col cols="3">
-          <v-data-table
-            :headers="headers_office"
-            :items="offices"
-            class="border"
-            :single-select="true"
-          >
-            <template v-slot:top>
-              <v-toolbar flat>
-                <v-toolbar-title>Offices</v-toolbar-title>
-                <v-divider class="mx-4" inset vertical></v-divider>
-                <v-spacer></v-spacer>
-                <v-dialog v-model="dialogOffice" max-width="600px">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      color="primary"
-                      dark
-                      class="mb-2"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      Add Office
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline">{{ formTitleOffice }}</span>
-                    </v-card-title>
-
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col cols="12">
-                            <v-text-field
-                              v-model="editedItemOffice.name"
-                              label="Name"
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="closeOffice">
-                        Cancel
-                      </v-btn>
-                      <v-btn color="blue darken-1" text @click="saveOfficeBtn">
-                        Save
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-toolbar>
-            </template>
-            <template v-slot:item.actions="{ item }">
-              <v-icon small class="mr-2" @click="editItemOffice(item)">
-                mdi-pencil
-              </v-icon>
-            </template>
-          </v-data-table>
+          <providers></providers>
         </v-col>
       </v-row>
     </v-container>
@@ -278,8 +280,14 @@
 
 <script>
 import statusUsers from "./statusUsers";
+import providers from "./providers";
 import axios from "axios";
 export default {
+  name: "users",
+  components: {
+    providers,
+    statusUsers,
+  },
   data: () => ({
     pic: null,
     imageUrl: "",
@@ -552,9 +560,6 @@ export default {
       }
       this.closeOffice();
     },
-  },
-  components: {
-    statusUsers,
   },
 };
 </script>

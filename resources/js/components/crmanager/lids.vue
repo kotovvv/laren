@@ -176,7 +176,7 @@
         <v-progress-linear
           :active="loading"
           indeterminate
-          color="purple"
+          color="blue"
         ></v-progress-linear>
       </v-col>
     </v-row>
@@ -198,6 +198,7 @@
               'items-per-page-options': [50, 10, 100, 250, 500, -1],
               'items-per-page-text': '',
             }"
+            class="elevation-1"
           >
             <template
               v-slot:top="{ pagination, options, updateOptions }"
@@ -775,28 +776,13 @@ export default {
   display: block;
   color: #000;
 }
-#maintable.v-data-table >>> tr {
-  outline: 2px solid transparent;
-}
 
 #maintable.v-data-table >>> tr:hover,
 #maintable.v-data-table >>> tr.v-data-table__selected {
   /* border: 2px solid #000; */
   cursor: pointer;
 }
-#maintable.v-data-table >>> tr.v-data-table__selected {
-  border-bottom: transparent !important;
-}
-#maintable.v-data-table >>> tr.v-data-table__expanded tr:hover {
-  border: none;
-}
-#maintable >>> .text-start {
-  padding: 0 !important;
-}
-.blackborder {
-  /* border: 2px solid #000; */
-  border-top: transparent !important;
-}
+
 .wrp__statuses {
   display: grid;
   grid-template-columns: repeat(4, auto);

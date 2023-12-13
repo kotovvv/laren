@@ -194,6 +194,7 @@
             :disable-items-per-page="true"
             :loading="loading"
             loading-text="Uploading... Stand by."
+            class="elevation-1"
           >
             <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length" class="blackborder">

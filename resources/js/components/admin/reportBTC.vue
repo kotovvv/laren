@@ -94,7 +94,6 @@
             item-text="name"
             item-value="id"
             outlined
-
             multiple
           >
             <template v-slot:selection="{ item, index }">
@@ -126,7 +125,6 @@
             item-text="name"
             item-value="id"
             outlined
-
             :multiple="true"
           >
             <template v-slot:selection="{ item, index }">
@@ -189,6 +187,7 @@
             ref="btctable"
             :loading="loading"
             loading-text="Uploading... Stand by."
+            class="elevation-1"
           >
             <template
               v-slot:top="{ pagination, options, updateOptions }"

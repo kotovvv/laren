@@ -203,7 +203,7 @@
     <v-progress-linear
       :active="loading"
       indeterminate
-      color="purple"
+      color="blue"
     ></v-progress-linear>
     <v-row>
       <v-col>
@@ -263,7 +263,7 @@
     </v-snackbar>
     <v-row>
       <v-col cols="9">
-        <div class="border pa-4">
+        <div class="pa-4">
           <!-- @update:sort-by="makeSort"
           @update:sort-desc="makeSort" -->
           <v-data-table
@@ -287,6 +287,7 @@
             ref="datatable"
             :loading="loading"
             loading-text="Uploading... Stand by."
+            class="elevation-1"
           >
             <template v-slot:top="{}">
               <v-row>
@@ -1238,18 +1239,7 @@ export default {
 .v-application--is-ltr .v-data-footer__select {
   margin-top: -12px;
 }
-#usersradiogroup .img,
-.wrp_group .img {
-  height: 60px;
-  width: 60px;
-  background: #2196f3;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-weight: bold;
-}
+
 .wrp_group .row {
   gap: 0.7rem;
 }

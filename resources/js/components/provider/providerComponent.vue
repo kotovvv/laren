@@ -262,6 +262,7 @@
                 :items="filteredItems"
                 :search="text_search"
                 @click:row="clickrow"
+                class="elevation-1"
               ></v-data-table>
             </v-col>
             <v-dialog v-model="popup" max-width="500">
@@ -328,6 +329,7 @@
           :items="parse_csv"
           ref="datatable"
           :loading="loading"
+          class="elevation-1"
         ></v-data-table>
       </v-tab-item>
       <v-tab-item>

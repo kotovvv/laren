@@ -18,6 +18,7 @@
             label="Provider"
             item-text="name"
             item-value="id"
+            outlined
           ></v-select>
         </v-col>
         <v-col cols="3" v-if="selectedProvider">
@@ -28,6 +29,7 @@
             show-size
             truncate-length="24"
             @change="onFileChange"
+            outlined
           ></v-file-input>
         </v-col>
         <v-col cols="3">
@@ -37,20 +39,26 @@
             label="Status"
             item-text="name"
             item-value="id"
+            outlined
           ></v-select>
         </v-col>
         <v-col cols="4">
-          <v-textarea v-model="message" label="message" rows="1"></v-textarea>
+          <v-textarea
+            v-model="message"
+            label="message"
+            rows="1"
+            outlined
+          ></v-textarea>
         </v-col>
       </v-row>
       <v-progress-linear
         :active="loading"
         indeterminate
-        color="purple"
+        color="blue"
       ></v-progress-linear>
       <v-row v-if="table.length && files">
         <v-col cols="9">
-          <v-simple-table id="loadedTable">
+          <v-simple-table id="loadedTable" class="elevation-1">
             <template v-slot:default>
               <thead>
                 <tr>
@@ -84,8 +92,8 @@
         <v-col cols="3" v-if="header.length > 2">
           <v-card height="100%" class="pa-5">
             Specify the user for leads
-            <div class="pa-5 w-100 border wrp_users">
-              <div class="my-3">User Search</div>
+            <div class="w-100 wrp_users">
+              <!-- <div class="my-3">User Search</div>
               <v-autocomplete
                 v-model="selectedUser"
                 :items="users"
@@ -96,7 +104,7 @@
                 append-icon="mdi-close"
                 outlined
                 @click:append="clearuser()"
-              ></v-autocomplete>
+              ></v-autocomplete> -->
 
               <div class="scroll-y">
                 <v-list>
@@ -110,13 +118,13 @@
                     <v-expansion-panels ref="akk" v-model="akkvalue">
                       <v-expansion-panel v-for="(item, i) in group" :key="i">
                         <v-expansion-panel-header>
-                          <div
+                          <!-- <div
                             height="60"
                             width="60"
                             class="img v-expansion-panel-header__icon mr-1"
                           >
                             {{ item.fio.slice(0, 3) }}
-                          </div>
+                          </div> -->
 
                           {{ item.fio }}
                           <div></div>

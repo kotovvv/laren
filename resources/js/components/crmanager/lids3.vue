@@ -2,13 +2,13 @@
   <div>
     <v-container fluid>
       <v-row>
-        <v-col cols="1">
+        <!-- <v-col cols="1">
           <p>Reset</p>
           <v-btn @click="clearFilter" class="border" outlined
             ><v-icon>close</v-icon></v-btn
           >
-        </v-col>
-        <v-col cols="2">
+        </v-col> -->
+        <v-col cols="3">
           <v-row class="px-4">
             <v-col><p>From Date</p></v-col>
             <v-col><p>By Date</p></v-col>
@@ -30,6 +30,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
+                    outlined
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -55,6 +56,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
+                    outlined
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -71,9 +73,9 @@
                 class="mt-0 pt-0"
                 v-model="savedates"
               ></v-checkbox>
-              <v-btn @click="clearuser" small text
+              <!-- <v-btn @click="clearuser" small text
                 ><v-icon>refresh</v-icon></v-btn
-              >
+              > -->
             </div>
           </div>
         </v-col>
@@ -172,7 +174,7 @@
         </v-col>
         <!-- v-if="$props.user.role_id == 1" -->
         <v-col>
-          <p>Global search</p>
+          <p>Search</p>
           <v-text-field
             v-model="searchAll"
             append-icon="mdi-magnify"
@@ -200,7 +202,7 @@
     <v-progress-linear
       :active="loading"
       indeterminate
-      color="purple"
+      color="blue"
     ></v-progress-linear>
     <v-row>
       <v-col>
@@ -260,7 +262,7 @@
     </v-snackbar>
     <v-row>
       <v-col cols="9">
-        <div class="border pa-4">
+        <div>
           <!-- @update:sort-by="makeSort"
           @update:sort-desc="makeSort" -->
           <v-data-table
@@ -284,10 +286,11 @@
             ref="datatable"
             :loading="loading"
             loading-text="Uploading... Stand by."
+            class="elevation-1"
           >
-            <template v-slot:top="{}">
-              <v-row>
-                <v-col cols="2">
+            <!-- <template v-slot:top="{}">
+              <v-row> -->
+            <!-- <v-col cols="2">
                   <div class="d-flex pl-2 align-center border">
                     Selection
                     <v-text-field
@@ -308,8 +311,8 @@
                     hide-details
                     class="border px-2"
                   ></v-text-field>
-                </v-col>
-                <v-col class="wrp_group">
+                </v-col> -->
+            <!--                 <v-col class="wrp_group">
                   <v-row>
                     <v-checkbox
                       v-model="filterGroups"
@@ -334,8 +337,8 @@
                       total-visible="10"
                     ></v-pagination>
                   </v-row>
-                </v-col>
-                <v-col cols="3" class="mt--3">
+                </v-col> -->
+            <!-- <v-col cols="3" class="mt--3">
                   <v-row>
                     <v-select
                       v-model="limit"
@@ -344,9 +347,9 @@
                       @change="getPage(0)"
                     ></v-select
                   ></v-row>
-                </v-col>
-              </v-row>
-            </template>
+                </v-col> -->
+            <!-- </v-row>
+            </template> -->
             <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length" class="blackborder">
                 <logtel :lid_id="item.id" :key="item.id" />
@@ -354,8 +357,31 @@
             </template>
           </v-data-table>
           <v-row class="align-center">
+            <v-col
+              ><h5 class="mb-0">All:{{ hm }}</h5></v-col
+            >
+            <v-col>
+              <v-pagination
+                v-model="page"
+                class="my--4"
+                :length="parseInt(hm / limit) + 1"
+                @input="getPage()"
+                total-visible="20"
+              ></v-pagination
+            ></v-col>
+            <v-col cols="1">
+              <v-select
+                v-model="limit"
+                class="mt-2"
+                :items="[10, 50, 100, 250, 500, 'all']"
+                @change="getPage(0)"
+                outlined
+              ></v-select>
+            </v-col>
+          </v-row>
+          <!-- <v-row class="align-center">
             <v-col cols="2" v-if="$props.user.role_id == 1">
-              <v-btn outlined @click="exportXlsx" class="border">
+              <v-btn outlined @click="exportXlsx">
                 <v-icon left> mdi-file-excel </v-icon>
                 Download the table
               </v-btn>
@@ -404,12 +430,12 @@
                 Change status
               </v-btn>
             </v-col>
-          </v-row>
+          </v-row> -->
         </div>
       </v-col>
       <v-col cols="3">
-        <div class="pa-5 w-100 border wrp_users">
-          <div class="my-3">User Search</div>
+        <div class="w-100 wrp_users">
+          <!-- <div class="my-3">User Search</div>
           <v-autocomplete
             v-model="selectedUser"
             :items="users"
@@ -420,7 +446,7 @@
             append-icon="mdi-close"
             outlined
             @click:append="clearuser()"
-          ></v-autocomplete>
+          ></v-autocomplete> -->
 
           <div class="scroll-y">
             <v-list>
@@ -1222,10 +1248,6 @@ export default {
   display: none;
 }
 
-.wrp_date .v-text-field > .v-input__control > .v-input__slot {
-  margin-top: 3px;
-  margin-bottom: 0;
-}
 .nn input {
   width: 3rem;
   border-bottom: 1px solid gray;
@@ -1233,18 +1255,7 @@ export default {
 .v-application--is-ltr .v-data-footer__select {
   margin-top: -12px;
 }
-#usersradiogroup .img,
-.wrp_group .img {
-  height: 60px;
-  width: 60px;
-  background: #2196f3;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-weight: bold;
-}
+
 .wrp_group .row {
   gap: 0.7rem;
 }

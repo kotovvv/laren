@@ -10,7 +10,6 @@
                 append-icon="mdi-magnify"
                 label="Search"
                 outlined
-                rounded
                 @click:append="
                   page = 0;
                   getLidsPost();
@@ -26,7 +25,6 @@
               item-text="name"
               item-value="id"
               outlined
-              rounded
               multiple
               @change="
                 page = 0;
@@ -46,14 +44,13 @@
 
             <v-text-field
               v-model.lazy.trim="filtertel"
-              append-icon="mdi-phone"
               outlined
-              rounded
               @click:append="
                 page = 0;
                 getLidsPost();
               "
-            ></v-text-field>
+            >
+            </v-text-field>
           </v-col>
           <v-col cols="2">
             Status query
@@ -63,7 +60,6 @@
               item-text="name"
               item-value="id"
               outlined
-              rounded
               multiple
               @change="
                 page = 0;
@@ -103,7 +99,6 @@
               item-text="name"
               item-value="name"
               outlined
-              rounded
               return-object
               :change="wp_close"
             >
@@ -119,7 +114,7 @@
         <v-progress-linear
           :active="loading"
           indeterminate
-          color="purple"
+          color="blue"
         ></v-progress-linear>
         <v-row>
           <v-col>
@@ -138,6 +133,7 @@
                 @click:row="clickrow"
                 :items-per-page="100"
                 hide-default-footer
+                class="elevation-1"
               >
                 <template
                   v-slot:item.tel="{ item }"
@@ -155,7 +151,9 @@
                   </a>
                   <span @click.prevent.stop="wp_call(item)">
                     <!-- :class="{ active: active_el == item.id }" -->
-                    <v-icon small> mdi-headset </v-icon>
+                    <!-- <v-icon small> mdi-headset </v-icon> -->
+
+                    <img width="24" height="24" src="/img/ico/phone.png" />
                   </span>
                 </template>
                 <template v-slot:item.tel="{ item }" v-else>
@@ -170,12 +168,14 @@
                         lid_id = item.id;
                       "
                     >
-                      <v-icon small> mdi-headset </v-icon>
+                      <!-- <v-icon small> mdi-headset </v-icon> -->
+
+                      <img width="24" height="24" src="/img/ico/phone.png" />
                     </a>
                   </span>
                 </template>
                 <template v-slot:item.status="{ item }">
-                  <div class="status_wrp" @click.stop="openDialog(item)">
+                  <div class="status_wrp d-flex" @click.stop="openDialog(item)">
                     <b
                       :style="{
                         background: stylecolor(item.status_id),
@@ -229,18 +229,20 @@
                 :hide-default-footer="true"
                 ref="datatable"
                 @click:row="clickrow"
+                class="elevation-1"
               >
                 <template v-slot:top="{}" v-if="hm > 100">
                   <v-row class="align-center">
-                    <v-spacer></v-spacer>
-                    <h5 class="mb-0">Total:{{ hm }}</h5>
-                    <v-pagination
-                      v-model="page"
-                      class="my-4"
-                      :length="parseInt(hm / limit) + 1"
-                      @input="getLidsPost()"
-                      total-visible="10"
-                    ></v-pagination>
+                    <v-col>
+                      <!-- <h5 class="mb-0">Total:{{ hm }}</h5> -->
+                      <v-pagination
+                        v-model="page"
+                        class="my-4"
+                        :length="parseInt(hm / limit) + 1"
+                        @input="getLidsPost()"
+                        total-visible="20"
+                      ></v-pagination>
+                    </v-col>
                   </v-row>
                 </template>
 
@@ -258,7 +260,9 @@
                         {{ item.tel }}
                       </a>
                       <span @click.prevent.stop="wp_call(item)">
-                        <v-icon small> mdi-headset </v-icon>
+                        <img width="24" height="24" src="/img/ico/phone.png" />
+
+                        <!-- <v-icon small> mdi-headset </v-icon> -->
                       </span>
                     </template>
                     <template v-else>
@@ -273,18 +277,28 @@
                             lid_id = item.id;
                           "
                         >
-                          <v-icon small> mdi-headset </v-icon>
+                          <!-- <v-icon small> mdi-headset </v-icon> -->
+
+                          <img
+                            width="24"
+                            height="24"
+                            src="/img/ico/phone.png"
+                          />
                         </a>
                       </span>
                     </template>
                     <span @click.prevent.stop="openDialogBTC(item)">
-                      <v-icon class="bitcoin"> mdi-bitcoin </v-icon>
+                      <!-- <v-icon class="bitcoin"> mdi-bitcoin </v-icon> -->
+                      <img width="24" height="24" src="/img/ico/btc.png" />
                     </span>
                   </div>
                 </template>
 
                 <template v-slot:item.status="{ item }">
-                  <div class="status_wrp mx-1" @click.stop="openDialog(item)">
+                  <div
+                    class="status_wrp d-flex mx-1"
+                    @click.stop="openDialog(item)"
+                  >
                     <b
                       :style="{
                         background: stylecolor(item.status_id),
@@ -340,7 +354,7 @@
       </template>
     </v-snackbar>
     <v-dialog v-model="dial" persistent max-width="600px">
-      <v-card rounded class="rounded-xl pa-4">
+      <v-card class="-xl pa-4">
         <v-card-title class="text-h5">
           <!-- @change="putSelectedLidsDB" -->
           <div class="wrp__statuses">
@@ -1051,26 +1065,11 @@ export default {
   color: #2196f3;
   font-weight: bold;
 }
-#maintable.v-data-table >>> tr {
-  outline: 2px solid transparent;
-}
 
 td .status_wrp {
   cursor: pointer;
 }
-#maintable.v-data-table >>> tr.v-data-table__selected {
-  border-bottom: transparent !important;
-}
-#maintable.v-data-table >>> tr.v-data-table__expanded tr:hover {
-  border: none;
-}
-#maintable >>> .text-start {
-  padding: 0 !important;
-}
-.blackborder {
-  /* border: 2px solid #000; */
-  border-top: transparent !important;
-}
+
 .wrp__statuses {
   display: grid;
   grid-template-columns: repeat(4, auto);

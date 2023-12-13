@@ -9,14 +9,17 @@
       </template>
     </v-snackbar>
     <v-tabs v-model="tab" background-color="primary" dark>
-      <v-tab> Provider </v-tab>
       <v-tab> XLSX </v-tab>
+      <v-tab> Provider </v-tab>
       <v-tab v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
         ВТС
       </v-tab>
       <v-tab>CHECK DUBLIKATE MAIL</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
+      <v-tab-item>
+        <importxlsx :user="$attrs.user"></importxlsx>
+      </v-tab-item>
       <v-tab-item>
         <v-row>
           <v-col cols="2">
@@ -26,6 +29,7 @@
               label="Provider"
               item-text="name"
               item-value="id"
+              outlined
             ></v-select>
           </v-col>
           <v-col cols="3" v-if="selectedProvider">
@@ -36,6 +40,7 @@
               show-size
               truncate-length="24"
               @change="onFileChange"
+              outlined
             ></v-file-input>
           </v-col>
           <v-col cols="3" v-if="parse_csv.length">
@@ -45,6 +50,7 @@
               label="Status"
               item-text="name"
               item-value="id"
+              outlined
             ></v-select>
           </v-col>
           <v-col cols="4" v-if="parse_csv.length">
@@ -66,6 +72,7 @@
                           label="Search"
                           single-line
                           hide-details
+                          outlined
                         ></v-text-field>
                       </v-card-title>
                     </v-col>
@@ -77,6 +84,7 @@
                           label="Initial digits"
                           single-line
                           hide-details
+                          outlined
                         ></v-text-field>
                       </v-card-title>
                     </v-col>
@@ -92,6 +100,7 @@
                   :items="filteredItems"
                   ref="datatable"
                   :loading="loading"
+                  class="elevation-1"
                 ></v-data-table>
               </v-card>
             </v-col>
@@ -216,7 +225,7 @@
             <v-progress-linear
               :active="loading"
               indeterminate
-              color="purple"
+              color="blue"
             ></v-progress-linear>
           </v-col>
           <v-col cols="12">
@@ -225,13 +234,14 @@
               item-key="id"
               :items="imports"
               ref="importtable"
-              @click:row="clickrow"
+              class="elevation-1"
             >
+              <!-- @click:row="clickrow" -->
               <template v-slot:item.id="{ item }"> </template>
             </v-data-table>
           </v-col>
           <v-col cols="12" v-if="leads.length">
-            <div class="border pa-4">
+            <div class="pa-4">
               <v-data-table
                 id="tablids"
                 :headers="headers_leads"
@@ -244,6 +254,7 @@
                 :disable-items-per-page="true"
                 :loading="loading"
                 loading-text="Uploading... Stand by."
+                class="elevation-1"
               >
                 <template
                   v-slot:top="{ pagination, options, updateOptions }"
@@ -270,9 +281,6 @@
           </v-col>
         </v-row>
       </v-tab-item>
-      <v-tab-item>
-        <importxlsx :user="$attrs.user"></importxlsx>
-      </v-tab-item>
       <v-tab-item v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
         <importBTC></importBTC>
       </v-tab-item>
@@ -289,7 +297,7 @@
           <v-row>
             <v-col cols="6">
               <v-textarea
-                outline
+                outlined
                 class="pa-3"
                 v-model="list_email"
                 label="Email addresses or telephone numbers "
@@ -321,6 +329,7 @@
                 item-key="id"
                 :items="duplicate_leads"
                 ref="duplicatetable"
+                class="elevation-1"
               >
               </v-data-table>
             </v-col>
@@ -837,18 +846,6 @@ export default {
 </script>
 
 <style>
-#usersradiogroup .img,
-.wrp_group .img {
-  height: 60px;
-  width: 60px;
-  background: #2196f3;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-weight: bold;
-}
 #usersradiogroup .v-btn:not(.ml-3) {
   margin-left: 3px;
 }

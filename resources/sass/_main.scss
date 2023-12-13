@@ -128,7 +128,7 @@
 
 .status_wrp b,
 .sel_stat {
-    border-radius: 30px;
+    border-radius: 3px;
     height: 22px;
     min-width: 22px;
     text-align: center;
@@ -169,8 +169,11 @@
 // }
 
 .wrp_users #usersradiogroup .v-expansion-panel {
-    border-radius: 20px;
-    margin-bottom: 12px;
+
+    border-radius: 0;
+    margin-bottom: 0.3rem;
+    padding-left: 1rem;
+
 }
 
 .wrp_users .v-expansion-panel-header {
@@ -221,19 +224,7 @@ main .theme--light.v-data-table .v-data-footer,
     border: 2px dotted grey;
 }
 
-// .v-data-table tbody tr {
-//     display: table-row;
-//     box-shadow: 0px 0px 9.5px 0.5px rgb(118 32 223 / 20%);
-//     border: none;
-//     border-radius: 22px;
-//     margin-bottom: 10px;
-// }
 
-main .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr>td:not(.v-data-table__mobile-row),
-.theme--light.v-data-table>.v-data-table__wrapper>table>thead>tr>th {
-    border-bottom: none !important;
-    border: 1px solid transparent !important;
-}
 
 .blackborder .v-data-table>.v-data-table__wrapper>table {
     width: initial;
@@ -294,4 +285,8 @@ main .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr>td:not(.v-
 
 .tablecalls table td {
     font-size: 1rem !important;
+}
+
+#loadedTable tr {
+    border-bottom: 1px solid rgb(196, 196, 196);
 }

@@ -142,6 +142,7 @@
           :disable-pagination="true"
           :loading="loading"
           loading-text="Uploading... Stand by."
+          class="elevation-1"
         >
           <template
             v-slot:top="{ pagination, options, updateOptions }"

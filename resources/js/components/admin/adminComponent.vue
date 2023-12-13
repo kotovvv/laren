@@ -25,7 +25,7 @@
       </v-bottom-navigation>
 
       <v-spacer></v-spacer>
-      <v-btn @click="adminMenu = 'reportCalDep'">
+      <v-btn @click="adminMenu = 'reportBTC'">
         {{ $props.user.fio }}
       </v-btn>
 
@@ -68,7 +68,7 @@ export default {
 
     items: [
       {
-        text: "Import CSV",
+        text: "Import Exel/Csv",
         name: "importcsv",
         icon: "/img/ico/exel.png",
       },
@@ -93,16 +93,16 @@ export default {
       { text: "Management", name: "mlids", icon: "/img/ico/management.png" },
       //{ text: "Report", name: "report", icon: "mdi-receipt" },
       //{ text: "Reports", name: "reportPie", icon: "mdi-timetable" },
+      //   {
+      //     text: "Report BTC",
+      //     name: "reportBTC",
+      //     icon: "/img/ico/reprortsbtc.png",
+      //   },
       {
-        text: "Report BTC",
-        name: "reportBTC",
+        text: "Report CalDep",
+        name: "reportCalDep",
         icon: "/img/ico/reprortsbtc.png",
       },
-      //   {
-      //     text: "Report CalDep",
-      //     name: "reportCalDep",
-      //     icon: "mdi-format-align-left",
-      //   },
     ],
     adminMenu: "",
   }),
