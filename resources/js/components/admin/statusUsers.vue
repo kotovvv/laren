@@ -9,7 +9,7 @@
           v-on="on"
           :disabled="$props.o_users.length == 0"
         >
-          Отчёт
+          Report
         </v-btn>
       </template>
       <v-card>

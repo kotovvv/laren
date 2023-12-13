@@ -15,12 +15,19 @@
         >
           <span>{{ item.text }}</span>
 
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-img
+            :src="item.icon"
+            width="42px"
+            height="40px"
+            :alt="item.text"
+          ></v-img>
         </v-btn>
       </v-bottom-navigation>
 
       <v-spacer></v-spacer>
-      <div class="align-center mr-2">{{ $props.user.fio }}</div>
+      <v-btn @click="adminMenu = 'reportCalDep'">
+        {{ $props.user.fio }}
+      </v-btn>
 
       <v-btn @click="$emit('login', {})">Logout</v-btn>
     </v-app-bar>
@@ -46,10 +53,10 @@ const statusLid = () => import("./statusLid");
 const providers = () => import("./providers");
 const mlids = () => import("../manager/mlids");
 
-const calls = () => import("../crmanager/calls");
+// const calls = () => import("../crmanager/calls");
 const lids3 = () => import("../crmanager/lids3");
-const report = () => import("./report");
-const reportPie = () => import("./reportPie");
+// const report = () => import("./report");
+// const reportPie = () => import("./reportPie");
 const reportBTC = () => import("./reportBTC");
 const reportCalDep = () => import("./reportCalDep");
 
@@ -63,31 +70,39 @@ export default {
       {
         text: "Import CSV",
         name: "importcsv",
-        icon: "mdi-arrow-down-bold-box-outline",
+        icon: "/img/ico/exel.png",
       },
-      { text: "Users", name: "users", icon: "mdi-account" },
+      { text: "Users", name: "users", icon: "/img/ico/user.png" },
       {
         text: "Status leads",
         name: "statusLid",
-        icon: "mdi-format-list-checks",
+        icon: "/img/ico/status.png",
       },
-      {
-        text: "Providers",
-        name: "providers",
-        icon: "mdi-library",
-      },
+      //   {
+      //     text: "Providers",
+      //     name: "providers",
+      //     icon: "/img/ico/",
+      //   },
 
-      { text: "Distribution", name: "lids3", icon: "mdi-sitemap" },
-      { text: "Calls", name: "calls", icon: "mdi-headset-dock" },
-      { text: "Management", name: "mlids", icon: "mdi-phone-log-outline" },
-      { text: "Report", name: "report", icon: "mdi-receipt" },
-      { text: "Reports", name: "reportPie", icon: "mdi-timetable" },
-      { text: "Report BTC", name: "reportBTC", icon: "mdi-cash" },
       {
-        text: "Report CalDep",
-        name: "reportCalDep",
-        icon: "mdi-format-align-left",
+        text: "Distribution",
+        name: "lids3",
+        icon: "/img/ico/distribution.png",
       },
+      //{ text: "Calls", name: "calls", icon: "mdi-headset-dock" },
+      { text: "Management", name: "mlids", icon: "/img/ico/management.png" },
+      //{ text: "Report", name: "report", icon: "mdi-receipt" },
+      //{ text: "Reports", name: "reportPie", icon: "mdi-timetable" },
+      {
+        text: "Report BTC",
+        name: "reportBTC",
+        icon: "/img/ico/reprortsbtc.png",
+      },
+      //   {
+      //     text: "Report CalDep",
+      //     name: "reportCalDep",
+      //     icon: "mdi-format-align-left",
+      //   },
     ],
     adminMenu: "",
   }),
@@ -97,12 +112,12 @@ export default {
       if (this.adminMenu == "users") return users;
       if (this.adminMenu == "statusLid") return statusLid;
       // if (this.adminMenu == "workPlaces") return workPlaces;
-      if (this.adminMenu == "providers") return providers;
+      //   if (this.adminMenu == "providers") return providers;
       if (this.adminMenu == "mlids") return mlids;
       if (this.adminMenu == "lids3") return lids3;
-      if (this.adminMenu == "calls") return calls;
-      if (this.adminMenu == "report") return report;
-      if (this.adminMenu == "reportPie") return reportPie;
+      //   if (this.adminMenu == "calls") return calls;
+      //   if (this.adminMenu == "report") return report;
+      //   if (this.adminMenu == "reportPie") return reportPie;
       if (this.adminMenu == "reportBTC") return reportBTC;
       if (this.adminMenu == "reportCalDep") return reportCalDep;
     },

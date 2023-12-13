@@ -109,7 +109,6 @@
                     :return-object="true"
                     append-icon="mdi-close"
                     outlined
-                    rounded
                     @click:append="clearuser()"
                   ></v-autocomplete>
 
@@ -290,7 +289,8 @@
           <v-row>
             <v-col cols="6">
               <v-textarea
-                class="border pa-3"
+                outline
+                class="pa-3"
                 v-model="list_email"
                 label="Email addresses or telephone numbers "
               ></v-textarea>
@@ -312,7 +312,7 @@
               ></v-btn>
             </v-col>
             <v-col cols="12" v-if="duplicate_leads.length">
-              <v-btn outlined rounded @click="exportXlsx" class="border">
+              <v-btn outlined @click="exportXlsx" class="border">
                 <v-icon left> mdi-file-excel </v-icon>
                 Download the table
               </v-btn>
@@ -842,7 +842,7 @@ export default {
   height: 60px;
   width: 60px;
   background: #2196f3;
-  border-radius: 22px;
+  border-radius: 19px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -95,7 +95,6 @@
                 :return-object="true"
                 append-icon="mdi-close"
                 outlined
-                rounded
                 @click:append="clearuser()"
               ></v-autocomplete>
 
