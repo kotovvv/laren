@@ -3,10 +3,6 @@
     <v-container fluid>
       <v-row>
         <v-col cols="3">
-          <v-row class="px-4">
-            <v-col><p>From Date</p></v-col>
-            <v-col><p>By Date</p></v-col>
-          </v-row>
           <div class="status_wrp wrp_date px-3">
             <v-row align="center">
               <v-col>
@@ -24,10 +20,11 @@
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      outlined
+                      label="From Date"
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    locale="ru-ru"
                     v-model="dateTimeFrom"
                     @input="
                       dateFrom = false;
@@ -51,6 +48,8 @@
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      outlined
+                      label="By Date"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -70,7 +69,7 @@
       <v-progress-linear
         :active="loading"
         :indeterminate="loading"
-        color="deep-purple accent-4"
+        color="blue accent-4"
       ></v-progress-linear>
       <v-row>
         <v-col>

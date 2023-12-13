@@ -3,7 +3,7 @@
     <v-progress-linear
       :active="loading"
       :indeterminate="loading"
-      color="deep-purple accent-4"
+      color="blue accent-4"
     ></v-progress-linear>
     <v-simple-table dense v-if="logs.length" class="mb-3">
       <template v-slot:default>

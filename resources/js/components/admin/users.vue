@@ -173,7 +173,7 @@
                             <v-switch
                               v-model="editedItem.sip"
                               label="sip"
-                              color="deep-purple accent-3"
+                              color="blue accent-3"
                               hide-details
                             ></v-switch>
                           </v-col> -->

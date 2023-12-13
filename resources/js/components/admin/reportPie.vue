@@ -66,7 +66,6 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    locale="ru-ru"
                     v-model="dateTimeTo"
                     @input="
                       dateTo = false;

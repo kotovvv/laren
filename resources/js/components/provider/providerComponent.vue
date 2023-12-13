@@ -31,7 +31,7 @@
               <v-progress-linear
                 :active="pie1"
                 :indeterminate="pie1"
-                color="deep-purple accent-4"
+                color="blue accent-4"
               ></v-progress-linear>
               <PieChart :datap="chartDataAll" />
               <v-row>
@@ -118,7 +118,7 @@
               <v-progress-linear
                 :active="pie2"
                 :indeterminate="pie2"
-                color="deep-purple accent-4"
+                color="blue accent-4"
               ></v-progress-linear>
               <PieChart :datap="chartDataTime" />
               <v-row>
@@ -255,7 +255,7 @@
               <v-progress-linear
                 :active="loading"
                 :indeterminate="loading"
-                color="deep-purple accent-4"
+                color="blue accent-4"
               ></v-progress-linear>
               <v-data-table
                 :headers="headers"
@@ -271,7 +271,7 @@
                 <v-progress-linear
                   :active="history_load"
                   :indeterminate="history_load"
-                  color="deep-purple accent-4"
+                  color="blue accent-4"
                 ></v-progress-linear>
                 <v-card-text>
                   <v-simple-table>

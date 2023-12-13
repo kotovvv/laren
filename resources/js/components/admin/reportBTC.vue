@@ -29,7 +29,6 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    locale="ru-ru"
                     v-model="dateTimeFrom"
                     @input="
                       dateFrom = false;
