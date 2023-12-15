@@ -10082,6 +10082,13 @@ h3 {
   gap: 15px;
 }
 
+.status_wrp {
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 0px 9.5px 0.5px rgba(19, 91, 199, 0.2);
+  border-radius: 3px;
+}
+
 .wrp_users #usersradiogroup .v-expansion-panel {
   border-radius: 0;
   margin-bottom: 0.3rem;

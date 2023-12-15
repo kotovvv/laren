@@ -1080,7 +1080,7 @@ td .status_wrp {
 }
 .wrp__statuses input:checked + label {
   border: 3px solid #2196f3;
-  border-radius: 30px;
+  border-radius: 3px;
 }
 .status_wrp span {
   padding: 5px;
