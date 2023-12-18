@@ -101,6 +101,7 @@ Route::post('changeDateBTC', [LidsController::class, 'changeDateBTC']);
 Route::post('getAssignedBTC', [LidsController::class, 'getAssignedBTC']);
 Route::post('provider_importlid', [LidsController::class, 'provider_importlid']);
 Route::post('checkEmails', [LidsController::class, 'checkEmails']);
+Route::post('clearLeads', [LidsController::class, 'clearLeads']);
 Route::post('getlidsImportedProvider', [LidsController::class, 'getlidsImportedProvider']);
 Route::get('onCdr', [LogsController::class, 'onCdr']);
 Route::post('getCalls', [LogsController::class, 'getCalls']);

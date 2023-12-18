@@ -268,7 +268,7 @@
         </v-btn>
       </v-col> -->
       <!-- <v-spacer></v-spacer> -->
-      <v-col cols="3">
+      <v-col cols="4">
         <div class="d-flex align-center">
           <v-select
             v-model="selectedStatus"
@@ -307,6 +307,26 @@
           >
             Change status
           </v-btn>
+          <v-btn @click="dialogDelete = true" class="red accent-2"
+            >CLEER ALL LOGS</v-btn
+          >
+          <v-dialog v-model="dialogDelete" max-width="800px">
+            <v-card>
+              <v-card-title class="headline justify-center"
+                >Logs will be deleted. Do you confirm?</v-card-title
+              >
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1 dark " @click="dialogDelete = false"
+                  >No</v-btn
+                >
+                <v-btn color="blue darken-1 dark" @click="clearLeads()"
+                  >Yes</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
       </v-col>
     </v-row>
@@ -596,6 +616,7 @@ export default {
     archSelected: [],
     sortBy: "",
     sortDesc: true,
+    dialogDelete: false,
   }),
   mounted: function () {
     this.getUsers();
@@ -948,6 +969,29 @@ export default {
           self.getUsers();
           // self.getLids(send.user_id);
           self.filterStatus = [];
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    clearLeads() {
+      const self = this;
+      let send = {};
+      send.user_id = this.userid;
+
+      if (this.selected.length > 0 && this.$refs.datatable.items.length > 0) {
+        send.data = this.selected.map((el) => {
+          return el.id;
+        });
+      } else {
+        return;
+      }
+      axios
+        .post("api/clearLeads", send)
+        .then(function (response) {
+          self.selected = [];
+          self.getLids3();
+          self.clearLeads();
         })
         .catch(function (error) {
           console.log(error);

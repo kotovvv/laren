@@ -753,6 +753,20 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         //
     }
 
+    public function clearLeads(Request $request)
+    {
+        $data = $request->all();
+
+        DB::table('btc_list')->whereIn('lid_id', $data['data'])->delete();
+        DB::table('depozits')->whereIn('lid_id', $data['data'])->delete();
+        DB::table('qtytel')->whereIn('lid_id', $data['data'])->delete();
+        DB::table('imported_leads')->whereIn('lead_id', $data['data'])->delete();
+        Log::whereIn('lid_id', $data['data'])->delete();
+        Lid::whereIn('id', $data['data'])->update(['status_id' => 8, 'ontime' => NUll, 'qtytel' => 0, 'address' => '', 'text' => '', 'updated_at' => Now()]);
+
+        return response('Selected leads cleared', 200);
+    }
+
     public function deletelids(Request $request)
     {
         $lids = $request->all();
