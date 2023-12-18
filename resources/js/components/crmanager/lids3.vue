@@ -260,6 +260,58 @@
         </v-btn>
       </template>
     </v-snackbar>
+    <v-row class="align-center">
+      <v-col cols="2" v-if="$props.user.role_id == 1">
+        <v-btn outlined @click="exportXlsx">
+          <v-icon left> mdi-file-excel </v-icon>
+          Download the table
+        </v-btn>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col>
+        <h6>Status assignment</h6>
+      </v-col>
+      <v-col cols="3">
+        <v-select
+          v-model="selectedStatus"
+          :items="[{ name: 'Default', id: 0 }, ...filterstatuses]"
+          item-text="name"
+          item-value="id"
+          outlined
+        >
+          <template v-slot:selection="{ item }">
+            <i
+              :style="{
+                background: item.color,
+                outline: '1px solid grey',
+              }"
+              class="sel_stat mr-4"
+            ></i
+            >{{ item.name }}
+          </template>
+          <template v-slot:item="{ item }">
+            <i
+              :style="{
+                background: item.color,
+                outline: '1px solid grey',
+              }"
+              class="sel_stat mr-4"
+            ></i
+            >{{ item.name }}
+          </template>
+        </v-select>
+      </v-col>
+      <v-col cols="3">
+        <v-btn
+          :disable="!selected.length && selectedStatus == 0"
+          class="border ma-2"
+          outlined
+          @click="changeStatus"
+        >
+          Change status
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="9">
         <div>
@@ -379,58 +431,6 @@
               ></v-select>
             </v-col>
           </v-row>
-          <!-- <v-row class="align-center">
-            <v-col cols="2" v-if="$props.user.role_id == 1">
-              <v-btn outlined @click="exportXlsx">
-                <v-icon left> mdi-file-excel </v-icon>
-                Download the table
-              </v-btn>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col>
-              <h6>Status assignment</h6>
-            </v-col>
-            <v-col cols="3">
-              <v-select
-                v-model="selectedStatus"
-                :items="[{ name: 'Default', id: 0 }, ...filterstatuses]"
-                item-text="name"
-                item-value="id"
-                outlined
-              >
-                <template v-slot:selection="{ item }">
-                  <i
-                    :style="{
-                      background: item.color,
-                      outline: '1px solid grey',
-                    }"
-                    class="sel_stat mr-4"
-                  ></i
-                  >{{ item.name }}
-                </template>
-                <template v-slot:item="{ item }">
-                  <i
-                    :style="{
-                      background: item.color,
-                      outline: '1px solid grey',
-                    }"
-                    class="sel_stat mr-4"
-                  ></i
-                  >{{ item.name }}
-                </template>
-              </v-select>
-            </v-col>
-            <v-col cols="3">
-              <v-btn
-                :disable="!selected.length && selectedStatus == 0"
-                class="border ma-2"
-                outlined
-                @click="changeStatus"
-              >
-                Change status
-              </v-btn>
-            </v-col>
-          </v-row> -->
         </div>
       </v-col>
       <v-col cols="3">
