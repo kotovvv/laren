@@ -37,6 +37,7 @@
         "vue-axios": "^3.4.1",
         "vue-chartjs": "^4.1.1",
         "vue-json-csv": "^1.2.12",
+        "vue-visual": "^2.7.0",
         "vuetify": "^2.6.10",
         "vuetify-datetime-picker": "^2.1.1",
         "vuetify-loader": "^1.7.3",

@@ -1,5 +1,17 @@
 <template>
   <v-app id="inspire">
+    <Visual
+      id="videobg"
+      ref="visual"
+      object-fit="cover"
+      video="/img/bg.mp4"
+      :autoload="true"
+      :autoplay="true"
+      :loop="true"
+      muted
+      width="100%"
+      height="100vh"
+    />
     <v-main>
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
@@ -8,6 +20,7 @@
               <v-toolbar color="primary" dark flat>
                 <v-toolbar-title>Connect to the system</v-toolbar-title>
               </v-toolbar>
+              <div class="red">{{ message }}</div>
               <form>
                 <v-card-text>
                   <v-form ref="form">
@@ -58,8 +71,13 @@
 
 <script>
 import axios from "axios";
+import Visual from "vue-visual";
+import "vue-visual/index.css";
 export default {
   props: ["login"],
+  components: {
+    Visual,
+  },
   data: () => ({
     drawer: null,
     options: {
@@ -74,6 +92,7 @@ export default {
     showPassword: false,
     userNameRequired: [(v) => !!v || "without login?"],
     passwordRequired: [(v) => !!v || "Password?"],
+    message: "",
   }),
   methods: {
     onSubmit() {
@@ -84,6 +103,10 @@ export default {
         .then((response) => {
           self.$emit("login", response.data.user);
           localStorage.user = JSON.stringify(response.data.user);
+          if (response.data.status == "error") {
+            console.log(response.data.status);
+            this.message = "Incorrect login or password";
+          }
         })
         .catch((error) => {
           if (error.response.status === 422) {
@@ -96,4 +119,7 @@ export default {
 </script>
 
 <style scoped>
+#videobg {
+  position: absolute;
+}
 </style>
