@@ -310,9 +310,9 @@
           <v-btn @click="dialogDelete = true" class="red accent-2"
             >CLEER ALL LOGS</v-btn
           >
-          <v-dialog v-model="dialogDelete" max-width="800px">
-            <v-card>
-              <v-card-title class="headline justify-center"
+          <v-dialog v-model="dialogDelete" max-width="700px">
+            <v-card class="py-10">
+              <v-card-title class="headline justify-center my-10 py-10"
                 >Logs will be deleted. Do you confirm?</v-card-title
               >
               <v-card-actions>
