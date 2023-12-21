@@ -260,6 +260,7 @@ class ProvidersController extends Controller
         $max_cal = 0;
         $max_dp = 0;
         $col_prov = [];
+        $all = 0;
         foreach ($a_providers as $prow) {
             $sql = "SELECT  COUNT(*) hm FROM `lids` l  WHERE status_id = 10 AND l.`provider_id` = " . $prow->provider_id . " AND DATE(l.`created_at`) = '" . $prow->dates . "' GROUP BY l.`status_id`";
             $a_caldp = collect(DB::select($sql))->value('hm');
@@ -275,10 +276,15 @@ class ProvidersController extends Controller
             } else {
                 $col_prov[$prow->dates] = 1;
             }
-
+            $all += $prow->hm;
             $res['max'] = ['max_cal' => $max_cal, 'max_dp' => $max_dp, 'col_prov' => $col_prov];
             $res['dates'][] = ['date' => $prow->dates, 'provider' => $prow->name, 'percent' => (int)($prow->qtytel * 100 / $prow->hm), 'id' => $prow->provider_id, 'hm' => $prow->hm, 'cal' => $a_cal_dp['cal'], 'dp' => $a_cal_dp['dp']];
         }
+        $sql = "select s.name,s.color, count(status_id) hm from `lids` l left join `statuses` s on (s.id = l.`status_id`) where l.created_at between '" . $dateFrom . " 00:00:00' and '" . $dateTo . " 23:59:59' group by status_id order by s.order desc";
+        $res['statuses'] = DB::select($sql);
+        $sql = "SELECT  LEFT(tel,2) telcod, COUNT(tel) hm FROM `lids` l WHERE l.created_at BETWEEN '" . $dateFrom . " 00:00:00' and '" . $dateTo . " 23:59:59' GROUP BY telcod order by hm DESC";
+        $res['telcod'] = DB::select($sql);
+        $res['all'] = $all;
         return $res;
     }
 
