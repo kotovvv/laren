@@ -156,6 +156,7 @@ class UsersController extends Controller
             $arr['name'] = $data['name'];
             $arr['active'] = $data['active'];
             $arr['role_id'] = $data['role_id'];
+            $arr['tier'] = $data['tier'] == 'true' ? 1 : 0;
             $arr['fio'] = $data['fio'];
             // $arr['pic'] = $file_name;
             $arr['group_id'] = $data['group_id'];
@@ -314,16 +315,16 @@ class UsersController extends Controller
     public function deleteuser($id)
     {
         Lid::where('user_id', '=', $id)->delete();
-    $group_id = User::where('id', $id)->value('group_id');
-    if ($group_id) {
-      Log::where('user_id', '=', $id)->update(['user_id' => $group_id]);
-    }
+        $group_id = User::where('id', $id)->value('group_id');
+        if ($group_id) {
+            Log::where('user_id', '=', $id)->update(['user_id' => $group_id]);
+        }
         Import::where('user_id', '=', $id)->delete();
         $user = User::find($id);
-    if ($user) {
-        $user->delete();
+        if ($user) {
+            $user->delete();
+        }
     }
-  }
 
     public function delDataUser($id)
     {
