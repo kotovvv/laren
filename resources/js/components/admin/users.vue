@@ -143,7 +143,8 @@
                               label="Role"
                             ></v-select>
                           </v-col>
-                          <v-col cols="6" v-if="editedItem.role_id == 3">
+                          <!-- v-if="editedItem.role_id == 3" -->
+                          <v-col cols="6">
                             <v-switch
                               v-model="editedItem.tier"
                               :label="`ТIER: ${editedItem.tier.toString()}`"

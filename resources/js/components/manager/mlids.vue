@@ -247,7 +247,7 @@
                 </template>
 
                 <template v-slot:item.tel="{ item }">
-                  <div class="d-flex justify-space-between">
+                  <div class="d-flex justify-space-between align-center">
                     <template v-if="$props.user.sip == 0">
                       <a
                         class="tel"
@@ -287,7 +287,11 @@
                         </a>
                       </span>
                     </template>
-                    <span @click.prevent.stop="openDialogBTC(item)">
+
+                    <span
+                      v-if="!$props.user.tier"
+                      @click.prevent.stop="openDialogBTC(item)"
+                    >
                       <!-- <v-icon class="bitcoin"> mdi-bitcoin </v-icon> -->
                       <img width="24" height="24" src="/img/ico/btc.png" />
                     </span>
@@ -337,7 +341,39 @@
         </v-row>
       </v-col>
     </v-row>
-
+    <v-dialog
+      v-model="tierdialog"
+      width="500"
+      @keydown.esc="tierdialog = !tierdialog"
+    >
+      <v-card>
+        <v-toolbar dark dense flat>
+          <v-toolbar-title class="text-body-2 font-weight-bold grey--text">
+            Confirm
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-card-text class="pa-4 black--text">
+          Are you sure you are done with this client?</v-card-text
+        >
+        <v-card-actions class="pt-3">
+          <v-spacer></v-spacer>
+          <v-btn
+            color="grey"
+            text
+            class="body-2 font-weight-bold"
+            @click.native="tierdialog = !tierdialog"
+            >Cancel</v-btn
+          >
+          <v-btn
+            color="primary"
+            class="body-2 font-weight-bold"
+            outlined
+            @click.native="setTier()"
+            >OK</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-snackbar
       v-model="snackbar"
       top
@@ -393,6 +429,7 @@
             v-model="text_message"
             :value="text_message"
           ></v-textarea>
+          <v-row> </v-row>
           <v-row>
             <v-col v-if="selectedStatus == 10">
               Deposit amount*
@@ -404,8 +441,24 @@
                 prepend-inner-icon="mdi-currency-usd"
               ></v-text-field
             ></v-col>
+
             <v-col class="pt-9">
-              <v-btn class="border" @click="getBTC">Get BTC</v-btn>
+              <Tierdoc liad_id="selected.id" />
+              <v-btn
+                @click.stop="
+                  tierdialog = !tierdialog;
+                  tier_id = selected.id;
+                "
+                v-if="$props.user.tier"
+              >
+                <v-checkbox
+                  v-model="selected.tier"
+                  label="ТIER_COMPLEATE"
+                  disabled
+                ></v-checkbox>
+              </v-btn>
+
+              <v-btn v-else class="border" @click="getBTC">Get BTC</v-btn>
             </v-col>
             <v-col>
               Date time
@@ -509,9 +562,11 @@
 import XLSX from "xlsx";
 import axios from "axios";
 import logtel from "./logtel";
+import Tierdoc from "./tierdoc";
 export default {
   components: {
     logtel,
+    Tierdoc,
   },
   props: ["user"],
   data: () => ({
@@ -582,6 +637,8 @@ export default {
     limit: 100,
     servers: [],
     selectedServer: {},
+    tierdialog: false,
+    tier_id: null,
   }),
   mounted: function () {
     this.getProviders();
@@ -599,6 +656,10 @@ export default {
   },
   computed: {},
   methods: {
+    setTier() {
+      this.selected.tier = !this.selected.tier;
+      this.tierdialog = false;
+    },
     getServers() {
       const self = this;
       axios
@@ -918,6 +979,9 @@ export default {
             id,
             color,
           }));
+          if (self.$props.user.tier) {
+            self.statuses = self.statuses.filter((e) => e.id != 10);
+          }
           self.statusesnonew = self.statuses.filter((e) => e.id != 8);
           self.filterstatuses = self.statuses.map((e) => e);
           self.getLidsPost();
