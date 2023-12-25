@@ -128,7 +128,7 @@
                               label="Login"
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="6">
+                          <v-col cols="12">
                             <v-text-field
                               v-model="editedItem.password"
                               label="Password"
@@ -142,6 +142,12 @@
                               item-value="id"
                               label="Role"
                             ></v-select>
+                          </v-col>
+                          <v-col cols="6" v-if="editedItem.role_id == 3">
+                            <v-switch
+                              v-model="editedItem.tier"
+                              :label="`ТIER: ${editedItem.tier.toString()}`"
+                            ></v-switch>
                           </v-col>
                           <v-col cols="6">
                             <v-select
@@ -308,7 +314,7 @@ export default {
       { text: "Role", value: "role" },
       { text: "Group", value: "group" },
       { text: "Office", value: "office" },
-      // { text: "Show", value: "active" },
+      { text: "TIER", value: "tier" },
       { text: "Actions", value: "actions", sortable: false },
     ],
     headers_office: [
@@ -334,6 +340,7 @@ export default {
       sip: false,
       servers: "",
       order: 99,
+      tier: false,
     },
     editedItemOffice: {
       id: 0,
@@ -354,11 +361,13 @@ export default {
       servers: "",
       active: 1,
       order: 99,
+      tier: false,
     },
     defaultItemOffice: {
       name: "",
     },
     sip: false,
+    tier: false,
   }),
 
   computed: {
