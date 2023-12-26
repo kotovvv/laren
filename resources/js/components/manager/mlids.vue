@@ -436,12 +436,7 @@
             <v-col cols="12">
               <v-row>
                 <v-spacer></v-spacer>
-                <v-btn
-                  @click.stop="
-                    tierdialog = !tierdialog;
-                    tier_id = selected[0].id;
-                  "
-                >
+                <v-btn @click.stop="tierdialog = !tierdialog">
                   <v-checkbox
                     v-model="docs_compl"
                     label="ТIER_COMPLEATE"
@@ -655,12 +650,6 @@ export default {
   },
   created() {},
   watch: {
-    selected: function (newval, oldval) {
-      if (newval.length > 0) {
-        console.log(newval[0].docs_compl);
-        // this.docs_compl = newval[0].docs_compl;
-      }
-    },
     datetime: function (newval, oldval) {
       if ((newval == null || newval != oldval) && this.lid_id != "") {
         this.setTime();
@@ -670,9 +659,8 @@ export default {
   computed: {},
   methods: {
     setTier() {
-      this.selected[0].docs_compl = this.docs_compl;
-      //   this.lids.find((el) => el.id == this.selected[0].id).docs_compl =
-      //     this.docs_compl;
+      this.lids.find((l) => l.id == this.lid_id).docs_compl = !this.docs_compl;
+      this.docs_compl = !this.docs_compl;
       this.tierdialog = false;
     },
     getServers() {
@@ -830,6 +818,7 @@ export default {
       this.text_message = "";
       this.lid_id = i.id;
       this.selected = [i];
+      this.docs_compl = i.docs_compl;
       this.selectedStatus = i.status_id;
       this.expanded = this.selected;
       self.dial = true;

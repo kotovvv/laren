@@ -3,12 +3,13 @@
     <v-row>
       <v-col v-if="!lead.docs_сompl">
         <v-sheet outlined class="pa-3">
-          <v-text-field label="Description"></v-text-field>
+          <v-text-field label="Description" v-model="desc"></v-text-field>
           <v-file-input
             label="File input"
             @change="onFilePicked"
+            v-model="file"
           ></v-file-input>
-          <v-btn>Upload</v-btn>
+          <v-btn block :disabled="filedesc" @click="uploadFile">Upload</v-btn>
         </v-sheet>
       </v-col>
       <v-col> Files </v-col>
@@ -16,49 +17,49 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "Tierdoc",
   props: ["lead"],
   data() {
     return {
-      tierUrl: "",
-      tierFile: null,
-      tierName: "",
+      file: null,
+      desc: "",
+      fileType: "",
+      fileName: "",
+      fileSize: "",
     };
   },
 
   mounted() {},
-
+  computed: {
+    filedesc() {
+      return this.file == null || this.desc == "" ? true : false;
+    },
+  },
   methods: {
     pickFile() {
       this.$refs.tier.click();
     },
     onFilePicked(e) {
-      const files = e.target.files;
-      if (files[0] !== undefined) {
-        this.tierName = files[0].name;
-        if (this.tierName.lastIndexOf(".") <= 0) {
-          return;
-        }
-        const fr = new FileReader();
-        fr.readAsDataURL(files[0]);
-        fr.addEventListener("load", () => {
-          this.tierUrl = fr.result;
-          this.tierFile = files[0];
-        });
-      } else {
-        this.tierName = "";
-        this.tierFile = "";
-        this.tierUrl = "";
+      if (!this.file) {
+        this.data = "No File Chosen";
       }
+      const fr = new FileReader();
+      fr.readAsDataURL(this.file);
+      fr.addEventListener("load", () => {
+        this.fileSize = this.file.size;
+        this.fileName = this.file.name;
+        this.fileType = this.file.type;
+      });
     },
 
     uploadFile() {
       let formData = new FormData();
-      formData.append("tier_file", this.form.tierFile);
+      formData.append("file", this.file);
 
       axios
-        .post("/specialties", formData)
+        .post("/uploadDoc", formData)
         .then((res) => {})
         .catch((err) => {});
     },

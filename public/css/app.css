@@ -10099,12 +10099,6 @@ h3 {
   padding: 0;
 }
 
-.wrp_users .v-expansion-panels .v-expansion-panel:not(:first-child)::after,
-main .theme--light.v-data-table .v-data-footer,
-.theme--light.v-text-field > .v-input__control > .v-input__slot:before {
-  border: none;
-}
-
 .wrp_users .v-expansion-panel-content__wrap {
   margin-top: 20px;
 }
@@ -10115,15 +10109,6 @@ main .theme--light.v-data-table .v-data-footer,
 
 .v-application--is-ltr .v-expansion-panel-header__icon {
   margin: 0;
-}
-
-.wrp_group .v-input--selection-controls__input {
-  position: absolute;
-  /* left: 50%;
-  bottom: 4px;
-  z-index: 3;
-  transform: translateX(-50%); */
-  opacity: 0;
 }
 
 .wrp_group .v-input img {
