@@ -1,13 +1,24 @@
 <template>
   <div>
-    <v-text-field label="Description"></v-text-field>
-    <v-file-input label="File input" @change="onFilePicked"></v-file-input>
+    <v-row>
+      <v-col v-if="!lead.docs_сompl">
+        <v-sheet outlined class="pa-3">
+          <v-text-field label="Description"></v-text-field>
+          <v-file-input
+            label="File input"
+            @change="onFilePicked"
+          ></v-file-input>
+          <v-btn>Upload</v-btn>
+        </v-sheet>
+      </v-col>
+      <v-col> Files </v-col>
+    </v-row>
   </div>
 </template>
 <script>
 export default {
   name: "Tierdoc",
-  props: ["lead_id"],
+  props: ["lead"],
   data() {
     return {
       tierUrl: "",

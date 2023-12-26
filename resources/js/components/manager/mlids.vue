@@ -41,7 +41,6 @@
           </v-col>
           <v-col cols="2">
             Request by tel
-
             <v-text-field
               v-model.lazy.trim="filtertel"
               outlined
@@ -429,7 +428,29 @@
             v-model="text_message"
             :value="text_message"
           ></v-textarea>
-          <v-row> </v-row>
+
+          <v-row v-if="$props.user.tier">
+            <v-col cols="12">
+              <Tierdoc :lead="selected[0]" />
+            </v-col>
+            <v-col cols="12">
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-btn
+                  @click.stop="
+                    tierdialog = !tierdialog;
+                    tier_id = selected[0].id;
+                  "
+                >
+                  <v-checkbox
+                    v-model="docs_compl"
+                    label="ТIER_COMPLEATE"
+                    disabled
+                  ></v-checkbox>
+                </v-btn>
+              </v-row>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col v-if="selectedStatus == 10">
               Deposit amount*
@@ -442,23 +463,8 @@
               ></v-text-field
             ></v-col>
 
-            <v-col class="pt-9">
-              <Tierdoc liad_id="selected.id" />
-              <v-btn
-                @click.stop="
-                  tierdialog = !tierdialog;
-                  tier_id = selected.id;
-                "
-                v-if="$props.user.tier"
-              >
-                <v-checkbox
-                  v-model="selected.tier"
-                  label="ТIER_COMPLEATE"
-                  disabled
-                ></v-checkbox>
-              </v-btn>
-
-              <v-btn v-else class="border" @click="getBTC">Get BTC</v-btn>
+            <v-col class="pt-9" v-if="!$props.user.tier">
+              <v-btn class="border" @click="getBTC">Get BTC</v-btn>
             </v-col>
             <v-col>
               Date time
@@ -639,6 +645,7 @@ export default {
     selectedServer: {},
     tierdialog: false,
     tier_id: null,
+    docs_compl: 0,
   }),
   mounted: function () {
     this.getProviders();
@@ -648,6 +655,12 @@ export default {
   },
   created() {},
   watch: {
+    selected: function (newval, oldval) {
+      if (newval.length > 0) {
+        console.log(newval[0].docs_compl);
+        // this.docs_compl = newval[0].docs_compl;
+      }
+    },
     datetime: function (newval, oldval) {
       if ((newval == null || newval != oldval) && this.lid_id != "") {
         this.setTime();
@@ -657,7 +670,9 @@ export default {
   computed: {},
   methods: {
     setTier() {
-      this.selected.tier = !this.selected.tier;
+      this.selected[0].docs_compl = this.docs_compl;
+      //   this.lids.find((el) => el.id == this.selected[0].id).docs_compl =
+      //     this.docs_compl;
       this.tierdialog = false;
     },
     getServers() {
