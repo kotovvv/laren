@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row>
-      <v-col v-if="!lead.docs_сompl">
+      <v-col v-if="!$props.lead.docs_compl">
         <v-sheet outlined class="pa-3">
           <v-text-field label="Description" v-model="desc"></v-text-field>
           <v-file-input
@@ -72,9 +72,22 @@ export default {
       });
     },
     downloadDoc(doc) {
+      let data = {};
+      data.id = doc.id;
+      data.file_name = doc.file_name;
+      data.lead_id = doc.lead_id;
+      data.file_type = doc.file_type;
       axios
-        .post("/api/downloadDoc/", doc)
-        .then((res) => {})
+        .post("/api/downloadDoc", data, { responseType: "arraybuffer" })
+        .then((response) => {
+          let blob = new Blob([response.data], {
+            type: doc.file_type,
+          });
+          let link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = doc.file_name;
+          link.click();
+        })
         .catch((err) => {});
     },
     delDoc(doc_id) {

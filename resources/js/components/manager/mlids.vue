@@ -659,8 +659,14 @@ export default {
   computed: {},
   methods: {
     setTier() {
-      this.lids.find((l) => l.id == this.lid_id).docs_compl = !this.docs_compl;
-      this.docs_compl = !this.docs_compl;
+      const self = this;
+      self.lids.find((l) => l.id == self.lid_id).docs_compl = !self.docs_compl;
+      self.docs_compl = !self.docs_compl;
+
+      axios
+        .get("/api/docs_compl/" + self.lid_id + "/" + self.docs_compl)
+        .then((res) => {})
+        .catch((error) => console.log(error));
       this.tierdialog = false;
     },
     getServers() {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use App\Models\Import;
 use DB;
 use Debugbar;
@@ -227,16 +228,25 @@ class ImportsController extends Controller
         //
     }
 
+    public function docs_compl($id, $docs_compl)
+    {
+        $user_id = session()->get('user_id');
+        $docs_compl = $docs_compl == true ? '1' : '0';
+
+        $sql = "UPDATE lids set docs_compl = $docs_compl, updated_at = Now() WHERE id = " . (int) $id;
+        DB::select($sql);
+        $sql = "INSERT INTO `logs` (`status_id`,`user_id`,`text`,`created_at`,`lid_id`) VALUES (NULL,$user_id,'docs_compl $docs_compl',NOW(),$id)";
+        return DB::select($sql);
+    }
+
     public function downloadDoc(Request $request)
     {
         $data = $request->all();
-        return $data['file_name'];
-        $file = public_path() . "/img/uploads/" . $data['lead_id'] . "/" . $data['file_name'];
+        $file = public_path() . "/storage/img/uploads/" . $data['lead_id'] . "/" . $data['file_name'];
 
         $headers = [
             'Content-Type: ' . $data['file_type'],
         ];
-
         return Response::download($file, $data['file_name'], $headers);
     }
 
@@ -269,7 +279,7 @@ class ImportsController extends Controller
         $user_id = session()->get('user_id');
 
         $validatedData = $request->validate([
-            'file' => 'required|file|max:7048',
+            'file' => 'required|file|max:10048',
         ]);
 
         $path = Storage::disk('public')->putFileAs('/img/uploads/' . $lead_id, new File($validatedData['file']), pathinfo($validatedData['file']->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $validatedData['file']->getClientOriginalExtension());
