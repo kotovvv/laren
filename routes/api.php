@@ -108,3 +108,5 @@ Route::post('getCalls', [LogsController::class, 'getCalls']);
 Route::get('reportCalDep', [ProvidersController::class, 'reportCalDep']);
 Route::post('uploadDoc', [ImportsController::class, 'uploadDoc']);
 Route::get('getDocs/{lead_id}', [ImportsController::class, 'getDocs']);
+Route::get('delDoc/{id}', [ImportsController::class, 'delDoc']);
+Route::post('downloadDoc', [ImportsController::class, 'downloadDoc']);

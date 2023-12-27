@@ -12,7 +12,22 @@
           <v-btn block :disabled="filedesc" @click="uploadFile">Upload</v-btn>
         </v-sheet>
       </v-col>
-      <v-col> Files </v-col>
+      <v-col>
+        <v-list two-line max-height="200" class="overflow-y-auto">
+          <v-list-item two-line v-for="doc in docs" :key="doc.id">
+            <v-list-item-content>
+              <v-list-item-title>{{ doc.file_name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ doc.description }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-icon>
+              <v-icon @click="delDoc(doc.id)">mdi-delete</v-icon>
+            </v-list-item-icon>
+            <v-list-item-icon>
+              <v-icon @click="downloadDoc(doc)">mdi-download</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list>
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -28,10 +43,13 @@ export default {
       fileType: "",
       fileName: "",
       fileSize: "",
+      docs: [],
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.getDocs();
+  },
   computed: {
     filedesc() {
       return this.file == null || this.desc == "" ? true : false;
@@ -53,13 +71,34 @@ export default {
         this.fileType = this.file.type;
       });
     },
+    downloadDoc(doc) {
+      axios
+        .post("/api/downloadDoc/", doc)
+        .then((res) => {})
+        .catch((err) => {});
+    },
+    delDoc(doc_id) {
+      const self = this;
+
+      axios
+        .get("/api/delDoc/" + doc_id)
+        .then((res) => {
+          if (res.status == 200) {
+            self.getDocs();
+          }
+        })
+        .catch((err) => {});
+    },
     getDocs() {
       const self = this;
+
       axios
-        .get("/api/getDocs?lead_id=" + self.lead.id)
+        .get("/api/getDocs/" + self.lead.id)
         .then((res) => {
-          console.log(res);
-          if (res.status == 200) {
+          if (res.status == 200 && res.data.length > 0) {
+            self.docs = res.data;
+          } else {
+            self.docs = [];
           }
         })
         .catch((err) => {});
@@ -76,14 +115,13 @@ export default {
       axios
         .post("/api/uploadDoc", formData)
         .then((res) => {
-          console.log(res);
           if (res.status == 200) {
             self.file = null;
             self.desc = "";
             self.fileType = "";
             self.fileName = "";
             self.fileSize = "";
-            getDocs();
+            self.getDocs();
           }
         })
         .catch((err) => {});

@@ -431,7 +431,7 @@
 
           <v-row v-if="$props.user.tier">
             <v-col cols="12">
-              <Tierdoc :lead="selected[0]" />
+              <Tierdoc :lead="selected[0]" :key="lid_id" />
             </v-col>
             <v-col cols="12">
               <v-row>

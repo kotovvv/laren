@@ -227,12 +227,34 @@ class ImportsController extends Controller
         //
     }
 
+    public function downloadDoc(Request $request)
+    {
+        $data = $request->all();
+        return $data['file_name'];
+        $file = public_path() . "/img/uploads/" . $data['lead_id'] . "/" . $data['file_name'];
+
+        $headers = [
+            'Content-Type: ' . $data['file_type'],
+        ];
+
+        return Response::download($file, $data['file_name'], $headers);
+    }
+
+    public function delDoc(Request $request, $id)
+    {
+        $data = $request->all();
+        $user_id = session()->get('user_id');
+
+        $sql = "delete FROM `tierdoc` WHERE `user_id` = " . (int) $user_id . " AND `id` = " . (int) $id;
+        return DB::select($sql);
+    }
+
     public function getDocs(Request $request, $lead_id)
     {
         $data = $request->all();
         $user_id = session()->get('user_id');
 
-        $sql = "SELECT * FROM `tierdoc` WHERE `user_id` = (int)$user_id AND `lead_id` = (int)$lead_id";
+        $sql = "SELECT * FROM `tierdoc` WHERE `user_id` = " . (int) $user_id . " AND `lead_id` = " . (int) $lead_id;
         return DB::select($sql);
     }
 
