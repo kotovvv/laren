@@ -53,14 +53,39 @@ export default {
         this.fileType = this.file.type;
       });
     },
-
+    getDocs() {
+      const self = this;
+      axios
+        .get("/api/getDocs?lead_id=" + self.lead.id)
+        .then((res) => {
+          console.log(res);
+          if (res.status == 200) {
+          }
+        })
+        .catch((err) => {});
+    },
     uploadFile() {
+      const self = this;
       let formData = new FormData();
       formData.append("file", this.file);
-
+      formData.append("fileSize", this.file.size);
+      formData.append("fileName", this.file.name);
+      formData.append("fileType", this.file.type);
+      formData.append("lead_id", this.lead.id);
+      formData.append("desc", this.desc);
       axios
-        .post("/uploadDoc", formData)
-        .then((res) => {})
+        .post("/api/uploadDoc", formData)
+        .then((res) => {
+          console.log(res);
+          if (res.status == 200) {
+            self.file = null;
+            self.desc = "";
+            self.fileType = "";
+            self.fileName = "";
+            self.fileSize = "";
+            getDocs();
+          }
+        })
         .catch((err) => {});
     },
   },
