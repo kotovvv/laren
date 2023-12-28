@@ -245,6 +245,9 @@
                   </v-row>
                 </template>
 
+                <template v-slot:item.docs_compl="{ item }">
+                  <v-icon small v-if="item.docs_compl">mdi-floppy</v-icon>
+                </template>
                 <template v-slot:item.tel="{ item }">
                   <div class="d-flex justify-space-between align-center">
                     <template v-if="$props.user.sip == 0">
@@ -308,7 +311,8 @@
                         outline: '#999 solid 1px',
                       }"
                     ></b>
-                    <span>{{ item.status }}</span>
+                    <span>{{ item.status }} </span>
+                    <v-icon>mdi-menu-down</v-icon>
                   </div>
                 </template>
                 <template v-slot:item.text="{ item }">
@@ -658,6 +662,26 @@ export default {
   },
   computed: {},
   methods: {
+    iftier() {
+      if (this.$props.user.tier) {
+        this.headers = [
+          { text: "Name", value: "name" },
+          { text: "Email", value: "email" },
+          { text: "Phone.", align: "start", value: "tel" },
+          { text: "Afilator", value: "afilyator" },
+          { text: "Supplier", value: "provider" },
+          { text: "Created", value: "date_created" },
+          { text: "Status", value: "status" },
+          { text: "D_C", value: "docs_compl" },
+          { text: "Message", value: "text" },
+          { text: "Address", value: "address" },
+        ];
+        // this.headers = this.headers.filter((e) => e.value != "date");
+        // let ontime = this.headers.find((e) => e.value == "ontime");
+        // ontime.text = "d_с";
+        // ontime.value = "docs_сompl";
+      }
+    },
     setTier() {
       const self = this;
       self.lids.find((l) => l.id == self.lid_id).docs_compl = !self.docs_compl;
@@ -1035,6 +1059,7 @@ export default {
             }
           });
           self.todaylids();
+          self.iftier();
           self.loading = false;
         })
 
@@ -1070,6 +1095,7 @@ export default {
           });
 
           self.todaylids();
+          self.iftier();
         })
 
         .catch((error) => console.log(error));
