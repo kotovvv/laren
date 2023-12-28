@@ -326,6 +326,9 @@
                         selected = [item];
                         putSelectedLidsDB();
                       "
+                      style="width: 150px"
+                      outlined
+                      dense
                     >
                       <template v-slot:item="{ item, attrs }">
                         <v-badge
