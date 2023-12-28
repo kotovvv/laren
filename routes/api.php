@@ -110,4 +110,4 @@ Route::post('uploadDoc', [ImportsController::class, 'uploadDoc']);
 Route::get('getDocs/{lead_id}', [ImportsController::class, 'getDocs']);
 Route::get('delDoc/{id}', [ImportsController::class, 'delDoc']);
 Route::post('downloadDoc', [ImportsController::class, 'downloadDoc']);
-Route::get('docs_compl/{id}/{docs_compl}', [ImportsController::class, 'docs_compl']);
+Route::get('docs_compl/{id}/{truefalse}', [ImportsController::class, 'docs_compl']);

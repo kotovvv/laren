@@ -231,7 +231,7 @@ class ImportsController extends Controller
     public function docs_compl($id, $docs_compl)
     {
         $user_id = session()->get('user_id');
-        $docs_compl = $docs_compl == true ? '1' : '0';
+        $docs_compl = $docs_compl == 'true' ? '1' : '0';
 
         $sql = "UPDATE lids set docs_compl = $docs_compl, updated_at = Now() WHERE id = " . (int) $id;
         DB::select($sql);
