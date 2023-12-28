@@ -301,18 +301,50 @@
                 </template>
 
                 <template v-slot:item.status="{ item }">
-                  <div
-                    class="status_wrp d-flex mx-1"
-                    @click.stop="openDialog(item)"
-                  >
-                    <b
-                      :style="{
-                        background: stylecolor(item.status_id),
-                        outline: '#999 solid 1px',
-                      }"
-                    ></b>
-                    <span>{{ item.status }} </span>
-                    <v-icon>mdi-menu-down</v-icon>
+                  <div class="d-flex justify-center align-center">
+                    <div
+                      class="status_wrp d-flex mx-1"
+                      @click.stop="openDialog(item)"
+                    >
+                      <b
+                        :style="{
+                          background: stylecolor(item.status_id),
+                          outline: '#999 solid 1px',
+                        }"
+                      ></b>
+                      <!-- <span>{{ item.status }} </span> -->
+                    </div>
+
+                    <v-select
+                      v-model="item.status_id"
+                      :items="statuses"
+                      item-text="name"
+                      item-value="id"
+                      @click.stop=""
+                      @change="
+                        selectedStatus = item.status_id;
+                        selected = [item];
+                        putSelectedLidsDB();
+                      "
+                    >
+                      <template v-slot:item="{ item, attrs }">
+                        <v-badge
+                          :value="attrs['aria-selected'] == 'true'"
+                          color="#2196F3"
+                          dot
+                          left
+                        >
+                          <i
+                            :style="{
+                              background: item.color,
+                              outline: '1px solid grey',
+                            }"
+                            class="sel_stat mr-4"
+                          ></i>
+                        </v-badge>
+                        {{ item.name }}
+                      </template>
+                    </v-select>
                   </div>
                 </template>
                 <template v-slot:item.text="{ item }">
