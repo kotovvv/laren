@@ -78,15 +78,19 @@ export default {
     return {
       dateFrom: false,
       dateTo: false,
-      dateTimeFrom: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-        .toISOString()
-        .substring(0, 10),
+      dateTimeFrom: new Date().toISOString().slice(0, 8) + "01",
       dateTimeTo: new Date().toISOString().substring(0, 10),
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.log();
+  },
 
-  methods: {},
+  methods: {
+    log() {
+      console.log("123123123");
+    },
+  },
 };
 </script>

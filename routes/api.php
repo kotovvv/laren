@@ -7,6 +7,7 @@ use App\Http\Controllers\API\v1\LidsController;
 use App\Http\Controllers\API\v1\LogsController;
 use App\Http\Controllers\API\v1\StatusesController;
 use App\Http\Controllers\API\v1\ImportsController;
+use App\Http\Controllers\API\v1\TierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -111,3 +112,5 @@ Route::get('getDocs/{lead_id}', [ImportsController::class, 'getDocs']);
 Route::get('delDoc/{id}', [ImportsController::class, 'delDoc']);
 Route::post('downloadDoc', [ImportsController::class, 'downloadDoc']);
 Route::get('docs_compl/{id}/{truefalse}', [ImportsController::class, 'docs_compl']);
+Route::get('getUsersTier', [TierController::class, 'getUsersTier']);
+Route::get('getTiersUser/{id}', [TierController::class, 'getTiersUser']);

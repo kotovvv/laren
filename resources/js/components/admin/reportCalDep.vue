@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-tabs v-model="tab">
-      <v-tab>Call Dep</v-tab>
       <v-tab>Users report</v-tab>
       <v-tab>Period report</v-tab>
+      <v-tab>Call Dep</v-tab>
     </v-tabs>
     <v-progress-linear
       :active="loading"
@@ -11,6 +11,16 @@
       color="blue accent-4"
     ></v-progress-linear>
     <v-tabs-items v-model="tab">
+      <!-- Users report -->
+      <v-tab-item>
+        <h2>Users report</h2>
+        <ReportUsersTier></ReportUsersTier>
+      </v-tab-item>
+      <!-- Period report -->
+      <v-tab-item>
+        <h2>Period report</h2>
+        <ReportPeriodTier></ReportPeriodTier>
+      </v-tab-item>
       <!-- Call Dep -->
       <v-tab-item>
         <v-container fluid>
@@ -103,7 +113,8 @@
                 x-small
                 @click="changeFilterStatus(i.id)"
               >
-                <v-icon>mdi-close</v-icon>
+                <v-icon>mdi-                    <b
+close</v-icon>
               </v-btn> -->
                   </div>
                 </template>
@@ -188,13 +199,6 @@
           </v-row>
         </v-container>
       </v-tab-item>
-      <!-- Users report -->
-      <v-tab-item> <h2>Users report</h2></v-tab-item>
-      <!-- Period report -->
-      <v-tab-item>
-        <h2>Period report</h2>
-        <PeriodTier></PeriodTier>
-      </v-tab-item>
     </v-tabs-items>
   </div>
 </template>
@@ -202,11 +206,12 @@
 <script>
 import axios from "axios";
 import _ from "lodash";
-import PeriodTier from "./PeriodTier";
-
+import ReportPeriodTier from "./ReportPeriodTier";
+import ReportUsersTier from "./ReportUsersTier";
 export default {
   components: {
-    PeriodTier,
+    ReportPeriodTier,
+    ReportUsersTier,
   },
   data: () => ({
     tab: 0,
@@ -419,7 +424,14 @@ export default {
     },
   }),
   mounted: function () {
-    this.reportCalDep();
+    // this.reportCalDep();
+  },
+  watch: {
+    tab() {
+      if (this.tab == 2) {
+        this.reportCalDep();
+      }
+    },
   },
   methods: {
     orderDates(on) {
