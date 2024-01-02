@@ -152,71 +152,71 @@
           </v-select>
         </v-col>
       </v-row>
-    </v-container>
-    <v-row>
-      <v-col
-        ><h3>Total leads: {{ filteredItems.length }}</h3></v-col
-      >
-      <v-col
-        ><h3 class="green--text">Sum liads: {{ sum_depozit }}</h3></v-col
-      >
-      <v-col
-        ><h3 class="blue--text">Sum BTC: {{ summ }}</h3></v-col
-      >
-      <v-col
-        ><h3 class="red--text">Sum dates: {{ sum_dates }}</h3></v-col
-      >
-      <v-col></v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <div class="border pa-4">
-          <!-- show-select -->
-          <v-data-table
-            v-model.lazy.trim="selected"
-            id="tabbtc"
-            :headers="headers"
-            :search="search"
-            :single-select="false"
-            item-key="id"
-            show-expand
-            @click:row="clickrow"
-            :items="filteredItems"
-            :expanded="expanded"
-            ref="btctable"
-            :loading="loading"
-            loading-text="Uploading... Stand by."
-            class="elevation-1"
-          >
-            <template
-              v-slot:top="{ pagination, options, updateOptions }"
-              :footer-props="{
-                'items-per-page-options': [50, 10, 100, 250, 500, -1],
-                'items-per-page-text': '',
-              }"
+      <v-row>
+        <v-col
+          ><h3>Total leads: {{ filteredItems.length }}</h3></v-col
+        >
+        <v-col
+          ><h3 class="green--text">Sum liads: {{ sum_depozit }}</h3></v-col
+        >
+        <v-col
+          ><h3 class="blue--text">Sum BTC: {{ summ }}</h3></v-col
+        >
+        <v-col
+          ><h3 class="red--text">Sum dates: {{ sum_dates }}</h3></v-col
+        >
+        <v-col></v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <div class="border pa-4">
+            <!-- show-select -->
+            <v-data-table
+              v-model.lazy.trim="selected"
+              id="tabbtc"
+              :headers="headers"
+              :search="search"
+              :single-select="false"
+              item-key="id"
+              show-expand
+              @click:row="clickrow"
+              :items="filteredItems"
+              :expanded="expanded"
+              ref="btctable"
+              :loading="loading"
+              loading-text="Uploading... Stand by."
+              class="elevation-1"
             >
-              <v-row>
-                <v-spacer></v-spacer>
-                <v-col cols="3" class="mt-3">
-                  <v-data-footer
-                    :pagination="pagination"
-                    :options="options"
-                    @update:options="updateOptions"
-                    :items-per-page-options="[50, 10, 100, 250, 500, -1]"
-                    :items-per-page-text="''"
-                  />
-                </v-col>
-              </v-row>
-            </template>
-            <template v-slot:expanded-item="{ headers, item }">
-              <td :colspan="headers.length" class="blackborder">
-                <logtel :lid_id="item.lid_id" :key="item.id" />
-              </td>
-            </template>
-          </v-data-table>
-        </div>
-      </v-col>
-    </v-row>
+              <template
+                v-slot:top="{ pagination, options, updateOptions }"
+                :footer-props="{
+                  'items-per-page-options': [50, 10, 100, 250, 500, -1],
+                  'items-per-page-text': '',
+                }"
+              >
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-col cols="3" class="mt-3">
+                    <v-data-footer
+                      :pagination="pagination"
+                      :options="options"
+                      @update:options="updateOptions"
+                      :items-per-page-options="[50, 10, 100, 250, 500, -1]"
+                      :items-per-page-text="''"
+                    />
+                  </v-col>
+                </v-row>
+              </template>
+              <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length" class="blackborder">
+                  <logtel :lid_id="item.lid_id" :key="item.id" />
+                </td>
+              </template>
+            </v-data-table>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 

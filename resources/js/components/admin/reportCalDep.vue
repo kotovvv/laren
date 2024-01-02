@@ -1,90 +1,103 @@
 <template>
   <div>
-    <v-container fluid>
-      <v-row>
-        <v-col cols="3">
-          <div class="status_wrp wrp_date px-3">
-            <v-row align="center">
-              <v-col>
-                <v-menu
-                  v-model="dateFrom"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="dateTimeFrom"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      outlined
-                      label="From Date"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="dateTimeFrom"
-                    @input="
-                      dateFrom = false;
-                      reportCalDep();
-                    "
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col>
-                <v-menu
-                  v-model="dateTo"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="dateTimeTo"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      outlined
-                      label="By Date"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    locale="en"
-                    v-model="dateTimeTo"
-                    @input="
-                      dateTo = false;
-                      reportCalDep();
-                    "
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
-          </div>
-        </v-col>
-      </v-row>
-      <v-progress-linear
-        :active="loading"
-        :indeterminate="loading"
-        color="blue accent-4"
-      ></v-progress-linear>
-      <v-row>
-        <v-col>
-          <div class="wrp__statuses">
-            <template>
-              <div class="status_wrp" v-for="(i, x) in statuses" :key="x">
-                <b
-                  :style="{
-                    background: i.color,
-                    outline: '1px solid' + i.color,
-                  }"
-                  >{{ i.hm }}</b
-                >
-                <span>{{ i.name }}</span>
-                <!-- <v-btn
+    <v-tabs v-model="tab">
+      <v-tab>Call Dep</v-tab>
+      <v-tab>Users report</v-tab>
+      <v-tab>Period report</v-tab>
+    </v-tabs>
+    <v-progress-linear
+      :active="loading"
+      :indeterminate="loading"
+      color="blue accent-4"
+    ></v-progress-linear>
+    <v-tabs-items v-model="tab">
+      <!-- Call Dep -->
+      <v-tab-item>
+        <v-container fluid>
+          <v-row>
+            <v-col cols="3">
+              <div class="status_wrp wrp_date px-3">
+                <v-row align="center">
+                  <v-col>
+                    <v-menu
+                      v-model="dateFrom"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="dateTimeFrom"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          label="From Date"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="dateTimeFrom"
+                        @input="
+                          dateFrom = false;
+                          reportCalDep();
+                        "
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-col>
+                    <v-menu
+                      v-model="dateTo"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="dateTimeTo"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          outlined
+                          label="By Date"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        locale="en"
+                        v-model="dateTimeTo"
+                        @input="
+                          dateTo = false;
+                          reportCalDep();
+                        "
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
+              </div>
+            </v-col>
+          </v-row>
+          <v-progress-linear
+            :active="loading"
+            :indeterminate="loading"
+            color="blue accent-4"
+          ></v-progress-linear>
+          <v-row>
+            <v-col>
+              <div class="wrp__statuses">
+                <template>
+                  <div class="status_wrp" v-for="(i, x) in statuses" :key="x">
+                    <b
+                      :style="{
+                        background: i.color,
+                        outline: '1px solid' + i.color,
+                      }"
+                      >{{ i.hm }}</b
+                    >
+                    <span>{{ i.name }}</span>
+                    <!-- <v-btn
                 v-if="filterStatus.length > 0"
                 icon
                 x-small
@@ -92,95 +105,111 @@
               >
                 <v-icon>mdi-close</v-icon>
               </v-btn> -->
+                  </div>
+                </template>
               </div>
-            </template>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <div class="wrp__statuses">
-            <template>
-              <div class="status_wrp" v-for="(i, x) in telcod" :key="x">
-                <b
-                  :style="{
-                    background: '#999',
-                    outline: '1px solid #555',
-                  }"
-                  >{{ parseInt((i.hm * 100) / all) }}%</b
-                >
-                <span>{{ telcodcoun[i.telcod] ?? i.telcod }}</span>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <div class="wrp__statuses">
+                <template>
+                  <div class="status_wrp" v-for="(i, x) in telcod" :key="x">
+                    <b
+                      :style="{
+                        background: '#999',
+                        outline: '1px solid #555',
+                      }"
+                      >{{ parseInt((i.hm * 100) / all) }}%</b
+                    >
+                    <span>{{ telcodcoun[i.telcod] ?? i.telcod }}</span>
+                  </div>
+                </template>
               </div>
-            </template>
-          </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <table width="100%" id="tableCalDep" class="mt-3">
-            <tr>
-              <th>Date</th>
-              <th>Provider</th>
-              <th>
-                <v-btn text x-small @click="orderDates('date')"
-                  ><b>Leads</b> <v-icon>mdi-menu-down</v-icon></v-btn
-                ><br />
-                <v-btn text x-small @click="orderDates('cal')"
-                  ><b>CallBack</b> <v-icon>mdi-menu-down</v-icon></v-btn
-                ><br />
-                <v-btn text x-small @click="orderDates('dp')"
-                  ><b>Deposit</b> <v-icon>mdi-menu-down</v-icon></v-btn
-                >
-              </th>
-              <th style="width: 70vw">Data</th>
-            </tr>
-            <tr v-for="(item, ix) in dates" :key="ix">
-              <td>{{ item.date }}</td>
-              <td>
-                <div>
-                  <b>{{ item.provider }}</b>
-                </div>
-                <div>&nbsp;&nbsp;CallBack</div>
-                <div>&nbsp;&nbsp;Deposit</div>
-              </td>
-              <td style="padding-left: 0.5rem">
-                <div>{{ item.hm }}</div>
-                <div>{{ item.cal }}</div>
-                <div>{{ item.dp }}</div>
-              </td>
-              <td>
-                <div>total calls statistics {{ item.percent }}%</div>
-                <div style="width: 100%; height: 2.7rem; background: #b3c6e7">
-                  <div
-                    :style="{
-                      background: '#305493',
-                      height: '1.3rem',
-                      width: (item.cal * 100) / item.hm + '%',
-                    }"
-                  ></div>
-                  <div
-                    :style="{
-                      background: '#305493',
-                      height: '1.3rem',
-                      width: (item.dp * 100) / item.hm + '%',
-                    }"
-                  ></div>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </v-col>
-      </v-row>
-    </v-container>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <table width="100%" id="tableCalDep" class="mt-3">
+                <tr>
+                  <th>Date</th>
+                  <th>Provider</th>
+                  <th>
+                    <v-btn text x-small @click="orderDates('date')"
+                      ><b>Leads</b> <v-icon>mdi-menu-down</v-icon></v-btn
+                    ><br />
+                    <v-btn text x-small @click="orderDates('cal')"
+                      ><b>CallBack</b> <v-icon>mdi-menu-down</v-icon></v-btn
+                    ><br />
+                    <v-btn text x-small @click="orderDates('dp')"
+                      ><b>Deposit</b> <v-icon>mdi-menu-down</v-icon></v-btn
+                    >
+                  </th>
+                  <th style="width: 70vw">Data</th>
+                </tr>
+                <tr v-for="(item, ix) in dates" :key="ix">
+                  <td>{{ item.date }}</td>
+                  <td>
+                    <div>
+                      <b>{{ item.provider }}</b>
+                    </div>
+                    <div>&nbsp;&nbsp;CallBack</div>
+                    <div>&nbsp;&nbsp;Deposit</div>
+                  </td>
+                  <td style="padding-left: 0.5rem">
+                    <div>{{ item.hm }}</div>
+                    <div>{{ item.cal }}</div>
+                    <div>{{ item.dp }}</div>
+                  </td>
+                  <td>
+                    <div>total calls statistics {{ item.percent }}%</div>
+                    <div
+                      style="width: 100%; height: 2.7rem; background: #b3c6e7"
+                    >
+                      <div
+                        :style="{
+                          background: '#305493',
+                          height: '1.3rem',
+                          width: (item.cal * 100) / item.hm + '%',
+                        }"
+                      ></div>
+                      <div
+                        :style="{
+                          background: '#305493',
+                          height: '1.3rem',
+                          width: (item.dp * 100) / item.hm + '%',
+                        }"
+                      ></div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-tab-item>
+      <!-- Users report -->
+      <v-tab-item> <h2>Users report</h2></v-tab-item>
+      <!-- Period report -->
+      <v-tab-item>
+        <h2>Period report</h2>
+        <PeriodTier></PeriodTier>
+      </v-tab-item>
+    </v-tabs-items>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import _ from "lodash";
+import PeriodTier from "./PeriodTier";
 
 export default {
+  components: {
+    PeriodTier,
+  },
   data: () => ({
+    tab: 0,
     loading: false,
     dateFrom: false,
     dateTo: false,
