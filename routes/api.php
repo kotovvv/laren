@@ -114,3 +114,5 @@ Route::post('downloadDoc', [ImportsController::class, 'downloadDoc']);
 Route::get('docs_compl/{id}/{truefalse}', [ImportsController::class, 'docs_compl']);
 Route::get('getUsersTier', [TierController::class, 'getUsersTier']);
 Route::get('getTiersUser/{id}', [TierController::class, 'getTiersUser']);
+Route::post('changeUserTiers', [TierController::class, 'changeUserTiers']);
+Route::post('getTiersDates', [TierController::class, 'getTiersDates']);

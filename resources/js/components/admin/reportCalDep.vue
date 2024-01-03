@@ -13,12 +13,10 @@
     <v-tabs-items v-model="tab">
       <!-- Users report -->
       <v-tab-item>
-        <h2>Users report</h2>
         <ReportUsersTier></ReportUsersTier>
       </v-tab-item>
       <!-- Period report -->
       <v-tab-item>
-        <h2>Period report</h2>
         <ReportPeriodTier></ReportPeriodTier>
       </v-tab-item>
       <!-- Call Dep -->

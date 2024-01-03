@@ -21,7 +21,7 @@
                       v-bind="attrs"
                       v-on="on"
                       outlined
-                      label="From Date"
+                      label="TO Date"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -83,13 +83,14 @@ export default {
     };
   },
 
-  mounted() {
-    this.log();
-  },
+  mounted() {},
 
   methods: {
-    log() {
-      console.log("123123123");
+    getTiersDates() {
+      const self = this;
+      let data = {};
+      data.dateFrom = self.dateTimeFrom;
+      data.dateTo = self.dateTimeTo;
     },
   },
 };

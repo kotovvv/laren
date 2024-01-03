@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <v-row>
-        <v-col cols="9">
+        <v-col cols="9" class="mt-7">
           <v-data-table
             v-model.lazy.trim="selected"
             id="tablids"
@@ -28,7 +28,11 @@
                   ref="radiogroup"
                   v-model="userid"
                   v-bind="users"
-                  @change="changeTiersUser"
+                  @change="
+                    selected.length > 0
+                      ? changeUserTiers()
+                      : changeUserAllLids()
+                  "
                 >
                   <v-expansion-panels ref="akk" v-model="akkvalue">
                     <v-expansion-panel v-for="(item, i) in group" :key="i">
@@ -91,6 +95,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <ConfirmDlg ref="confirm" />
   </div>
 </template>
 
@@ -99,7 +104,7 @@ import axios from "axios";
 import _ from "lodash";
 export default {
   name: "ReportUsersTier",
-
+  components: { ConfirmDlg: () => import("./ConfirmDlg") },
   data() {
     return {
       users: [],
@@ -116,15 +121,15 @@ export default {
         { text: "Email", value: "email" },
         { text: "Tel.", align: "start", value: "tel" },
         { text: "Afilator", value: "afilyator" },
-        { text: "Supplier", value: "provider" },
+        // { text: "Supplier", value: "provider" },
         { text: "Manager", value: "user" },
         { text: "Created", value: "date_created" },
         { text: "Changed", value: "date_updated" },
         { text: "Status", value: "status" },
-        { text: "Depozit", value: "depozit" },
+        // { text: "Depozit", value: "depozit" },
         { text: "Message", value: "text" },
-        { text: "Calls", value: "qtytel" },
-        { text: "CALLING.", value: "ontime" },
+        // { text: "Calls", value: "qtytel" },
+        // { text: "CALLING.", value: "ontime" },
       ],
       page: 0,
       limit: 100,
@@ -145,12 +150,35 @@ export default {
     },
   },
   methods: {
-    changeTiersUser() {
+    async changeUserAllLids() {
+      if (
+        await this.$refs.confirm.open(
+          "Confirm",
+          "You definitely want to change the user of all records?"
+        )
+      ) {
+        this.selected = this.lids;
+        this.changeUserTiers();
+      }
+    },
+
+    changeUserTiers() {
       const self = this;
       let data = {};
+
+      self.loading = true;
       data.user_id = self.userid;
-      data.lids = self.selected.map(({ id }) => ({ id }));
-      console.log(data.lids);
+      data.lids = self.selected.map(({ id, status_id }) => ({ id, status_id }));
+      data.message = "Change user";
+      axios
+        .post("/api/changeUserTiers", data)
+        .then((res) => {
+          self.getTiersUser();
+          self.getUsersTier();
+          self.loading = false;
+          self.selected = [];
+        })
+        .catch((error) => console.log(error));
     },
     getTiersUser() {
       const self = this;
@@ -158,6 +186,14 @@ export default {
         .get("/api/getTiersUser/" + self.disableuser)
         .then((res) => {
           self.lids = res.data;
+          self.lids = self.lids.map((l) => {
+            l.user = self.users.find((u) => u.id == l.user_id).fio;
+            l.date_created = l.created_at.substring(0, 10);
+            if (l.updated_at) {
+              l.date_updated = l.updated_at.substring(0, 10);
+            }
+            return l;
+          });
         })
         .catch((error) => console.log(error));
     },
