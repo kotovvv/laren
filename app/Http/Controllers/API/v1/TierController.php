@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Lid;
 use App\Models\User;
+use App\Models\log;
+
 use DB;
 
 class TierController extends Controller
@@ -13,23 +15,25 @@ class TierController extends Controller
     public function getTiersDates(Request $request)
     {
         $data = $request->all();
+        $datefrom =  $data['dateFrom'] . " 00:00:00";
+        $dateto =  $data['dateTo'] . " 23:59:59";
         $res = [];
-        $users_ids = [];
-        $sql = "SELECT COUNT(*) hm_docs FROM `tierdoc` td WHERE  td.`created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59' ";
+        $sql = "SELECT COUNT(*) hm_docs FROM `tierdoc` td WHERE  td.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' ";
         $res['hm_docs'] = DB::select($sql);
 
         $sql = "SELECT `id`,`name`,`order`,`color` FROM statuses ";
         $res['statuses'] = DB::select($sql);
 
-        $sql = "SELECT `id`,`name`,`office_id`,`group_id` FROM `users` u WHERE `tier`= 1 AND `id` IN (SELECT l.user_id FROM logs l WHERE l.`created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59' GROUP BY l.user_id) ORDER BY u.`order`";
-        $res['users'] = DB::select($sql);
-        foreach ($res['users'] as $user) {
-            $users_ids[] = $user->id;
-        }
+        // $sql = "SELECT `id`,`name`,`office_id`,`group_id` FROM `users` u WHERE `tier`= 1 AND `id` IN (SELECT l.user_id FROM logs l WHERE l.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' GROUP BY l.user_id) ORDER BY u.`order`";
+        // $res['users'] = DB::select($sql);
+        $logs = Log::select('user_id')->whereBetween('created_at', array($datefrom, $dateto))->groupBy('user_id')->get();
+        $res['users'] = User::select('id', 'name', 'office_id', 'group_id')->where('tier', 1)->whereIn('id', $logs)->get();
 
-        $sql = "SELECT li.status_id, li.user_id, li.docs_compl,l.text,li.id FROM logs l left join lids li ON (li.id = l.lid_id) WHERE l.`created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59' AND li.user_id IN (" . implode(',', $users_ids) . ") ORDER by l.`created_at` DESC";
-        $res['sql'] = $sql;
-        $res['liads'] = DB::select($sql);
+        $logs = Log::select('lid_id')->whereBetween('created_at', array($datefrom, $dateto))->groupBy('lid_id');
+        $res['liads'] = Lid::select('status_id', 'user_id', 'docs_compl', 'id')->whereIn('id', $logs)->orderBy('created_at', 'DESC')->get();
+        // $sql = "SELECT li.status_id, li.user_id, li.docs_compl,l.text,li.id FROM logs l left join lids li ON (li.id = l.lid_id) WHERE l.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' AND li.user_id IN (" . implode(',', $users_ids) . ") ORDER by l.`created_at` DESC";
+        // $res['sql'] = $sql;
+        // $res['liads'] = DB::select($sql);
 
         return $res;
     }

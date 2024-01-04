@@ -67,12 +67,58 @@
           </div>
         </v-col>
       </v-row>
-
-      <v-row v-if="users.length">
+      <v-progress-linear
+        :active="loading"
+        indeterminate
+        color="blue"
+      ></v-progress-linear>
+      <v-row v-if="users.length" class="mt-5">
         <v-col>
-          Managers:{{ users.length }} / Leads: {{ hm_docs_compl.length }} /
+          Managers: {{ users.length }} / Leads: {{ hm_docs_compl.length }} /
           Docs: {{ hm_docs }}
         </v-col>
+      </v-row>
+      <span v-if="hmtierstatuses.length" class="font-weight-thin">Tier</span>
+      <v-row>
+        <v-col>
+          <div class="wrp__statuses">
+            <template>
+              <div v-for="i in hmtierstatuses" :key="i.id" class="status_wrp">
+                <b
+                  :style="{
+                    background: i.color,
+                    outline: '1px solid' + i.color,
+                  }"
+                  >{{ i.hm }}</b
+                >
+                <span>{{ i.name }}</span>
+              </div>
+            </template>
+          </div>
+        </v-col>
+      </v-row>
+      <span v-if="hmstatuses.length" class="font-weight-thin">All</span>
+      <v-row>
+        <v-col>
+          <div class="wrp__statuses">
+            <template>
+              <div v-for="i in hmstatuses" :key="i.id" class="status_wrp">
+                <b
+                  :style="{
+                    background: i.color,
+                    outline: '1px solid' + i.color,
+                  }"
+                  >{{ i.hm }}</b
+                >
+                <span>{{ i.name }}</span>
+              </div>
+            </template>
+          </div>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col> </v-col>
       </v-row>
     </v-container>
   </div>
@@ -86,12 +132,15 @@ export default {
 
   data() {
     return {
+      loading: false,
       dateFrom: false,
       dateTo: false,
       dateTimeFrom: new Date().toISOString().slice(0, 8) + "01",
       dateTimeTo: new Date().toISOString().substring(0, 10),
       users: [],
       statuses: [],
+      hmstatuses: [],
+      hmtierstatuses: [],
       hm_docs: 0,
       hm_docs_compl: 0,
       liads: [],
@@ -104,6 +153,7 @@ export default {
     getTiersDates() {
       const self = this;
       let data = {};
+      self.loading = true;
       data.dateFrom = self.dateTimeFrom;
       data.dateTo = self.dateTimeTo;
       axios
@@ -113,7 +163,22 @@ export default {
           self.users = res.data.users;
           self.hm_docs = res.data.hm_docs[0].hm_docs;
           self.liads = res.data.liads;
-          self.hm_docs_compl = _.filter(self.liads, { text: "docs_compl 1" });
+          self.hm_docs_compl = _.filter(self.liads, { docs_compl: 1 });
+          self.hmstatuses = _.orderBy(
+            _.map(_.groupBy(self.liads, "status_id"), function (v, k) {
+              let st = self.statuses.find((e) => e.id == k);
+              return { ...st, hm: v.length };
+            }),
+            "order"
+          );
+          self.hmtierstatuses = _.orderBy(
+            _.map(_.groupBy(self.hm_docs_compl, "status_id"), function (v, k) {
+              let st = self.statuses.find((e) => e.id == k);
+              return { ...st, hm: v.length };
+            }),
+            "order"
+          );
+          self.loading = false;
         })
         .catch((error) => console.log(error));
     },
