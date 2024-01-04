@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-container fluid>
+      <!-- dates -->
       <v-row>
         <v-col cols="3">
           <div class="status_wrp wrp_date px-3">
@@ -28,7 +29,7 @@
                     v-model="dateTimeFrom"
                     @input="
                       dateFrom = false;
-                      reportCalDep();
+                      getTiersDates();
                     "
                   ></v-date-picker>
                 </v-menu>
@@ -57,7 +58,7 @@
                     v-model="dateTimeTo"
                     @input="
                       dateTo = false;
-                      reportCalDep();
+                      getTiersDates();
                     "
                   ></v-date-picker>
                 </v-menu>
@@ -66,11 +67,20 @@
           </div>
         </v-col>
       </v-row>
+
+      <v-row v-if="users.length">
+        <v-col>
+          Managers:{{ users.length }} / Leads: {{ hm_docs_compl.length }} /
+          Docs: {{ hm_docs }}
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import _ from "lodash";
 export default {
   name: "PeriodTier",
 
@@ -80,6 +90,11 @@ export default {
       dateTo: false,
       dateTimeFrom: new Date().toISOString().slice(0, 8) + "01",
       dateTimeTo: new Date().toISOString().substring(0, 10),
+      users: [],
+      statuses: [],
+      hm_docs: 0,
+      hm_docs_compl: 0,
+      liads: [],
     };
   },
 
@@ -91,6 +106,16 @@ export default {
       let data = {};
       data.dateFrom = self.dateTimeFrom;
       data.dateTo = self.dateTimeTo;
+      axios
+        .post("/api/getTiersDates", data)
+        .then((res) => {
+          self.statuses = res.data.statuses = res.data.statuses;
+          self.users = res.data.users;
+          self.hm_docs = res.data.hm_docs[0].hm_docs;
+          self.liads = res.data.liads;
+          self.hm_docs_compl = _.filter(self.liads, { text: "docs_compl 1" });
+        })
+        .catch((error) => console.log(error));
     },
   },
 };

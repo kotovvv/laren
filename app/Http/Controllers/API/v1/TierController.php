@@ -13,10 +13,25 @@ class TierController extends Controller
     public function getTiersDates(Request $request)
     {
         $data = $request->all();
+        $res = [];
+        $users_ids = [];
+        $sql = "SELECT COUNT(*) hm_docs FROM `tierdoc` td WHERE  td.`created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59' ";
+        $res['hm_docs'] = DB::select($sql);
 
-        $sql = "SELECT `status_id`,`user_id`,`text`,`created_at`,`lid_id`,(SELECT COUNT(id) FROM `tierdoc` td WHERE td.`user_id` = l.`user_id` AND  td.`created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59') docs FROM `logs` l WHERE `created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59' AND `text` = 'docs_compl 1'";
+        $sql = "SELECT `id`,`name`,`order`,`color` FROM statuses ";
+        $res['statuses'] = DB::select($sql);
 
-        DB::select($sql);
+        $sql = "SELECT `id`,`name`,`office_id`,`group_id` FROM `users` u WHERE `tier`= 1 AND `id` IN (SELECT l.user_id FROM logs l WHERE l.`created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59' GROUP BY l.user_id) ORDER BY u.`order`";
+        $res['users'] = DB::select($sql);
+        foreach ($res['users'] as $user) {
+            $users_ids[] = $user->id;
+        }
+
+        $sql = "SELECT li.status_id, li.user_id, li.docs_compl,l.text,li.id FROM logs l left join lids li ON (li.id = l.lid_id) WHERE l.`created_at` BETWEEN '" . $data['dateFrom'] . " 00:00:00' AND '" . $data['dateTo'] . " 23:59:59' AND li.user_id IN (" . implode(',', $users_ids) . ") ORDER by l.`created_at` DESC";
+        $res['sql'] = $sql;
+        $res['liads'] = DB::select($sql);
+
+        return $res;
     }
 
 
