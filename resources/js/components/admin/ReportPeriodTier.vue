@@ -189,7 +189,9 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.getTiersDates();
+  },
 
   methods: {
     clickrow(item, row) {
