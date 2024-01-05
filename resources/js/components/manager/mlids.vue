@@ -90,7 +90,7 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="2">
+          <!-- <v-col cols="2">
             Server
             <v-select
               v-model="selectedServer"
@@ -108,7 +108,7 @@
                 </span>
               </template>
             </v-select>
-          </v-col>
+          </v-col> -->
         </v-row>
         <v-progress-linear
           :active="loading"
