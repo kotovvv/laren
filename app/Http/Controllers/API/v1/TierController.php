@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Lid;
 use App\Models\User;
-use App\Models\log;
+use App\Models\Log;
 
 use DB;
 
