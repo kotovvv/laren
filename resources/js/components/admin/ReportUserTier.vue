@@ -57,21 +57,13 @@ export default {
       let rows = [];
       _.map(dates, (r, k) => {
         let grsta = _.groupBy(r, "status_id");
-
-        console.log(grsta);
         let row = {};
         row.created = k;
         this.user_statuses.map((s) => {
-          if (s.id != null) {
-            // console.log(s.id);
-            row[s.id] = grsta[s.id].length;
-          }
+          row[s.id.toString()] = grsta[s.id].length;
         });
-        row.docs = this.$props.docs.filter((d) => d.created == k) ?? "";
+        row.docs = this.$props.docs.filter((d) => d.created == k).length ?? "";
         rows.push(row);
-        //   console.log(r);
-        // console.log(grsta);
-        // console.log(row);
       });
 
       this.logsdates = rows;
@@ -80,7 +72,7 @@ export default {
       let header = [];
       header.push({ text: "Date", value: "created" });
       this.user_statuses.map((s) => {
-        header.push({ text: s.name, value: s.id });
+        header.push({ text: s.name, value: s.id.toString() });
       });
       header.push({ text: "Docs", value: "docs" });
       this.headers = header;
