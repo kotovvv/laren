@@ -12,28 +12,37 @@ use DB;
 
 class TierController extends Controller
 {
+    public function getLogUserDates(Request $request)
+    {
+        $res = [];
+        $data = $request->all();
+        $datefrom =  $data['datefrom'] . " 00:00:00";
+        $dateto =  $data['dateto'] . " 23:59:59";
+        $user_id =  $data['user_id'];
+        $res['logs'] =  Log::select('status_id')->selectRaw('Date(created_at) as created')->where('user_id', $user_id)->whereBetween('created_at', array($datefrom, $dateto))->orderBy('created_at', 'DESC')->get();
+
+        return $res;
+    }
+
     public function getTiersDates(Request $request)
     {
         $data = $request->all();
         $datefrom =  $data['dateFrom'] . " 00:00:00";
         $dateto =  $data['dateTo'] . " 23:59:59";
         $res = [];
-        $sql = "SELECT COUNT(*) hm_docs FROM `tierdoc` td WHERE  td.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' ";
-        $res['hm_docs'] = DB::select($sql);
+
+        $sql = "SELECT user_id,date(created_at) created FROM `tierdoc` td WHERE td.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' ORDER BY created DESC";
+        // $sql = "SELECT COUNT(*) hm_docs FROM `tierdoc` td WHERE  td.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' ";
+        $res['docs_user_ids'] = DB::select($sql);
 
         $sql = "SELECT `id`,`name`,`order`,`color` FROM statuses ";
         $res['statuses'] = DB::select($sql);
 
-        // $sql = "SELECT `id`,`name`,`office_id`,`group_id` FROM `users` u WHERE `tier`= 1 AND `id` IN (SELECT l.user_id FROM logs l WHERE l.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' GROUP BY l.user_id) ORDER BY u.`order`";
-        // $res['users'] = DB::select($sql);
         $logs = Log::select('user_id')->whereBetween('created_at', array($datefrom, $dateto))->groupBy('user_id')->get();
         $res['users'] = User::select('id', 'name', 'office_id', 'group_id')->where('tier', 1)->whereIn('id', $logs)->get();
 
         $logs = Log::select('lid_id')->whereBetween('created_at', array($datefrom, $dateto))->groupBy('lid_id');
-        $res['liads'] = Lid::select('status_id', 'user_id', 'docs_compl', 'id')->whereIn('id', $logs)->orderBy('created_at', 'DESC')->get();
-        // $sql = "SELECT li.status_id, li.user_id, li.docs_compl,l.text,li.id FROM logs l left join lids li ON (li.id = l.lid_id) WHERE l.`created_at` BETWEEN '" . $datefrom . "' AND '" . $dateto . "' AND li.user_id IN (" . implode(',', $users_ids) . ") ORDER by l.`created_at` DESC";
-        // $res['sql'] = $sql;
-        // $res['liads'] = DB::select($sql);
+        $res['leads'] = Lid::select('status_id', 'user_id', 'docs_compl', 'id')->whereIn('id', $logs)->orderBy('created_at', 'DESC')->get();
 
         return $res;
     }

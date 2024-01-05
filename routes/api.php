@@ -116,3 +116,4 @@ Route::get('getUsersTier', [TierController::class, 'getUsersTier']);
 Route::get('getTiersUser/{id}', [TierController::class, 'getTiersUser']);
 Route::post('changeUserTiers', [TierController::class, 'changeUserTiers']);
 Route::post('getTiersDates', [TierController::class, 'getTiersDates']);
+Route::post('getLogUserDates', [TierController::class, 'getLogUserDates']);

@@ -75,7 +75,7 @@
       <v-row v-if="users.length" class="mt-5">
         <v-col>
           Managers: {{ users.length }} / Leads: {{ hm_docs_compl.length }} /
-          Docs: {{ hm_docs }}
+          Docs: {{ docs.length }}
         </v-col>
       </v-row>
       <span v-if="hmtierstatuses.length" class="font-weight-thin">Tier</span>
@@ -118,7 +118,38 @@
       </v-row>
 
       <v-row>
-        <v-col> </v-col>
+        <v-col>
+          <v-data-table
+            v-model.lazy.trim="selected"
+            id="tablids"
+            :headers="headers"
+            item-key="id"
+            show-expand
+            @click:row="clickrow"
+            :items="users"
+            :expanded.sync="expanded"
+            ref="datatable"
+            :loading="loading"
+            loading-text="Uploading... Stand by."
+            class="elevation-1"
+          >
+            <template v-slot:expanded-item="{ headers, item }">
+              <td :colspan="headers.length" class="blackborder">
+                <ReportUserTier
+                  :user_id="item.id"
+                  :dates="{ datefrom: dateTimeFrom, dateto: dateTimeTo }"
+                  :statuses="statuses"
+                  :docs="
+                    docs.filter((el) => {
+                      return el.user_id == item.id;
+                    })
+                  "
+                  :key="item.id"
+                />
+              </td>
+            </template>
+          </v-data-table>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -127,9 +158,13 @@
 <script>
 import axios from "axios";
 import _ from "lodash";
+import ReportUserTier from "./ReportUserTier";
+
 export default {
   name: "PeriodTier",
-
+  components: {
+    ReportUserTier,
+  },
   data() {
     return {
       loading: false,
@@ -141,15 +176,29 @@ export default {
       statuses: [],
       hmstatuses: [],
       hmtierstatuses: [],
-      hm_docs: 0,
+      docs: [],
       hm_docs_compl: 0,
-      liads: [],
+      leads: [],
+      headers: [
+        { text: "Name", value: "name" },
+        { text: "Leads", value: "docs_compl" },
+        { text: "Docs.", align: "start", value: "docs" },
+      ],
+      selected: [],
+      expanded: [],
     };
   },
 
   mounted() {},
 
   methods: {
+    clickrow(item, row) {
+      if (!row.isExpanded) {
+        this.expanded = [item];
+      } else {
+        this.expanded = [];
+      }
+    },
     getTiersDates() {
       const self = this;
       let data = {};
@@ -161,9 +210,9 @@ export default {
         .then((res) => {
           self.statuses = res.data.statuses = res.data.statuses;
           self.users = res.data.users;
-          self.hm_docs = res.data.hm_docs[0].hm_docs;
-          self.liads = res.data.liads;
-          self.hm_docs_compl = _.filter(self.liads, { docs_compl: 1 });
+          self.docs = res.data.docs_user_ids;
+          self.leads = res.data.leads;
+          self.hm_docs_compl = _.filter(self.leads, { docs_compl: 1 });
           self.hmstatuses = _.orderBy(
             _.map(_.groupBy(self.liads, "status_id"), function (v, k) {
               let st = self.statuses.find((e) => e.id == k);
@@ -178,6 +227,12 @@ export default {
             }),
             "order"
           );
+          self.users.map((u) => {
+            let alid = _.filter(self.hm_docs_compl, { user_id: u.id });
+            u.docs_compl = alid.length;
+            u.docs = self.docs.filter((el) => el.user_id == u.id).length;
+            return u;
+          });
           self.loading = false;
         })
         .catch((error) => console.log(error));
