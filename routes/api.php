@@ -107,6 +107,7 @@ Route::post('getlidsImportedProvider', [LidsController::class, 'getlidsImportedP
 Route::get('onCdr', [LogsController::class, 'onCdr']);
 Route::post('getCalls', [LogsController::class, 'getCalls']);
 Route::get('reportCalDep', [ProvidersController::class, 'reportCalDep']);
+Route::post('getTelCodProviers', [ProvidersController::class, 'getTelCodProviers']);
 Route::post('uploadDoc', [ImportsController::class, 'uploadDoc']);
 Route::get('getDocs/{lead_id}', [ImportsController::class, 'getDocs']);
 Route::get('delDoc/{id}', [ImportsController::class, 'delDoc']);

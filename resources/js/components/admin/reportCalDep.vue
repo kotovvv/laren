@@ -123,7 +123,12 @@ close</v-icon>
             <v-col>
               <div class="wrp__statuses">
                 <template>
-                  <div class="status_wrp" v-for="(i, x) in telcod" :key="x">
+                  <div
+                    class="status_wrp"
+                    v-for="(i, x) in telcod"
+                    :key="x"
+                    v-if="parseInt((i.hm * 100) / all) > 0"
+                  >
                     <b
                       :style="{
                         background: '#999',
@@ -190,6 +195,58 @@ close</v-icon>
                         }"
                       ></div>
                     </div>
+                    <v-row>
+                      <v-col>
+                        <div class="wrp__statuses">
+                          <template>
+                            <div
+                              class="status_wrp"
+                              v-for="(i, x) in providerTelCod['statuses'][
+                                item.date
+                              ][item.id]"
+                              :key="x"
+                            >
+                              <b
+                                :style="{
+                                  background: i.color,
+                                  outline: '1px solid' + i.color,
+                                }"
+                                >{{ i.hm }}</b
+                              >
+                              <span>{{ i.name }}</span>
+                            </div>
+                          </template>
+                        </div>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col>
+                        <div class="wrp__statuses mb-4">
+                          <template>
+                            <div
+                              class="status_wrp"
+                              v-for="(i, x) in providerTelCod[item.date][
+                                item.id
+                              ]"
+                              :key="x"
+                            >
+                              <b
+                                :style="{
+                                  background: '#999',
+                                  outline: '1px solid #555',
+                                }"
+                                >{{
+                                  (parseInt(i.hm * 100) / item.hm).toFixed(0)
+                                }}%</b
+                              >
+                              <span>{{
+                                telcodcoun[i.telcod] ?? i.telcod
+                              }}</span>
+                            </div>
+                          </template>
+                        </div>
+                      </v-col>
+                    </v-row>
                   </td>
                 </tr>
               </table>
@@ -420,6 +477,7 @@ export default {
       1876: "Ямайка",
       81: "Япония",
     },
+    providerTelCod: [],
   }),
   mounted: function () {
     // this.reportCalDep();
@@ -452,11 +510,31 @@ export default {
           `/api/reportCalDep?dateFrom=${this.dateTimeFrom}&dateTo=${this.dateTimeTo}`
         )
         .then((res) => {
+          if (res.data.dates) {
+            self.dates = res.data.dates;
+            self.statuses = res.data.statuses;
+            self.telcod = res.data.telcod;
+            self.all = res.data.all;
+            self.getTelCodProviers();
+          } else {
+            self.loading = false;
+          }
+        })
+
+        .catch((error) => console.log(error));
+    },
+    getTelCodProviers() {
+      let self = this;
+      let data = self.dates.map(({ id, date }) => ({
+        id,
+        date,
+      }));
+      axios
+        .post("/api/getTelCodProviers", data)
+        .then((res) => {
           self.loading = false;
-          self.dates = res.data.dates;
-          self.statuses = res.data.statuses;
-          self.telcod = res.data.telcod;
-          self.all = res.data.all;
+          self.providerTelCod = res.data;
+          self.loading = false;
         })
 
         .catch((error) => console.log(error));

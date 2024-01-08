@@ -249,6 +249,22 @@ class ProvidersController extends Controller
         //
     }
 
+    public function getTelCodProviers(Request $request)
+    {
+        $data = $request->all();
+        $res = [];
+        foreach ($data as $prov) {
+            $sql = "SELECT  LEFT(tel,2) telcod, COUNT(tel) hm FROM `lids` l WHERE l.provider_id = " . $prov['id'] . " AND l.created_at BETWEEN '" . $prov['date'] . " 00:00:00' and '" . $prov['date'] . " 23:59:59' GROUP BY telcod";
+            $res[$prov['date']][$prov['id']] = DB::select($sql);
+
+            $sql = "select s.name,s.color, count(status_id) hm from `lids` l left join `statuses` s on (s.id = l.`status_id`) where l.provider_id = " . $prov['id'] . " AND l.created_at between '" . $prov['date'] . " 00:00:00' and '" . $prov['date'] . " 23:59:59' group by status_id order by s.order desc";
+            $res['statuses'][$prov['date']][$prov['id']] = DB::select($sql);
+        }
+
+        return $res;
+    }
+
+
     public function reportCalDep(Request $request)
     {
         $data = $request->all();
