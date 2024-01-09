@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-tabs v-model="tab">
+      <v-tab>Call Dep</v-tab>
       <v-tab>Users report</v-tab>
       <v-tab>Period report</v-tab>
-      <v-tab>Call Dep</v-tab>
     </v-tabs>
     <v-progress-linear
       :active="loading"
@@ -11,14 +11,6 @@
       color="blue accent-4"
     ></v-progress-linear>
     <v-tabs-items v-model="tab">
-      <!-- Users report -->
-      <v-tab-item>
-        <ReportUsersTier></ReportUsersTier>
-      </v-tab-item>
-      <!-- Period report -->
-      <v-tab-item>
-        <ReportPeriodTier></ReportPeriodTier>
-      </v-tab-item>
       <!-- Call Dep -->
       <v-tab-item>
         <v-container fluid>
@@ -254,6 +246,14 @@ close</v-icon>
           </v-row>
         </v-container>
       </v-tab-item>
+      <!-- Users report -->
+      <v-tab-item>
+        <ReportUsersTier></ReportUsersTier>
+      </v-tab-item>
+      <!-- Period report -->
+      <v-tab-item>
+        <ReportPeriodTier></ReportPeriodTier>
+      </v-tab-item>
     </v-tabs-items>
   </div>
 </template>
@@ -480,14 +480,14 @@ export default {
     providerTelCod: [],
   }),
   mounted: function () {
-    // this.reportCalDep();
+    this.reportCalDep();
   },
   watch: {
-    tab() {
-      if (this.tab == 2) {
-        this.reportCalDep();
-      }
-    },
+    // tab() {
+    //   if (this.tab == 2) {
+    //     this.reportCalDep();
+    //   }
+    // },
   },
   methods: {
     orderDates(on) {
