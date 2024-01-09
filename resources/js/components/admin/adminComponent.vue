@@ -50,7 +50,7 @@ const users = () => import("./users");
 const importcsv = () => import("./importcsv");
 const statusLid = () => import("./statusLid");
 // const workPlaces = () => import("./workPlaces");
-const providers = () => import("./providers");
+// const providers = () => import("./providers");
 const mlids = () => import("../manager/mlids");
 
 // const calls = () => import("../crmanager/calls");

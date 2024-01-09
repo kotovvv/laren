@@ -63,7 +63,7 @@
             </template>
           </v-data-table>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="9">
           <!-- <v-card class="mx-auto"> -->
           <!-- max-width="900" -->
           <v-data-table
@@ -277,9 +277,6 @@
           </v-data-table>
           <!-- </v-card> -->
         </v-col>
-        <v-col cols="3">
-          <providers></providers>
-        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -287,12 +284,11 @@
 
 <script>
 import statusUsers from "./statusUsers";
-import providers from "./providers";
+
 import axios from "axios";
 export default {
   name: "users",
   components: {
-    providers,
     statusUsers,
   },
   data: () => ({
