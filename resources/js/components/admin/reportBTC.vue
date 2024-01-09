@@ -237,7 +237,7 @@ export default {
     loading: false,
     dateFrom: false,
     dateTo: false,
-    dateTimeFrom: new Date(new Date().setDate(new Date().getDate() - 7))
+    dateTimeFrom: new Date(new Date().setDate(new Date().getDate() - 14))
       .toISOString()
       .substring(0, 10),
     dateTimeTo: new Date().toISOString().substring(0, 10),

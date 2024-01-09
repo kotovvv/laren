@@ -649,7 +649,7 @@ export default {
       { text: "Created", value: "date_created" },
       { text: "Status", value: "status" },
       { text: "Date", value: "date" },
-      { text: "Chime", value: "ontime" },
+      //{ text: "Chime", value: "ontime" },
       { text: "Message", value: "text" },
       { text: "Address", value: "address" },
     ],
