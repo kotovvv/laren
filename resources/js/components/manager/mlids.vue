@@ -708,6 +708,7 @@ export default {
           { text: "Created", value: "date_created" },
           { text: "Status", value: "status" },
           { text: "D_C", value: "docs_compl" },
+          { text: "Сallback", value: "ontime" },
           { text: "Message", value: "text" },
           { text: "Address", value: "address" },
         ];
