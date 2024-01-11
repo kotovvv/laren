@@ -215,7 +215,6 @@ class UsersController extends Controller
     {
         $repoprt = [];
         $req = $request->All();
-        // Debugbar::info($req);
         $a_users = $req['users'];
         $datefrom = $req['datefrom'];
         $dateto = $req['dateto'];
@@ -252,10 +251,11 @@ class UsersController extends Controller
 
         $repoprt[] = $row_dates;
         $repoprt[] = $row_added;
-        // Debugbar::info($new);
-        $statuses = DB::select(DB::raw("SELECT id, `name`, color FROM `statuses` WHERE `active` = 1 ORDER BY `order` ASC"));
+
+        $statuses = DB::table('statuses')->select('id', 'name', 'color')->where('active', 1)->orderBy('order', 'ASC')->get();
 
         foreach ($statuses as $status) {
+
             $current_date = $datefrom;
             $col = [$status->name];
             $count_status = 0;
@@ -264,7 +264,6 @@ class UsersController extends Controller
                 $sts = DB::select($sql);
                 $col[] =  $sts[0]->n;
                 $count_status += $sts[0]->n;
-                //  Debugbar::info($sql);
                 $current_date = date("Y-m-d", strtotime("+1 day", strtotime($current_date)));
             }
             $col[] = $count_status;

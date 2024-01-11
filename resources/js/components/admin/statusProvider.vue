@@ -134,9 +134,8 @@ export default {
       axios
         .post("/api/status_provider", send)
         .then((res) => {
-          console.log(res.data.length);
-          if (res.data) {
-            self.statuses = res.data.allstatuses;
+          if (res) {
+            self.statuses = res.data.allstatuses ?? [];
             self.hm = res.data.all[0].n;
           }
         })

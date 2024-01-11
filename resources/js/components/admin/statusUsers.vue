@@ -74,7 +74,7 @@
               <v-btn
                 color="primary darken-1"
                 text
-                @click="(dialog = false), (users = [])"
+                @click="(dialog = false), (users = []), (dates = [])"
               >
                 Close
               </v-btn>
@@ -147,6 +147,7 @@ export default {
       if (this.$props.o_users.length) {
         let self = this;
         let send = {};
+
         send.users = this.$props.o_users.map((e) => e.id);
         send.datefrom = self.datefrom;
         send.dateto = self.dateto;

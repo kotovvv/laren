@@ -9991,12 +9991,6 @@ h3 {
 }
 .v-list-item.v-item--active {
   background: #fff;
-  border-top-left-radius: 16px;
-  border-bottom-left-radius: 16px;
-}
-
-.v-menu__content.menuable__content__active {
-  border-radius: 16px;
 }
 
 #inspire .theme--dark.v-navigation-drawer {
@@ -10112,7 +10106,6 @@ h3 {
 }
 
 .wrp_group .v-input img {
-  border-radius: 22px;
   border: 2px solid transparent;
   width: 56px;
   height: 56px;
