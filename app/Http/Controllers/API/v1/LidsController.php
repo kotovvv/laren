@@ -627,8 +627,10 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         $data = $request->all();
 
         $f_key = Provider::where('tel', $data['api_key'])->first();
-        if (!$f_key) return response(['status' => 'Key incorect'], 403);
-        return Lid::all()->where('user_id',  $f_key->user_id);
+        if (!$f_key) {
+            return response(['status' => 'Key incorect'], 403);
+        }
+        return Lid::where('user_id',  $f_key->user_id)->get();
     }
 
 
@@ -653,7 +655,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
         $data = $request->all();
         $f_key = Provider::where('tel', $data['api_key'])->first();
         if (!$f_key) return response(['status' => 'Key incorect'], 403);
-        return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$req['start'], $req['end']])->get();
+        return Lid::select('id')->where('provider_id', $f_key->id)->whereBetween('created_at', [$data['from_date'], $data['to_date']])->get();
     }
 
     public function getlidsImportedProvider(Request $request)
@@ -814,7 +816,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $f_lid =  Lid::where('tel', '=', '' . $n_lid->tel)->first();
 
-        if (!$f_lid->isEmpty()) {
+        if ($f_lid->exists()) {
             $n_lid->afilyator = $f_key->name;
             $n_lid->provider_id = 11;
             $n_lid->user_id = 101;
@@ -1131,9 +1133,10 @@ ftd=0  / ftd=1    (0 - всі ліди або 1 - то тільки депози
         $f_key = Provider::where('tel', $data['api_key'])->first();
         if (!$f_key) return response(['status' => 'Key incorect'], 403);
         $res['result'] = 'Error';
-        $sql = "SELECT l.name,l.tel,l.afilyator,l.status_id,l.email,l.id,s.name statusName FROM `lids` l LEFT JOIN statuses s on (s.id = l.status_id ) WHERE DATE(l.`created_at`) >= " . $data['from_date'] . " AND DATE(l.`created_at`) <= " . $data['to_date'] . " AND l.`provider_id` = '" . $f_key->id . "'";
+        $sql = "SELECT l.name,l.tel,l.afilyator,l.status_id,l.email,l.id,s.name statusName FROM `lids` l LEFT JOIN statuses s on (s.id = l.status_id ) WHERE DATE(l.`created_at`) >= '" . $data['from_date'] . " 'AND DATE(l.`created_at`) <= '" . $data['to_date'] . "' AND l.`provider_id` = " . $f_key->id;
 
         $lids = DB::select($sql);
+
         if ($lids) {
             $res['data'] = [];
             $res['result'] = "success";
