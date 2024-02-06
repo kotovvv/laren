@@ -59,7 +59,7 @@ class LidsController extends Controller
         $n_lid = new Lid;
         $n_lid->tel = $data['phone'];
         $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
-        if (!$f_lid->isEmpty() &&  $n_lid->provider_id != '76') {
+        if (!$f_lid->count() &&  $n_lid->provider_id != '76') {
             $n_lid->status_id = 22;
         } else {
             $n_lid->status_id = 8;
@@ -312,7 +312,7 @@ class LidsController extends Controller
             if (isset($data['status_id']))  $n_lid->status_id = $data['status_id'];
             $f_lid =  Lid::where('tel', '=', "" . $lid['tel'])->get();
 
-            if (!$f_lid->isEmpty()) {
+            if (!$f_lid->count()) {
                 $n_lid->status_id = 22;
             }
             if ($n_lid->provider_id == '76') {
@@ -816,7 +816,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $f_lid =  Lid::where('tel', '=', '' . $n_lid->tel)->first();
 
-        if ($f_lid) {
+        if ($f_lid->count()) {
             $n_lid->afilyator = $f_key->name;
             $n_lid->provider_id = 11;
             $n_lid->user_id = 101;
@@ -975,7 +975,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
 
-        if (!$f_lid->isEmpty()) {
+        if (!$f_lid->count()) {
             $n_lid->status_id = 22;
         }
         if ($n_lid->provider_id == '76') {
