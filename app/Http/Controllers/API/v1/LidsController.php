@@ -816,7 +816,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $f_lid =  Lid::where('tel', '=', '' . $n_lid->tel)->first();
 
-        if ($f_lid->exists()) {
+        if ($f_lid) {
             $n_lid->afilyator = $f_key->name;
             $n_lid->provider_id = 11;
             $n_lid->user_id = 101;
