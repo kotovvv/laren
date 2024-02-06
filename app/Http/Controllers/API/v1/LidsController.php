@@ -814,7 +814,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $n_lid->created_at = Now();
 
-        $f_lid =  Lid::where('tel', '=', '' . $n_lid->tel)->first();
+        $f_lid =  Lid::where('tel', '=', '' . $n_lid->tel)->get();
 
         if ($f_lid->count()) {
             $n_lid->afilyator = $f_key->name;
