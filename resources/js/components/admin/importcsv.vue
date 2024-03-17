@@ -15,6 +15,7 @@
         BTC
       </v-tab>
       <v-tab>CHECK DUBLIKATE MAIL</v-tab>
+      <v-tab>Clear Dublicate Lids</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
@@ -336,6 +337,9 @@
           </v-row>
         </v-container>
       </v-tab-item>
+      <v-tab-item>
+        <ClearDupLids />
+      </v-tab-item>
     </v-tabs-items>
   </div>
 </template>
@@ -345,6 +349,7 @@ import XLSX from "xlsx";
 import axios from "axios";
 import importBTC from "./importBTC";
 import importxlsx from "./importxlsx";
+import ClearDupLids from "./ClearDupLids";
 import _ from "lodash";
 export default {
   data: () => ({
@@ -841,6 +846,7 @@ export default {
   components: {
     importBTC,
     importxlsx,
+    ClearDupLids,
   },
 };
 </script>
