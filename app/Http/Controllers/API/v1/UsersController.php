@@ -440,51 +440,56 @@ class UsersController extends Controller
         $data = $request->all();
         $from = $data['from'];
         $to = $data['to'];
-        $update = strtotime($data['updated']);
+        $update = strtotime($data['updated'] . ' 00:00:00');
         $providers = $data['providers'];
         $user_id = $data['user_id'];
 
         $response = [];
-        $response['new'] = 0;
-        $response['dup'] = 0;
+        $response['newl'] = 0;
+        $response['dupl'] = 0;
+        $response['found'] = 0;
+        $response['give'] = 0;
         $lids = Lid::select('id', 'tel')
             ->whereNotIn('lids.status_id', [9, 10,])
             ->whereBetween('lids.created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->when(count($providers) > 0, function ($query) use ($providers) {
                 return $query->whereIn('provider_id', $providers);
             })
-
             ->orderBy('updated_at', 'DESC')
             ->get();
         if ($lids) {
-            $response['from'] = $lids->count();
+            $response['all'] = $lids->count();
             foreach ($lids as $lid) {
-                $finded = Lid::select('id', 'updated_at', 'status_id')
+                $found = Lid::select('id', 'updated_at', 'status_id')
                     ->where('tel', $lid->tel)
                     ->whereNot('id', $lid->id)
                     ->get();
-                if ($finded) {
+                if ($found) {
+                    $response['found'] += $found->count();
                     $depcall = false;
-                    foreach ($finded as $duplid) {
+                    foreach ($found as $duplid) {
                         if (in_array($duplid->status_id, [9, 10])) {
                             $depcall = true;
                         }
                     }
 
                     if ($depcall) {
-                        foreach ($finded as $duplid) {
+                        foreach ($found as $duplid) {
                             $datelid = strtotime($duplid->updated_at);
 
                             if ($update > $datelid) {
-                                $response['dup'] += 1;
+                                $response['dupl'] += 1;
+                                Lid::where('id', $duplid->id)->update(['status_id' => 22]);
                             } else {
-                                $response['new'] += 1;
+                                $response['newl'] += 1;
+                                Lid::where('id', $duplid->id)->update(['status_id' => 8]);
                             }
                         }
                     } else {
                         Lid::where('id', $lid->id)->update(['status_id' => 8]);
                     }
                     if ($user_id > 0) {
+                        $response['give'] += 1;
                         Lid::where('id', $lid->id)->update(['user_id' => $user_id]);
                     }
                 }

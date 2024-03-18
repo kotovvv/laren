@@ -1,13 +1,5 @@
 <template>
   <div>
-    <v-snackbar v-model="snackbar" top right timeout="-1">
-      <v-card-text v-html="message"></v-card-text>
-      <template v-slot:action="{ attrs }">
-        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
-          X
-        </v-btn>
-      </template>
-    </v-snackbar>
     <v-container>
       <v-row>
         <v-col cols="3">
@@ -144,6 +136,113 @@
           ></v-col
         >
       </v-row>
+      <v-progress-linear
+        :active="loading"
+        indeterminate
+        color="blue"
+      ></v-progress-linear>
+      <v-row>
+        <v-col cols="12" class="my-3">
+          Liads on period ({{ all }})
+          <v-progress-linear
+            :value="
+              Math.ceil((all / Math.max(found, all)) * 100)
+                ? Math.ceil((all / Math.max(found, all)) * 100)
+                : 0
+            "
+            color="lime"
+            height="25"
+          >
+            <strong
+              >{{
+                Math.ceil((all / Math.max(found, all)) * 100)
+                  ? Math.ceil((all / Math.max(found, all)) * 100)
+                  : 0
+              }}%</strong
+            >
+          </v-progress-linear>
+        </v-col>
+        <v-col cols="12" class="my-3">
+          Liads was found ({{ found }})
+          <v-progress-linear
+            :value="
+              Math.ceil((found / Math.max(found, all)) * 100)
+                ? Math.ceil((found / Math.max(found, all)) * 100)
+                : 0
+            "
+            color="yellow"
+            height="25"
+          >
+            <strong
+              >{{
+                Math.ceil((found / Math.max(found, all)) * 100)
+                  ? Math.ceil((found / Math.max(found, all)) * 100)
+                  : 0
+              }}%</strong
+            >
+          </v-progress-linear>
+        </v-col>
+        <v-col cols="12" class="my-3">
+          New ({{ newl }})
+          <v-progress-linear
+            :value="
+              Math.ceil((newl / Math.max(found, all)) * 100)
+                ? Math.ceil((newl / Math.max(found, all)) * 100)
+                : 0
+            "
+            color="cyan"
+            height="25"
+          >
+            <strong
+              >{{
+                Math.ceil((newl / Math.max(found, all)) * 100)
+                  ? Math.ceil((newl / Math.max(found, all)) * 100)
+                  : 0
+              }}%</strong
+            >
+          </v-progress-linear>
+        </v-col>
+        <v-col cols="12" class="my-3">
+          Duplicate ({{ dupl }})
+          <v-progress-linear
+            :value="
+              Math.ceil((dupl / Math.max(found, all)) * 100)
+                ? Math.ceil((dupl / Math.max(found, all)) * 100)
+                : 0
+            "
+            color="pink"
+            height="25"
+          >
+            <strong
+              >{{
+                Math.ceil((dupl / Math.max(found, all)) * 100)
+                  ? Math.ceil((dupl / Math.max(found, all)) * 100)
+                  : 0
+              }}%</strong
+            >
+          </v-progress-linear>
+        </v-col>
+        <v-col cols="12" class="my-3" v-if="give">
+          Transferred to user ({{ give }})
+          <v-progress-linear
+            :value="
+              Math.ceil((give / Math.max(found, all)) * 100)
+                ? Math.ceil((give / Math.max(found, all)) * 100)
+                : 0
+            "
+            color="blue-grey"
+            height="25"
+          >
+            <strong
+              >{{
+                Math.ceil((give / Math.max(found, all)) * 100)
+                  ? Math.ceil((give / Math.max(found, all)) * 100)
+                  : 0
+              }}%</strong
+            >
+          </v-progress-linear>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -152,8 +251,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      snackbar: false,
-      message: "",
+      loading: false,
       dateFrom: false,
       dateUpdated: false,
       dateTo: false,
@@ -170,6 +268,11 @@ export default {
       selectedUser: 0,
       providers: [],
       selectedProvider: [],
+      all: 0,
+      found: 0,
+      dupl: 0,
+      newl: 0,
+      give: 0,
     };
   },
   mounted() {
@@ -179,6 +282,12 @@ export default {
     clearDupLids() {
       const self = this;
       let data = {};
+      self.all = 0;
+      self.found = 0;
+      self.dupl = 0;
+      self.newl = 0;
+      self.give = 0;
+      self.loading = true;
       data.from = self.datetimeFrom;
       data.to = self.datetimeTo;
       data.updated = self.datetimeUpdated;
@@ -187,7 +296,12 @@ export default {
       axios
         .post("api/clearDupLids", data)
         .then(function (response) {
-          console.log(response);
+          self.all = response.data.all;
+          self.found = response.data.found;
+          self.dupl = response.data.dupl;
+          self.newl = response.data.newl;
+          self.give = response.data.give;
+          self.loading = false;
         })
         .catch(function (error) {
           console.log(error);
@@ -196,6 +310,7 @@ export default {
     getProvUserDate() {
       const self = this;
       let data = {};
+      self.loading = true;
       data.from = self.datetimeFrom;
       data.to = self.datetimeTo;
 
@@ -207,6 +322,7 @@ export default {
           console.log(response);
           self.users = response.data.users;
           self.providers = response.data.providers;
+          self.loading = false;
         })
         .catch(function (error) {
           console.log(error);
