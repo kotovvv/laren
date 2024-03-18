@@ -418,4 +418,79 @@ class UsersController extends Controller
     {
         //
     }
+    public function getProvUserDate(Request $request)
+    {
+        $data = $request->all();
+        $from = $data['from'];
+        $to = $data['to'];
+
+        $response = [];
+        $response['providers'] = Lid::select('provider_id AS id', 'providers.name')
+            ->leftJoin('providers', 'provider_id', '=', 'providers.id')
+            ->whereBetween('lids.created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->orderBy('name', 'ASC')->groupBy('provider_id')
+            ->get();
+
+        $response['users'] = User::select('id', 'name')->where('active', 1)->where('role_id', 3)->orderBy('name')->get();
+
+        return $response;
+    }
+    public function clearDupLids(Request $request)
+    {
+        $data = $request->all();
+        $from = $data['from'];
+        $to = $data['to'];
+        $update = strtotime($data['updated']);
+        $providers = $data['providers'];
+        $user_id = $data['user_id'];
+
+        $response = [];
+        $response['new'] = 0;
+        $response['dup'] = 0;
+        $lids = Lid::select('id', 'tel')
+            ->whereNotIn('lids.status_id', [9, 10,])
+            ->whereBetween('lids.created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->when(count($providers) > 0, function ($query) use ($providers) {
+                return $query->whereIn('provider_id', $providers);
+            })
+
+            ->orderBy('updated_at', 'DESC')
+            ->get();
+        if ($lids) {
+            $response['from'] = $lids->count();
+            foreach ($lids as $lid) {
+                $finded = Lid::select('id', 'updated_at', 'status_id')
+                    ->where('tel', $lid->tel)
+                    ->whereNot('id', $lid->id)
+                    ->get();
+                if ($finded) {
+                    $depcall = false;
+                    foreach ($finded as $duplid) {
+                        if (in_array($duplid->status_id, [9, 10])) {
+                            $depcall = true;
+                        }
+                    }
+
+                    if ($depcall) {
+                        foreach ($finded as $duplid) {
+                            $datelid = strtotime($duplid->updated_at);
+
+                            if ($update > $datelid) {
+                                $response['dup'] += 1;
+                            } else {
+                                $response['new'] += 1;
+                            }
+                        }
+                    } else {
+                        Lid::where('id', $lid->id)->update(['status_id' => 8]);
+                    }
+                    if ($user_id > 0) {
+                        Lid::where('id', $lid->id)->update(['user_id' => $user_id]);
+                    }
+                }
+            }
+        }
+
+        return $response;
+    }
 }

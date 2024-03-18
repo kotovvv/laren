@@ -34,7 +34,10 @@
                   <v-date-picker
                     locale="en"
                     v-model="datetimeFrom"
-                    @input="dateFrom = false"
+                    @input="
+                      dateFrom = false;
+                      getProvUserDate();
+                    "
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -59,7 +62,10 @@
                   <v-date-picker
                     locale="en"
                     v-model="datetimeTo"
-                    @input="dateTo = false"
+                    @input="
+                      dateTo = false;
+                      getProvUserDate();
+                    "
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -97,31 +103,52 @@
           <v-select
             v-model="selectedProvider"
             :items="providers"
-            label="Providers"
+            label="Suppliers"
             item-text="name"
             item-value="id"
             outlined
             multiple
-          ></v-select>
+          >
+            <template v-slot:selection="{ item, index }">
+              <span v-if="index === 0">{{ item.name }} </span>
+              <span v-if="index === 1" class="grey--text text-caption">
+                (+{{ selectedProvider.length - 1 }} )
+              </span>
+            </template>
+            <template v-slot:item="{ item, attrs }">
+              <v-badge
+                :value="attrs['aria-selected'] == 'true'"
+                color="#2196f3"
+                dot
+                left
+              >
+                {{ item.name }}
+              </v-badge>
+            </template>
+          </v-select>
         </v-col>
         <v-col cols="2">
-          <v-select
+          <v-autocomplete
             v-model="selectedUser"
             :items="users"
             label="Users"
             item-text="name"
             item-value="id"
             outlined
-          ></v-select>
+            clearable
+          ></v-autocomplete>
         </v-col>
         <v-col>
-          <v-btn class="btn primary" x-large>Check duplicates</v-btn></v-col
+          <v-btn class="btn primary" x-large @click="clearDupLids()"
+            >Check duplicates</v-btn
+          ></v-col
         >
       </v-row>
     </v-container>
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -140,14 +167,51 @@ export default {
         .substring(0, 10),
       datetimeTo: new Date().toISOString().substring(0, 10),
       users: [],
-      selectedUser: [],
+      selectedUser: 0,
       providers: [],
       selectedProvider: [],
     };
   },
-  mounted() {},
+  mounted() {
+    this.getProvUserDate();
+  },
   methods: {
-    clearDupLids() {},
+    clearDupLids() {
+      const self = this;
+      let data = {};
+      data.from = self.datetimeFrom;
+      data.to = self.datetimeTo;
+      data.updated = self.datetimeUpdated;
+      data.providers = self.selectedProvider;
+      data.user_id = self.selectedUser;
+      axios
+        .post("api/clearDupLids", data)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getProvUserDate() {
+      const self = this;
+      let data = {};
+      data.from = self.datetimeFrom;
+      data.to = self.datetimeTo;
+
+      //   data.providers = self.selectedProvider;
+      //   data.user_id = self.selectedUser;
+      axios
+        .post("api/getProvUserDate", data)
+        .then(function (response) {
+          console.log(response);
+          self.users = response.data.users;
+          self.providers = response.data.providers;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
 };
 </script>

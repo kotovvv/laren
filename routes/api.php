@@ -93,6 +93,7 @@ Route::get('getDataTime/{id}/{start_day}/{stop_day}', [ProvidersController::clas
 Route::get('getOffices', [UsersController::class, 'getOffices']);
 Route::post('office/update', [UsersController::class, 'updateOffice']);
 Route::get('usersTree', [UsersController::class, 'usersTree']);
+Route::post('getProvUserDate', [UsersController::class, 'getProvUserDate']);
 Route::get('getServers/{id}', [UsersController::class, 'getServers']);
 Route::post('session', [loginController::class, 'session']);
 Route::post('putBTC', [ImportsController::class, 'putBTC']);
@@ -108,6 +109,7 @@ Route::get('onCdr', [LogsController::class, 'onCdr']);
 Route::post('getCalls', [LogsController::class, 'getCalls']);
 Route::get('reportCalDep', [ProvidersController::class, 'reportCalDep']);
 Route::post('getTelCodProviers', [ProvidersController::class, 'getTelCodProviers']);
+Route::post('clearDupLids', [UsersController::class, 'clearDupLids']);
 Route::post('uploadDoc', [ImportsController::class, 'uploadDoc']);
 Route::get('getDocs/{lead_id}', [ImportsController::class, 'getDocs']);
 Route::get('delDoc/{id}', [ImportsController::class, 'delDoc']);
