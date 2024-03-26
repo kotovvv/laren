@@ -312,7 +312,7 @@ class LidsController extends Controller
             if (isset($data['status_id']))  $n_lid->status_id = $data['status_id'];
             $f_lid =  Lid::where('tel', '=', "" . $lid['tel'])->get();
 
-            if (!$f_lid->count()) {
+            if ($f_lid->count()) {
                 $n_lid->status_id = 22;
             }
             if ($n_lid->provider_id == '76') {
@@ -975,7 +975,7 @@ WHERE (l.`provider_id` = '" . $f_key->id . "'
 
         $f_lid =  Lid::where('tel', '=', $n_lid->tel)->get();
 
-        if (!$f_lid->count()) {
+        if ($f_lid->count()) {
             $n_lid->status_id = 22;
         }
         if ($n_lid->provider_id == '76') {

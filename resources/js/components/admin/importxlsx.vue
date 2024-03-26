@@ -15,7 +15,7 @@
           <v-select
             v-model="selectedProvider"
             :items="providers"
-            label="Provider"
+            label="Supplier"
             item-text="name"
             item-value="id"
             outlined

@@ -27,7 +27,7 @@
             <v-select
               v-model="selectedProvider"
               :items="providers"
-              label="Provider"
+              label="Supplier"
               item-text="name"
               item-value="id"
               outlined
@@ -399,7 +399,7 @@ export default {
       { text: "Email", value: "email" },
       { text: "Name", value: "name" },
       { text: "Office", value: "office_name" },
-      { text: "Provider", value: "provider_name" },
+      { text: "Upload leads", value: "provider_name" },
       { text: "Status", value: "status_name" },
       { text: "Phone", value: "tel" },
       { text: "Operator", value: "user_name" },
