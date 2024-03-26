@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container>
+    <v-container fluid>
       <v-row>
         <v-col cols="3">
           <div class="status_wrp wrp_date px-3">
@@ -23,6 +23,7 @@
                       label="From"
                     ></v-text-field>
                   </template>
+
                   <v-date-picker
                     locale="en"
                     v-model="datetimeFrom"
@@ -49,7 +50,8 @@
                       v-bind="attrs"
                       v-on="on"
                       label="To"
-                    ></v-text-field>
+                    >
+                    </v-text-field>
                   </template>
                   <v-date-picker
                     locale="en"
@@ -78,7 +80,8 @@
                       v-bind="attrs"
                       v-on="on"
                       label="Updated"
-                    ></v-text-field>
+                    >
+                    </v-text-field>
                   </template>
                   <v-date-picker
                     locale="en"
@@ -100,6 +103,7 @@
             item-value="id"
             outlined
             multiple
+            clearable
           >
             <template v-slot:selection="{ item, index }">
               <span v-if="index === 0">{{ item.name }} </span>
@@ -107,6 +111,7 @@
                 (+{{ selectedProvider.length - 1 }} )
               </span>
             </template>
+
             <template v-slot:item="{ item, attrs }">
               <v-badge
                 :value="attrs['aria-selected'] == 'true'"
@@ -121,9 +126,39 @@
         </v-col>
         <v-col cols="2">
           <v-autocomplete
+            v-model="checkUser"
+            :items="checkusers"
+            label="check Users"
+            item-text="name"
+            item-value="id"
+            outlined
+            clearable
+            multiple
+          >
+            <template v-slot:selection="{ item, index }">
+              <span v-if="index === 0">{{ item.name }} </span>
+              <span v-if="index === 1" class="grey--text text-caption">
+                (+{{ checkUser.length - 1 }} )
+              </span>
+            </template>
+
+            <template v-slot:item="{ item, attrs }">
+              <v-badge
+                :value="attrs['aria-selected'] == 'true'"
+                color="#2196f3"
+                dot
+                left
+              >
+                {{ item.name }}
+              </v-badge>
+            </template>
+          </v-autocomplete>
+        </v-col>
+        <v-col cols="2">
+          <v-autocomplete
             v-model="selectedUser"
             :items="users"
-            label="Users"
+            label="set on User"
             item-text="name"
             item-value="id"
             outlined
@@ -136,11 +171,13 @@
           ></v-col
         >
       </v-row>
-      <v-progress-linear
-        :active="loading"
-        indeterminate
-        color="blue"
-      ></v-progress-linear>
+    </v-container>
+    <v-progress-linear
+      :active="loading"
+      indeterminate
+      color="blue"
+    ></v-progress-linear>
+    <v-container>
       <v-row>
         <v-col cols="12" class="my-3">
           Liads on period ({{ all }})
@@ -246,6 +283,7 @@
     </v-container>
   </div>
 </template>
+
 <script>
 import axios from "axios";
 export default {
@@ -266,6 +304,8 @@ export default {
       datetimeTo: new Date().toISOString().substring(0, 10),
       users: [],
       selectedUser: 0,
+      checkUser: [],
+      checkusers: [],
       providers: [],
       selectedProvider: [],
       all: 0,
@@ -293,6 +333,7 @@ export default {
       data.updated = self.datetimeUpdated;
       data.providers = self.selectedProvider;
       data.user_id = self.selectedUser;
+      data.check_users = self.checkUser;
       axios
         .post("api/clearDupLids", data)
         .then(function (response) {
@@ -321,6 +362,7 @@ export default {
         .then(function (response) {
           console.log(response);
           self.users = response.data.users;
+          self.checkusers = response.data.checkusers;
           self.providers = response.data.providers;
           self.loading = false;
         })

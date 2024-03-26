@@ -430,7 +430,11 @@ class UsersController extends Controller
             ->whereBetween('lids.created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->orderBy('name', 'ASC')->groupBy('provider_id')
             ->get();
-
+        $response['checkusers'] = Lid::select('user_id AS id', 'users.name')
+            ->leftJoin('users', 'user_id', '=', 'users.id')
+            ->whereBetween('lids.created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->orderBy('name', 'ASC')->groupBy('user_id')
+            ->get();
         $response['users'] = User::select('id', 'name')->where('active', 1)->where('role_id', 3)->orderBy('name')->get();
 
         return $response;
@@ -443,6 +447,7 @@ class UsersController extends Controller
         $update = strtotime($data['updated'] . ' 00:00:00');
         $providers = $data['providers'];
         $user_id = $data['user_id'];
+        $check_users = $data['check_users'];
 
         $response = [];
         $response['newl'] = 0;
@@ -450,10 +455,13 @@ class UsersController extends Controller
         $response['found'] = 0;
         $response['give'] = 0;
         $lids = Lid::select('id', 'tel')
-            ->whereNotIn('lids.status_id', [9, 10,])
+            ->whereNotIn('lids.status_id', [9, 10, 20])
             ->whereBetween('lids.created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->when(count($providers) > 0, function ($query) use ($providers) {
                 return $query->whereIn('provider_id', $providers);
+            })
+            ->when(count($check_users) > 0, function ($query) use ($check_users) {
+                return $query->whereIn('user_id', $check_users);
             })
             ->orderBy('updated_at', 'DESC')
             ->get();
@@ -468,7 +476,7 @@ class UsersController extends Controller
                     $response['found'] += $found->count();
                     $depcall = false;
                     foreach ($found as $duplid) {
-                        if (in_array($duplid->status_id, [9, 10])) {
+                        if (in_array($duplid->status_id, [9, 10, 20])) {
                             $depcall = true;
                         }
                     }
@@ -490,7 +498,8 @@ class UsersController extends Controller
                     }
                     if ($user_id > 0) {
                         $response['give'] += 1;
-                        Lid::where('id', $lid->id)->update(['user_id' => $user_id]);
+                        // user ClearDup = 228
+                        Lid::where('id', $lid->id)->update(['user_id' => 228]);
                     }
                 }
             }
