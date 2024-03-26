@@ -487,19 +487,18 @@ class UsersController extends Controller
 
                             if ($update > $datelid) {
                                 $response['dupl'] += 1;
-                                Lid::where('id', $duplid->id)->update(['status_id' => 22]);
+                                Lid::where('id', $duplid->id)->update(['status_id' => 22, 'updated_at' => Now()]);
                             } else {
                                 $response['newl'] += 1;
-                                Lid::where('id', $duplid->id)->update(['status_id' => 8]);
+                                Lid::where('id', $duplid->id)->update(['status_id' => 8, 'updated_at' => Now()]);
                             }
                         }
                     } else {
-                        Lid::where('id', $lid->id)->update(['status_id' => 8]);
+                        Lid::where('id', $lid->id)->update(['status_id' => 8, 'updated_at' => Now()]);
                     }
                     if ($user_id > 0) {
                         $response['give'] += 1;
-                        // user ClearDup = 228
-                        Lid::where('id', $lid->id)->update(['user_id' => 228]);
+                        Lid::where('id', $lid->id)->update(['user_id' => $user_id, 'updated_at' => Now()]);
                     }
                 }
             }
