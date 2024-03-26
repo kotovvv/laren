@@ -9,13 +9,24 @@
       </template>
     </v-snackbar>
     <v-tabs v-model="tab" background-color="primary" dark>
-      <v-tab> XLSX </v-tab>
-      <v-tab> Provider </v-tab>
-      <v-tab v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
-        BTC
+      <v-tab
+        ><v-icon color="white" class="mr-2"> mdi-file-excel </v-icon> XLSX
       </v-tab>
-      <v-tab>CHECK DUBLIKATE MAIL</v-tab>
-      <v-tab>Clear Dublicate Lids</v-tab>
+      <v-tab
+        ><v-icon color="white" class="mr-2"> mdi-account-convert </v-icon>
+        Supplier
+      </v-tab>
+      <v-tab v-if="$attrs.user.role_id == 1 && $attrs.user.group_id == 0">
+        <v-icon color="white" class="mr-2"> mdi-currency-btc </v-icon> BTC
+      </v-tab>
+      <v-tab
+        ><v-icon color="white" class="mr-2">mdi-email-alert</v-icon> CHECK
+        DUBLIKATE MAIL</v-tab
+      >
+      <v-tab
+        ><v-icon color="white" class="mr-2">mdi-content-duplicate</v-icon> Clear
+        Dublicate Lids</v-tab
+      >
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
