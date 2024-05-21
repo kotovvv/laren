@@ -586,7 +586,7 @@ export default {
       { text: "Created", value: "date_created" },
       { text: "Changed", value: "date_updated" },
       { text: "Status", value: "status" },
-      { text: "Depozit", value: "depozit" },
+      //{ text: "Depozit", value: "depozit" },
       { text: "Message", value: "text" },
       { text: "Calls", value: "qtytel" },
       { text: "CALLING.", value: "ontime" },

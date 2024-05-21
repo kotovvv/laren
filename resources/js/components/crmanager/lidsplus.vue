@@ -532,7 +532,7 @@ export default {
       { text: "Created", value: "date_created" },
       { text: "Modified", value: "date_updated" },
       { text: "Status", value: "status" },
-      { text: "Deposit", value: "depozit" },
+      //{ text: "Deposit", value: "depozit" },
       { text: "Message", value: "text" },
       { text: "Calls", value: "qtytel" },
     ],

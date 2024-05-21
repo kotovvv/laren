@@ -243,7 +243,7 @@ export default {
       { text: "Status", value: "status" },
       { text: "Created", value: "date_created" },
       { text: "Changed", value: "date_updated" },
-      { text: "Deposit", value: "depozit" },
+      //{ text: "Deposit", value: "depozit" },
     ],
     lids: [],
     expanded: [],

@@ -25,7 +25,7 @@
       </v-bottom-navigation>
 
       <v-spacer></v-spacer>
-      <v-btn @click="adminMenu = 'reportBTC'">
+      <v-btn v-if="$props.user.id == 1" @click="adminMenu = 'reportBTC'">
         {{ $props.user.fio }}
       </v-btn>
 

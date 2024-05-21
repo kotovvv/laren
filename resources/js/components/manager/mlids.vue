@@ -445,7 +445,6 @@
                 :for="'st' + status.id"
                 class="status_wrp v-label"
                 :key="'l' + ikey"
-                :class="{ hideStatus: hideStatus(status.id) }"
               >
                 <b
                   :style="{
@@ -486,16 +485,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col v-if="selectedStatus == 10">
-              Deposit amount*
-              <v-text-field
-                required
-                v-model="depozit_val"
-                class="border px-2 mb-4"
-                @keypress="filter()"
-                prepend-inner-icon="mdi-currency-usd"
-              ></v-text-field
-            ></v-col>
+
 
             <v-col class="pt-9" v-if="!$props.user.tier">
               <v-btn class="border" @click="getBTC">Get BTC</v-btn>
@@ -538,7 +528,7 @@
                 block
                 height="100%"
                 :disabled="
-                  selectedStatus == 10 && depozit_val < 1 && text_message == ''
+                   text_message == ''
                 "
                 @click="
                   writeText();
@@ -615,8 +605,8 @@ export default {
     timeProps: { format: "24hr" },
     dial: false,
     dialog: false,
-    depozit: 0,
-    depozit_val: "",
+
+
     componentKey: 0,
     text_message: "",
     tel: "",
@@ -859,15 +849,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    hideStatus(id) {
-      // show only deposit
-      if (this.selected.length && this.selected[0].status_id == 10) {
-        if (id != 10) {
-          return true;
-        }
-      }
-      return false;
-    },
+
     writeText() {
       if (this.text_message.length > 0) {
         (
@@ -922,10 +904,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    nextdep(status_id) {
-      if (status_id != 10) return;
-      this.depozit = true;
-    },
+
     forceRerender() {
       this.componentKey += 1;
     },
@@ -1015,26 +994,9 @@ export default {
           console.log(error);
         });
       this.setTime();
-      if (this.depozit_val > 0) {
-        self.setDepozit();
-      }
+
     },
 
-    setDepozit() {
-      let self = this;
-      let send = {};
-      send.lid_id = this.selected[0].id;
-      send.user_id = this.selected[0].user_id;
-      send.depozit = this.depozit_val;
-      axios
-        .post("api/setDepozit", send)
-        .then(function (response) {
-          self.depozit_val = "";
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
     usercolor(user) {
       return user.role_id == 2 ? "green" : "blue";
     },
@@ -1049,9 +1011,7 @@ export default {
             id,
             color,
           }));
-          if (self.$props.user.tier) {
-            self.statuses = self.statuses.filter((e) => e.id != 10);
-          }
+
           self.statusesnonew = self.statuses.filter((e) => e.id != 8);
           self.filterstatuses = self.statuses.map((e) => e);
           self.getLidsPost();

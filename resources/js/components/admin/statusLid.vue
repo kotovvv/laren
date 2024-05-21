@@ -51,10 +51,10 @@
                               v-model="editedItem.order"
                               label="Order"
                             ></v-text-field>
-                            <!-- <v-switch
-                        v-model="editedItem.active"
-                        label="Show:"
-                      ></v-switch> -->
+                            <v-switch
+                              v-model="editedItem.active"
+                              label="Show:"
+                            ></v-switch>
                           </v-col>
                           <!-- <v-col cols="8">
                       <v-color-picker
