@@ -485,8 +485,6 @@
             </v-col>
           </v-row>
           <v-row>
-
-
             <v-col class="pt-9" v-if="!$props.user.tier">
               <v-btn class="border" @click="getBTC">Get BTC</v-btn>
             </v-col>
@@ -527,9 +525,6 @@
                 color="dark primary"
                 block
                 height="100%"
-                :disabled="
-                   text_message == ''
-                "
                 @click="
                   writeText();
                   putSelectedLidsDB();
@@ -605,7 +600,6 @@ export default {
     timeProps: { format: "24hr" },
     dial: false,
     dialog: false,
-
 
     componentKey: 0,
     text_message: "",
@@ -994,7 +988,6 @@ export default {
           console.log(error);
         });
       this.setTime();
-
     },
 
     usercolor(user) {
