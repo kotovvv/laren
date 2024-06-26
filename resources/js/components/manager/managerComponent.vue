@@ -23,6 +23,9 @@
       <div class="align-center mr-2">{{ userfio }}</div>
 
       <v-btn @click="$emit('login', {})">Logout</v-btn>
+      <v-flex xs12 md2 ml-3>
+        <v-switch v-model="themeDark" label="Dark" hide-details></v-switch
+      ></v-flex>
     </v-app-bar>
 
     <v-main>
@@ -52,6 +55,7 @@ export default {
       { text: "Reports", name: "report", icon: "mdi-timetable" },
       { text: "Manager", name: "mlids", icon: "mdi-phone-log-outline" },
     ],
+    themeDark: false,
   }),
   computed: {
     managerComponent() {
@@ -59,7 +63,23 @@ export default {
       if (this.managerMenu == "report") return report;
     },
   },
-
+  mounted: () => {
+    if (localStorage.themeDark) {
+      if (localStorage.themeDark == "true") {
+        this.$vuetify.theme.dark = true;
+        this.themeDark = true;
+      } else {
+        this.$vuetify.theme.dark = false;
+        this.themeDark = false;
+      }
+    }
+  },
+  watch: {
+    themeDark(newName) {
+      localStorage.themeDark = newName;
+      this.$vuetify.theme.dark = newName;
+    },
+  },
   methods: {},
 };
 </script>

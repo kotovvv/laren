@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar app>
+    <v-app-bar app class="">
       <v-bottom-navigation
         color="primary"
         background-color="transparent"
@@ -30,6 +30,9 @@
       </v-btn>
 
       <v-btn @click="$emit('login', {})">Logout</v-btn>
+      <v-flex xs12 md2 ml-3>
+        <v-switch v-model="themeDark" label="Dark" hide-details></v-switch
+      ></v-flex>
     </v-app-bar>
 
     <v-main class="">
@@ -105,6 +108,7 @@ export default {
       },
     ],
     adminMenu: "",
+    themeDark: false,
   }),
   computed: {
     adminComponent() {
@@ -123,6 +127,15 @@ export default {
     },
   },
   mounted: function () {
+    if (localStorage.themeDark) {
+      if (localStorage.themeDark == "true") {
+        this.$vuetify.theme.dark = true;
+        this.themeDark = true;
+      } else {
+        this.$vuetify.theme.dark = false;
+        this.themeDark = false;
+      }
+    }
     if (localStorage.adminMenu) {
       this.adminMenu = localStorage.adminMenu;
       this.selectedItem = this.items
@@ -133,6 +146,10 @@ export default {
   watch: {
     adminMenu(newName) {
       localStorage.adminMenu = newName;
+    },
+    themeDark(newName) {
+      localStorage.themeDark = newName;
+      this.$vuetify.theme.dark = newName;
     },
   },
   methods: {},
