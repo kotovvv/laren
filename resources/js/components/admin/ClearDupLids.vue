@@ -27,6 +27,7 @@
                   <v-date-picker
                     locale="en"
                     v-model="datetimeFrom"
+                    first-day-of-week="1"
                     @input="
                       dateFrom = false;
                       getProvUserDate();
@@ -56,6 +57,7 @@
                   <v-date-picker
                     locale="en"
                     v-model="datetimeTo"
+                    first-day-of-week="1"
                     @input="
                       dateTo = false;
                       getProvUserDate();
@@ -86,6 +88,7 @@
                   <v-date-picker
                     locale="en"
                     v-model="datetimeUpdated"
+                    first-day-of-week="1"
                     @input="dateUpdated = false"
                   ></v-date-picker>
                 </v-menu>

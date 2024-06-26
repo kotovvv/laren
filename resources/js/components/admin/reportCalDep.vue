@@ -39,6 +39,7 @@
                       </template>
                       <v-date-picker
                         v-model="dateTimeFrom"
+                        first-day-of-week="1"
                         @input="
                           dateFrom = false;
                           reportCalDep();
@@ -68,6 +69,7 @@
                       <v-date-picker
                         locale="en"
                         v-model="dateTimeTo"
+                        first-day-of-week="1"
                         @input="
                           dateTo = false;
                           reportCalDep();

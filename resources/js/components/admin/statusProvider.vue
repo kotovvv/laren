@@ -30,6 +30,7 @@
               </template>
               <v-date-picker
                 v-model="datefrom"
+                first-day-of-week="1"
                 @input="menufrom = false"
               ></v-date-picker>
             </v-menu>
@@ -55,6 +56,7 @@
               </template>
               <v-date-picker
                 v-model="dateto"
+                first-day-of-week="1"
                 @input="menuto = false"
               ></v-date-picker>
             </v-menu>

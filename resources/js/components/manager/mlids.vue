@@ -495,6 +495,7 @@
                 <v-datetime-picker
                   ref="datetime"
                   :time-picker-props="timeProps"
+                  :date-picker-props="dateProps"
                   :datetime="datetime"
                 >
                 </v-datetime-picker></div
@@ -597,7 +598,8 @@ export default {
   data: () => ({
     loading: false,
     webphone: false,
-    timeProps: { format: "24hr" },
+    timeProps: { format: "24hr", locale: "pl-PL" },
+    dateProps: { "first-day-of-week": 1 },
     dial: false,
     dialog: false,
 

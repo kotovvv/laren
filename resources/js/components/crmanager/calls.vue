@@ -28,6 +28,7 @@
                 </template>
                 <v-date-picker
                   v-model="datetimeFrom"
+                  first-day-of-week="1"
                   @input="
                     dateFrom = false;
                     getCalls();
@@ -54,6 +55,7 @@
                 </template>
                 <v-date-picker
                   v-model="datetimeTo"
+                  first-day-of-week="1"
                   @input="
                     dateTo = false;
                     getCalls();

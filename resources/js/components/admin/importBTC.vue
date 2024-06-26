@@ -64,6 +64,7 @@
                       <v-date-picker
                         locale="en"
                         v-model="datetimeFrom"
+                        first-day-of-week="1"
                         @input="
                           dateFrom = false;
                           getBTCsOnDate();
@@ -91,6 +92,7 @@
                       <v-date-picker
                         locale="en"
                         v-model="datetimeTo"
+                        first-day-of-week="1"
                         @input="
                           dateTo = false;
                           getBTCsOnDate();

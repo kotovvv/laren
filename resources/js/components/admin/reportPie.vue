@@ -41,6 +41,7 @@
                   </template>
                   <v-date-picker
                     v-model="dateTimeFrom"
+                    first-day-of-week="1"
                     @input="
                       dateFrom = false;
                       getLidsOnDate();
@@ -67,6 +68,7 @@
                   </template>
                   <v-date-picker
                     v-model="dateTimeTo"
+                    first-day-of-week="1"
                     @input="
                       dateTo = false;
                       getLidsOnDate();

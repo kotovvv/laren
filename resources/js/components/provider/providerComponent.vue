@@ -78,6 +78,7 @@
                     </template>
                     <v-date-picker
                       v-model="dateFrom"
+                      first-day-of-week="1"
                       @input="
                         dateShowFrom = false;
                         getPieTime();
@@ -107,6 +108,7 @@
                     </template>
                     <v-date-picker
                       v-model="dateTo"
+                      first-day-of-week="1"
                       @input="
                         dateShowTo = false;
                         getPieTime();
@@ -168,6 +170,7 @@
                 </template>
                 <v-date-picker
                   v-model="tablDateFrom"
+                  first-day-of-week="1"
                   @input="
                     tablDateShowFrom = false;
                     getDataTime();
@@ -196,6 +199,7 @@
                 </template>
                 <v-date-picker
                   v-model="tablDateTo"
+                  first-day-of-week="1"
                   @input="
                     tablDateShowTo = false;
                     getDataTime();
